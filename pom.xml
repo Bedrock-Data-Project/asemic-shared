@@ -34,6 +34,7 @@
     <modules>
         <module>sql</module>
         <module>core</module>
+        <module>sequence</module>
     </modules>
 
     <properties>
@@ -53,6 +54,21 @@
         </repository>
     </distributionManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -85,18 +101,6 @@
                     <tokenAuth>true</tokenAuth>
                 </configuration>
             </plugin>
-
-<!--            <plugin>-->
-<!--                <groupId>org.sonatype.plugins</groupId>-->
-<!--                <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                <version>1.6.7</version>-->
-<!--                <extensions>true</extensions>-->
-<!--                <configuration>-->
-<!--                    <serverId>ossrh</serverId>-->
-<!--                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>-->
-<!--                    <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

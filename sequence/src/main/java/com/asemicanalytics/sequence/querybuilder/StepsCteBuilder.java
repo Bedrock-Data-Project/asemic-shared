@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class StepsCteBuilder {
   public static final String IS_VALID_COLUMN = "is_valid";
-  public static final String REPEATED_ACTIONS_COLUMN = "repeated_actions";
+  public static final String STEP_COLUMN = "step";
 
   public static Cte buildCte(Sequence sequence, QueryBuilder queryBuilder, Cte subsequencesCte) {
     List<List<Step>> partitionedSteps = partitionSteps(sequence.getSteps());
@@ -65,7 +65,7 @@ public class StepsCteBuilder {
         steps.stream()
             .map(s -> new CaseWhenThen(Constant.ofInt(s.getIndex()), Constant.ofInt(s.getIndex())))
             .collect(Collectors.toList())
-    ).withAlias(REPEATED_ACTIONS_COLUMN));
+    ).withAlias(STEP_COLUMN));
 
     Cte cte = new Cte("sequence_non_optional", queryBuilder.nextCteIndex(),
         new SelectStatement()

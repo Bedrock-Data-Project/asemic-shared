@@ -21,7 +21,8 @@ public class SequenceBaseTest {
   protected final SqlQueryExecutor executor = new H2QueryExecutor(
       DatabaseHelper.USER, DatabaseHelper.PASSWORD, DatabaseHelper.JDBC_URL, 10);
   protected final Map<String, StepTable> STEP_REPOSITORY = Map.of(
-      "login", stepTable("login")
+      "login", stepTable("login"),
+      "battle", stepTable("battle")
   );
   protected SequenceService sequenceService = new SequenceService(executor);
 

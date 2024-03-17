@@ -34,8 +34,7 @@ class SequenceVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
 
   @Override
   public VisitorResult visitChainedStep(QueryLanguageParser.ChainedStepContext ctx) {
-    var result = visitStep(ctx.step());
     currentIndex++;
-    return result;
+    return visitStep(ctx.step());
   }
 }

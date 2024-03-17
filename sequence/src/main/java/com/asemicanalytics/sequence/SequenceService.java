@@ -3,10 +3,14 @@ package com.asemicanalytics.sequence;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.sequence.querybuilder.DomainCteBuilder;
+import com.asemicanalytics.sequence.querybuilder.SequencesCteBuilder;
 import com.asemicanalytics.sequence.querybuilder.SqlQueryBuilder;
+import com.asemicanalytics.sequence.querybuilder.SubsequencesCteBuilder;
 import com.asemicanalytics.sequence.querylanguage.QueryLanguageEvaluator;
 import com.asemicanalytics.sequence.sequence.Sequence;
 import com.asemicanalytics.sequence.sequence.StepTable;
+import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.SelectStatement;
 import java.util.Map;
 
@@ -32,6 +36,12 @@ public class SequenceService {
     query.queryBuilder().select(new SelectStatement()
         .selectStar()
         .from(query.steps())
+        .orderBy(new ExpressionList(
+            query.steps().column(DomainCteBuilder.USER_ID_COLUMN),
+            query.steps().column(SequencesCteBuilder.SEQUENCE_COLUMN),
+            query.steps().column(SubsequencesCteBuilder.SUBSEQUENCE_COLUMN),
+            query.steps().column(DomainCteBuilder.STEP_TS_COLUMN)
+        ))
     );
     return query.queryBuilder().render(sqlQueryExecutor.getDialect());
   }

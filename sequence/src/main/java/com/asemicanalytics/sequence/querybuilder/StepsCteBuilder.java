@@ -8,6 +8,7 @@ import com.asemicanalytics.sql.sql.builder.SelectStatement;
 import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
 import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
+import com.asemicanalytics.sql.sql.builder.expression.IfExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import com.asemicanalytics.sql.sql.builder.expression.casecondition.CaseExpression;
@@ -80,8 +81,15 @@ public class StepsCteBuilder {
   private static Cte buildCombinedStepsCte(QueryBuilder queryBuilder, Cte lastStepCte) {
     var columns = lastStepCte.select().select().columnNames().stream()
         .filter(c -> !c.equals(IS_VALID_COLUMN))
+        .filter(c -> !c.equals(STEP_COLUMN))
         .map(lastStepCte::column)
         .collect(Collectors.toCollection(ArrayList::new));
+
+    columns.add(new IfExpression(new TemplatedExpression("{sequence} > 0",
+        TemplateDict.noMissing(Map.of(
+            "sequence", lastStepCte.column(SequencesCteBuilder.SEQUENCE_COLUMN)
+        ))), lastStepCte.column(STEP_COLUMN), Constant.ofInt(0))
+        .withAlias(STEP_COLUMN));
 
     columns.add(new WindowFunctionExpression(new FunctionExpression("MIN",
         lastStepCte.column(IS_VALID_COLUMN)),

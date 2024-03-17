@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
+import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.StepTable;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 
 public class SequenceBaseTest {
@@ -48,7 +50,13 @@ public class SequenceBaseTest {
   protected void assertResult(List<ResultRow> rows)
       throws ExecutionException, InterruptedException {
     var sqlRows = rows.stream().map(ResultRow::toSqlResultRow).toList();
-    assertEquals(sqlRows, result().rows());
+    String expected = sqlRows.stream()
+        .map(SqlResultRow::toString)
+        .collect(Collectors.joining("\n"));
+    String actual = result().rows().stream()
+        .map(SqlResultRow::toString)
+        .collect(Collectors.joining("\n"));
+    assertEquals(expected, actual);
   }
 
 }

@@ -35,9 +35,9 @@ public interface Dialect {
   default String createTableFromSelect(String select, TableReference tableReference,
                                        boolean replace) {
     if (replace) {
-      return "CREATE OR REPLACE TABLE " + tableIdentifier(tableReference) + " AS " + select;
+      return "CREATE OR REPLACE TABLE " + tableIdentifier(tableReference) + " AS\n" + select;
     } else {
-      return "CREATE TABLE " + tableIdentifier(tableReference) + " AS " + select;
+      return "CREATE TABLE " + tableIdentifier(tableReference) + " AS\n" + select;
     }
   }
 

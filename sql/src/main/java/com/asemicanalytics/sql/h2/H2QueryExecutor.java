@@ -6,12 +6,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class H2QueryExecutor extends JdbcQueryExecutor {
 
-  private static final DateTimeFormatter formatter =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+  private static final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+      .appendPattern("yyyy-MM-dd HH:mm:ss")
+      .appendOffset("+HH", "+00")
+      .toFormatter();
+
   private final String user;
   private final String password;
   private final String jdbcUrl;

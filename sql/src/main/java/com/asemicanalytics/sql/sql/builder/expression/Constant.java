@@ -12,6 +12,14 @@ public class Constant implements Expression {
     this.dataType = dataType;
   }
 
+  public static Constant ofInt(long value) {
+    return new Constant(Long.toString(value), DataType.INTEGER);
+  }
+
+  public static Constant ofString(String value) {
+    return new Constant(value, DataType.STRING);
+  }
+
   @Override
   public String render(Dialect dialect) {
     if (value == null) {

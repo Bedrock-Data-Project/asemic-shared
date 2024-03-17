@@ -123,4 +123,15 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
             ZonedDateTime.now()
         ));
   }
+
+  @Override
+  public void executeDdl(String sql) {
+    try (Connection connection = getConnection()) {
+      try (Statement statement = connection.createStatement()) {
+        statement.execute(sql);
+      }
+    } catch (SQLException | InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

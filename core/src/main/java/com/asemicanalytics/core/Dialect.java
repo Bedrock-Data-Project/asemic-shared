@@ -19,4 +19,26 @@ public interface Dialect {
   String intervalDays(long days);
 
   String epochDays(String date);
+
+  default String caseExpression(String switchExpression, String whenThens, String ifFalse) {
+    return "CASE " + switchExpression + " " + whenThens + " " + ifFalse + " END";
+  }
+
+  default String caseWhenThen(String when, String then) {
+    return "WHEN " + when + " THEN " + then;
+  }
+
+  default String caseElse(String elseExpression) {
+    return "ELSE " + elseExpression;
+  }
+
+  default String createTableFromSelect(String select, TableReference tableReference,
+                                       boolean replace) {
+    if (replace) {
+      return "CREATE OR REPLACE TABLE " + tableIdentifier(tableReference) + " AS " + select;
+    } else {
+      return "CREATE TABLE " + tableIdentifier(tableReference) + " AS " + select;
+    }
+  }
 }
+

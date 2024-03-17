@@ -32,4 +32,8 @@ public class AliasedExpression implements Expression {
   public AliasedExpression withAlias(String alias) {
     return new AliasedExpression(expression, alias);
   }
+
+  public String alias() {
+    return alias;
+  }
 }

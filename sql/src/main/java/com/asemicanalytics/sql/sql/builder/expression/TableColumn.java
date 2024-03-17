@@ -13,6 +13,10 @@ public class TableColumn implements Expression {
     this.name = name;
   }
 
+  public String name() {
+    return name;
+  }
+
   @Override
   public String render(Dialect dialect) {
     return table.render(dialect) + "." + dialect.columnIdentifier(name);

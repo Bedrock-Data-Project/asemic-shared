@@ -2,6 +2,7 @@ package com.asemicanalytics.sql.sql.builder;
 
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
+import com.asemicanalytics.sql.sql.builder.expression.Expression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import com.asemicanalytics.sql.sql.builder.join.Join;
@@ -18,11 +19,13 @@ public class SelectStatement implements Token {
   private Select select;
   private From from;
   private Where where;
+  private Qualify qualify;
   private GroupBy groupBy;
   private Having having;
   private OrderBy orderBy;
   private Limit limit;
   private SelectStatement unionAll;
+  public static final Expression SELECT_STAR = new TemplatedExpression("*", TemplateDict.empty());
 
   public TableLike table() {
     return from.table();
@@ -64,8 +67,13 @@ public class SelectStatement implements Token {
     return this;
   }
 
+  public SelectStatement select(Expression... expressions) {
+    select = new Select(new ExpressionList(expressions));
+    return this;
+  }
+
   public SelectStatement selectStar() {
-    return select(new ExpressionList(List.of(new TemplatedExpression("*", TemplateDict.empty()))));
+    return select(SELECT_STAR);
   }
 
   public SelectStatement join(Join join) {
@@ -86,6 +94,16 @@ public class SelectStatement implements Token {
     }
     return this;
   }
+
+  public SelectStatement andQualify(BooleanExpression booleanExpression) {
+    if (qualify != null) {
+      qualify.booleanExpression().and(booleanExpression);
+    } else {
+      qualify = new Qualify(booleanExpression);
+    }
+    return this;
+  }
+
 
   public SelectStatement or(BooleanExpression booleanExpression) {
     if (where != null) {
@@ -156,6 +174,9 @@ public class SelectStatement implements Token {
     }
     if (having != null) {
       sb.append("\n").append(having.render(dialect));
+    }
+    if (qualify != null) {
+      sb.append("\n").append(qualify.render(dialect));
     }
     if (orderBy != null && orderBy.expressions().expressions().size() > 0) {
       sb.append("\n").append(orderBy.render(dialect));

@@ -18,7 +18,7 @@ class SequenceVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
 
   @Override
   public VisitorResult visitSingleStep(QueryLanguageParser.SingleStepContext ctx) {
-    return new VisitorResult(List.of(new SingleStep(ctx.getText())));
+    return new VisitorResult(List.of(new SingleStep(ctx.getText(), index)));
   }
 
   @Override

@@ -1,7 +1,9 @@
 package com.asemicanalytics.sql.sql.builder;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.expression.AliasedExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.expression.TableColumn;
 import java.util.List;
 
 public class Select implements Token {
@@ -30,5 +32,18 @@ public class Select implements Token {
 
   public List<Expression> expressions() {
     return expressions.expressions();
+  }
+
+  public List<String> columnNames() {
+    return expressions.expressions().stream().map(e -> {
+      if (e instanceof AliasedExpression) {
+        return ((AliasedExpression) e).alias();
+      }
+      if (e instanceof TableColumn) {
+        return ((TableColumn) e).name();
+      }
+
+      throw new IllegalArgumentException("Unsupported expression type: " + e.getClass().getName());
+    }).toList();
   }
 }

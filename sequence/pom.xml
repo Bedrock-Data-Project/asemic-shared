@@ -11,10 +11,11 @@
 
     <artifactId>sequence</artifactId>
 
+
     <dependencies>
         <dependency>
             <groupId>com.asemicanalytics</groupId>
-            <artifactId>asemic-core</artifactId>
+            <artifactId>asemic-sql</artifactId>
             <version>1.0</version>
         </dependency>
 

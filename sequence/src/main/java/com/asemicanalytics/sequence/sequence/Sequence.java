@@ -16,8 +16,8 @@ public class Sequence {
   private final Map<String, StepTable> stepsRepository;
 
   public Sequence(List<Step> steps, Set<String> domain, DatetimeInterval datetimeInterval,
-                   Duration timeHorizon, boolean ignoreIncompleteSequences,
-                   Map<String, StepTable> stepsRepository) {
+                  Duration timeHorizon, boolean ignoreIncompleteSequences,
+                  Map<String, StepTable> stepsRepository) {
     this.steps = steps;
     this.domain = domain;
     this.datetimeInterval = datetimeInterval;
@@ -31,5 +31,32 @@ public class Sequence {
     StringJoiner joiner = new StringJoiner(" >> ");
     steps.forEach(step -> joiner.add(step.toString()));
     return joiner.toString();
+  }
+
+  public Set<String> getDomainActions() {
+    return domain;
+  }
+
+  public StepTable getStepTable(String stepName) {
+    return stepsRepository.get(stepName);
+  }
+
+  public DatetimeInterval getDatetimeInterval() {
+    return datetimeInterval;
+  }
+
+  public boolean isStartStepRepeated() {
+    List<String> startSteps = steps.get(0).getStepNames();
+
+    return steps.stream().skip(1)
+        .anyMatch(s -> s.getStepNames().stream().anyMatch(startSteps::contains));
+  }
+
+  public List<Step> getSteps() {
+    return steps;
+  }
+
+  public Duration getTimeHorizon() {
+    return timeHorizon;
   }
 }

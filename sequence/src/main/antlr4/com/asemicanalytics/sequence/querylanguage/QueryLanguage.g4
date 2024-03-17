@@ -1,7 +1,7 @@
 grammar QueryLanguage;
 
 
-sequence: step chainedStep+;
+sequence: step chainedStep*;
 
 chainedStep: ARROW step;
 

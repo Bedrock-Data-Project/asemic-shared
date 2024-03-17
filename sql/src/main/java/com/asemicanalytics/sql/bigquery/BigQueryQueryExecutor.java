@@ -154,6 +154,15 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
   }
 
   @Override
+  public void executeDdl(String sql) {
+    try {
+      executeQuery(sql, false);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public CompletableFuture<DatetimeInterval> submitTableFreshness(TableReference table, String id) {
     var future = submit((() -> executeQuery(String.format("""
         SELECT

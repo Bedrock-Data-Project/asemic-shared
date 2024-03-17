@@ -40,5 +40,7 @@ public interface Dialect {
       return "CREATE TABLE " + tableIdentifier(tableReference) + " AS " + select;
     }
   }
+
+  String epochSeconds(String timestamp);
 }
 

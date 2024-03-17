@@ -75,4 +75,9 @@ public class SnowflakeDialect implements Dialect {
     // TODO untested
     return "DATE_PART('day', " + date + "::timestamp)";
   }
+
+  @Override
+  public String epochSeconds(String timestamp) {
+    return "DATE_PART('second', " + timestamp + ")";
+  }
 }

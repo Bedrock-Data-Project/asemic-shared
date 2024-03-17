@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 
 public class SequencesCteBuilder {
   public static final String SEQUENCE_COLUMN = "sequence";

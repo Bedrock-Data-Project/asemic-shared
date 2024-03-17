@@ -74,4 +74,9 @@ public class H2Dialect implements Dialect {
   public String epochDays(String date) {
     return "DATEDIFF('day', '1970-01-01', " + date + "::timestamp)";
   }
+
+  @Override
+  public String epochSeconds(String timestamp) {
+    return "DATEDIFF('SECOND', '1970-01-01 00:00:00', " + timestamp + ")";
+  }
 }

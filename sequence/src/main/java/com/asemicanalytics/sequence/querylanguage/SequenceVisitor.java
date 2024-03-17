@@ -6,6 +6,8 @@ import java.util.List;
 
 class SequenceVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
 
+  private int currentIndex = 1;
+
   @Override
   public VisitorResult visitSequence(QueryLanguageParser.SequenceContext ctx) {
     VisitorResult root = visitStep(ctx.step());
@@ -18,7 +20,7 @@ class SequenceVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
 
   @Override
   public VisitorResult visitSingleStep(QueryLanguageParser.SingleStepContext ctx) {
-    return new VisitorResult(List.of(new SingleStep(ctx.getText(), index)));
+    return new VisitorResult(List.of(new SingleStep(ctx.getText(), currentIndex)));
   }
 
   @Override
@@ -32,6 +34,8 @@ class SequenceVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
 
   @Override
   public VisitorResult visitChainedStep(QueryLanguageParser.ChainedStepContext ctx) {
-    return visitStep(ctx.step());
+    var result = visitStep(ctx.step());
+    currentIndex++;
+    return result;
   }
 }

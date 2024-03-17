@@ -10,6 +10,7 @@ import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
 import com.asemicanalytics.sql.sql.builder.expression.IfExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
+import com.asemicanalytics.sql.sql.builder.expression.ToUnixTimestamp;
 import com.asemicanalytics.sql.sql.builder.expression.windowfunction.WindowFunctionExpression;
 import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
 import java.util.ArrayList;
@@ -45,8 +46,9 @@ public class SubsequencesCteBuilder {
             .andQualify(new BooleanExpression(new TemplatedExpression(
                 "{ts} - {window} <= {horizon}",
                 TemplateDict.noMissing(Map.of(
-                    "ts", sequencesCte.column(DomainCteBuilder.STEP_TS_COLUMN),
-                    "window", new WindowFunctionExpression(
+                    "ts", new ToUnixTimestamp(
+                        sequencesCte.column(DomainCteBuilder.STEP_TS_COLUMN)),
+                    "window", new ToUnixTimestamp(new WindowFunctionExpression(
                         new FunctionExpression("MIN",
                             sequencesCte.column(DomainCteBuilder.STEP_TS_COLUMN)),
                         new ExpressionList(List.of(
@@ -54,8 +56,8 @@ public class SubsequencesCteBuilder {
                             sequencesCte.column(SequencesCteBuilder.SEQUENCE_COLUMN)), ", "),
                         new ExpressionList(),
                         Optional.empty()
-                    ),
-                    "horizon", Constant.ofInt(sequence.getTimeHorizon().toMillis())
+                    )),
+                    "horizon", Constant.ofInt(sequence.getTimeHorizon().toSeconds())
                 ))))));
     queryBuilder.with(cte);
     return cte;

@@ -5,7 +5,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringJoiner;
+import java.util.TreeSet;
 
 public class Sequence {
   private final List<Step> steps;
@@ -34,7 +36,9 @@ public class Sequence {
   }
 
   public Set<String> getDomainActions() {
-    return domain;
+    SortedSet<String> wholeDomain = new TreeSet<>(domain);
+    steps.forEach(step -> wholeDomain.addAll(step.getStepNames()));
+    return wholeDomain;
   }
 
   public StepTable getStepTable(String stepName) {

@@ -1,4 +1,3 @@
-
 package com.asemicanalytics.sql.sql.builder.expression.casecondition;
 
 import com.asemicanalytics.core.Dialect;

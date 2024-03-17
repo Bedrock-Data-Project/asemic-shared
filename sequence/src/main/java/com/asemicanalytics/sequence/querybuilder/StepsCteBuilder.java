@@ -83,7 +83,7 @@ public class StepsCteBuilder {
         .map(lastStepCte::column)
         .collect(Collectors.toCollection(ArrayList::new));
 
-    columns.add(new WindowFunctionExpression(new FunctionExpression("MID",
+    columns.add(new WindowFunctionExpression(new FunctionExpression("MIN",
         lastStepCte.column(IS_VALID_COLUMN)),
         new ExpressionList(List.of(
             lastStepCte.column(DomainCteBuilder.USER_ID_COLUMN),

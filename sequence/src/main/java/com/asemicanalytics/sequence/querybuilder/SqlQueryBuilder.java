@@ -5,9 +5,6 @@ import com.asemicanalytics.sql.sql.builder.QueryBuilder;
 import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
 
 public class SqlQueryBuilder {
-  public record SequenceQuery(QueryBuilder queryBuilder, Cte source, Cte steps) {
-  }
-
   public static SequenceQuery prepareCtes(Sequence sequence) {
     QueryBuilder queryBuilder = new QueryBuilder();
 
@@ -17,5 +14,8 @@ public class SqlQueryBuilder {
     Cte steps = StepsCteBuilder.buildCte(sequence, queryBuilder, subsequences);
 
     return new SequenceQuery(queryBuilder, source, steps);
+  }
+
+  public record SequenceQuery(QueryBuilder queryBuilder, Cte source, Cte steps) {
   }
 }

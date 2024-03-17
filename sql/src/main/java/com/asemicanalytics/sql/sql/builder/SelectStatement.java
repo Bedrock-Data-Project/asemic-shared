@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 public class SelectStatement implements Token {
+  public static final Expression SELECT_STAR = new TemplatedExpression("*", TemplateDict.empty());
   private final List<Join> joins = new ArrayList<>();
   private Select select;
   private From from;
@@ -25,7 +26,6 @@ public class SelectStatement implements Token {
   private OrderBy orderBy;
   private Limit limit;
   private SelectStatement unionAll;
-  public static final Expression SELECT_STAR = new TemplatedExpression("*", TemplateDict.empty());
 
   public TableLike table() {
     return from.table();

@@ -35,18 +35,17 @@ class SequenceServiceTest {
   @Test
   void testSimple() throws SQLException, ExecutionException, InterruptedException {
     DatabaseHelper.createUserActionTable(TableReference.of("login"), """
-        SELECT 1 as user_id, 1 as ts, 'login' as action, false as optional, false as exit
-        UNION ALL SELECT 1, 2, 'battle', false, false
-        UNION ALL SELECT 1, 3, 'battle', false, false
-        UNION ALL SELECT 1, 4, 'login', false, false""");
+         SELECT 1 as "user_id", PARSEDATETIME('2021-01-01 02:00:01', 'yyyy-MM-dd HH:mm:ss') as "ts", PARSEDATETIME('2021-01-01', 'yyyy-MM-dd') as "date_"
+         UNION ALL SELECT 2, PARSEDATETIME('2021-01-01 02:00:01', 'yyyy-MM-dd HH:mm:ss'), PARSEDATETIME('2021-01-01', 'yyyy-MM-dd')
+        """);
 
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2022, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2022, 1, 5).atStartOfDay(ZoneId.of("UTC"))),
-        "login >> login", Map.of("login", stepTable("login")),
+        "login", Map.of("login", stepTable("login")),
         TableReference.of("sequence_output"));
 
-    var result = executor.submit("SELECT * FROM sequence_output", List.of(
+    var result = executor.submit("SELECT * FROM \"sequence_output\"", List.of(
         DataType.INTEGER, DataType.INTEGER, DataType.STRING, DataType.BOOLEAN, DataType.BOOLEAN
     ), false).get();
 

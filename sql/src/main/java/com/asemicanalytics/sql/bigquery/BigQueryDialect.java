@@ -74,4 +74,9 @@ public class BigQueryDialect implements Dialect {
   public String epochDays(String date) {
     return "UNIX_DATE(" + date + ")";
   }
+
+  @Override
+  public String epochSeconds(String timestamp) {
+    return "UNIX_SECONDS(" + timestamp + ")";
+  }
 }

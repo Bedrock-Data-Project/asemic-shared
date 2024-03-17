@@ -3,6 +3,7 @@ package com.asemicanalytics.sequence.querylanguage;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.sequence.sequence.Sequence;
 import com.asemicanalytics.sequence.sequence.StepTable;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 import org.antlr.v4.runtime.CharStreams;
@@ -21,7 +22,7 @@ public class QueryLanguageEvaluator {
     QueryLanguageParser parser = new QueryLanguageParser(new CommonTokenStream(lexer));
     ParseTree tree = parser.sequence();
     VisitorResult result = new SequenceVisitor().visit(tree);
-    return new Sequence(result.getSteps(), Set.of(), datetimeInterval, null,
-        false, stepRepository);
+    return new Sequence(result.getSteps(), Set.of(), datetimeInterval,
+        Duration.ofMinutes(10), false, stepRepository);
   }
 }

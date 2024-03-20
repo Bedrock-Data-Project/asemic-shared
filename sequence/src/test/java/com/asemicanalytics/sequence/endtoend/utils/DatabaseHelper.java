@@ -1,4 +1,4 @@
-package com.asemicanalytics.sequence.utils;
+package com.asemicanalytics.sequence.endtoend.utils;
 
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.sql.h2.H2Dialect;

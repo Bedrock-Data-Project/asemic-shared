@@ -21,18 +21,18 @@ public class SequenceService {
     this.sqlQueryExecutor = sqlQueryExecutor;
   }
 
-  public SqlQueryBuilder.SequenceQuery getSequenceQuery(
+  public static Sequence parseSequence(
       DatetimeInterval datetimeInterval, String sequenceQuery,
       Map<String, StepTable> stepRepository) {
     QueryLanguageEvaluator queryLanguageEvaluator = new QueryLanguageEvaluator(stepRepository);
-    Sequence sequence = queryLanguageEvaluator.parse(datetimeInterval, sequenceQuery);
-    return SqlQueryBuilder.prepareCtes(sequence);
+    return queryLanguageEvaluator.parse(datetimeInterval, sequenceQuery);
   }
 
   public String getSequenceSql(
       DatetimeInterval datetimeInterval, String sequenceQuery,
       Map<String, StepTable> stepRepository) {
-    var query = getSequenceQuery(datetimeInterval, sequenceQuery, stepRepository);
+    var query = SqlQueryBuilder.prepareCtes(
+        parseSequence(datetimeInterval, sequenceQuery, stepRepository));
     query.queryBuilder().select(new SelectStatement()
         .selectStar()
         .from(query.steps())
@@ -53,6 +53,7 @@ public class SequenceService {
     var select = getSequenceSql(datetimeInterval, sequenceQuery, stepRepository);
     var createTable =
         sqlQueryExecutor.getDialect().createTableFromSelect(select, tableReference, true);
+    System.out.println(createTable); // TODO remove
     sqlQueryExecutor.executeDdl(createTable);
   }
 

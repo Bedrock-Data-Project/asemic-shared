@@ -1,11 +1,11 @@
-package com.asemicanalytics.sequence;
+package com.asemicanalytics.sequence.endtoend;
 
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.sequence.utils.DatabaseHelper;
-import com.asemicanalytics.sequence.utils.ResultRow;
-import com.asemicanalytics.sequence.utils.SequenceBaseTest;
-import com.asemicanalytics.sequence.utils.UserActionRow;
+import com.asemicanalytics.sequence.endtoend.utils.DatabaseHelper;
+import com.asemicanalytics.sequence.endtoend.utils.ResultRow;
+import com.asemicanalytics.sequence.endtoend.utils.SequenceBaseTest;
+import com.asemicanalytics.sequence.endtoend.utils.UserActionRow;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.LocalDate;

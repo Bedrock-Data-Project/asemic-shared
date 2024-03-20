@@ -154,7 +154,11 @@ public class SelectStatement implements Token {
   }
 
   public SelectStatement unionAll(SelectStatement selectStatement) {
-    unionAll = selectStatement;
+    if (unionAll != null) {
+      unionAll.unionAll(selectStatement);
+    } else {
+      unionAll = selectStatement;
+    }
     return this;
   }
 

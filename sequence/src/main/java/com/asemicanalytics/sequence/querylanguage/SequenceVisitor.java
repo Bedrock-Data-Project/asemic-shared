@@ -2,6 +2,7 @@ package com.asemicanalytics.sequence.querylanguage;
 
 import com.asemicanalytics.sequence.sequence.GroupStep;
 import com.asemicanalytics.sequence.sequence.SingleStep;
+import com.asemicanalytics.sequence.sequence.StepRepetition;
 import java.util.List;
 
 class SequenceVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
@@ -20,8 +21,26 @@ class SequenceVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
 
   @Override
   public VisitorResult visitSingleStep(QueryLanguageParser.SingleStepContext ctx) {
-    return new VisitorResult(List.of(new SingleStep(ctx.getText(), currentIndex)));
+    final StepRepetition repetition = getStepRepetition(ctx);
+    return new VisitorResult(List.of(new SingleStep(ctx.NAME().getText(), repetition, currentIndex)));
   }
+
+  private StepRepetition getStepRepetition(QueryLanguageParser.SingleStepContext ctx) {
+    final StepRepetition repetition;
+    if (ctx.range() != null) {
+      if (ctx.range().to != null) {
+        repetition = StepRepetition.between(
+            Integer.parseInt(ctx.range().from.getText()),
+            Integer.parseInt(ctx.range().to.getText()));
+      } else {
+        repetition = StepRepetition.atLeast(Integer.parseInt(ctx.range().from.getText()));
+      }
+    } else {
+      repetition = StepRepetition.atLeast(1);
+    }
+    return repetition;
+  }
+
 
   @Override
   public VisitorResult visitGroupStep(QueryLanguageParser.GroupStepContext ctx) {

@@ -1,6 +1,7 @@
 package com.asemicanalytics.sequence.sequence;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -30,5 +31,22 @@ public class GroupStep implements Step {
   @Override
   public int getIndex() {
     return steps.get(0).getIndex();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    GroupStep groupStep = (GroupStep) o;
+    return Objects.equals(steps, groupStep.steps);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(steps);
   }
 }

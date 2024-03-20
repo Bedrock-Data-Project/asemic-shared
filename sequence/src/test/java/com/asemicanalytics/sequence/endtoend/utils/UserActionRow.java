@@ -1,4 +1,4 @@
-package com.asemicanalytics.sequence.utils;
+package com.asemicanalytics.sequence.endtoend.utils;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;

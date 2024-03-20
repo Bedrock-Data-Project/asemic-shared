@@ -63,4 +63,16 @@ public class Sequence {
   public Duration getTimeHorizon() {
     return timeHorizon;
   }
+
+  private void validate() {
+    if (steps.isEmpty()) {
+      throw new IllegalArgumentException("Sequence must contain at least one step");
+    }
+
+    if (steps.size() > 1
+        && steps.get(0).getStepNames().stream().anyMatch(steps.get(1).getStepNames()::contains)) {
+      throw new IllegalArgumentException("First step cannot be repeated");
+    }
+
+  }
 }

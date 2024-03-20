@@ -28,7 +28,7 @@ public class DomainCteBuilder {
       if (selectStatement == null) {
         selectStatement = domainStatement;
       } else {
-        selectStatement = selectStatement.unionAll(domainStatement);
+        selectStatement.unionAll(domainStatement);
       }
     }
     Cte source = new Cte("sequence_source", queryBuilder.nextCteIndex(), selectStatement);

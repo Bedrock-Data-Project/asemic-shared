@@ -1,4 +1,4 @@
-package com.asemicanalytics.sequence.utils;
+package com.asemicanalytics.sequence.endtoend.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,8 +9,6 @@ import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.StepTable;
-import com.asemicanalytics.sequence.utils.DatabaseHelper;
-import com.asemicanalytics.sequence.utils.ResultRow;
 import com.asemicanalytics.sql.h2.H2QueryExecutor;
 import java.sql.SQLException;
 import java.util.List;
@@ -24,7 +22,8 @@ public class SequenceBaseTest {
       DatabaseHelper.USER, DatabaseHelper.PASSWORD, DatabaseHelper.JDBC_URL, 10);
   protected final Map<String, StepTable> STEP_REPOSITORY = Map.of(
       "login", stepTable("login"),
-      "battle", stepTable("battle")
+      "battle", stepTable("battle"),
+      "transaction", stepTable("transaction")
   );
   protected SequenceService sequenceService = new SequenceService(executor);
 

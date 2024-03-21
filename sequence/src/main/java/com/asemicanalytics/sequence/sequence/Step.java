@@ -6,4 +6,6 @@ public interface Step {
   List<String> getStepNames();
 
   int getIndex();
+
+  boolean containsExactRepetition(String stepName);
 }

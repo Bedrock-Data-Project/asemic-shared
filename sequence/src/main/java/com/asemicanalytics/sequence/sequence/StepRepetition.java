@@ -19,4 +19,13 @@ public record StepRepetition(int from, Optional<Integer> to) {
   public static StepRepetition between(int from, int to) {
     return new StepRepetition(from, Optional.of(to));
   }
+
+  public boolean isExactly() {
+    return to.isPresent() && from == to.get();
+  }
+
+  @Override
+  public String toString() {
+    return "{" + from + "," + to.map(i -> Integer.toString(i)).orElse("") + "}";
+  }
 }

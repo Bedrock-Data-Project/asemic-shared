@@ -133,10 +133,34 @@ public class QueryLanguageTest {
         new SingleStep("battle", StepRepetition.oneOrMore(), 3)
     ));
 
-    assertSteps("login >> battle{2,2} >> battle", List.of(
+    assertSteps("login >> battle{2,2} >> battle{2,3}", List.of(
         new SingleStep("login", StepRepetition.oneOrMore(), 1),
         new SingleStep("battle", StepRepetition.exactly(2), 2),
         new SingleStep("battle", StepRepetition.between(2, 3), 3)
     ));
   }
+
+  @Test
+  void testRepetitionsInStepGroups() {
+    assertSteps("(login{1,}, battle{2,2}, transaction{3,5})", List.of(
+        new GroupStep(List.of(
+            new SingleStep("login", StepRepetition.atLeast(1), 1),
+            new SingleStep("battle", StepRepetition.exactly(2), 1),
+            new SingleStep("transaction", StepRepetition.between(3, 5), 1)
+        ))
+    ));
+  }
+
+  @Test
+  void testGroupStepsCannotContainDuplicates() {
+    assertThrows(IllegalArgumentException.class, () ->
+        SequenceService.parseSequence(datetimeInterval, "(login, battle, battle{3,3})", stepRepository)
+    );
+
+    assertThrows(IllegalArgumentException.class, () ->
+        SequenceService.parseSequence(datetimeInterval, "(login, battle, battle)", stepRepository)
+    );
+  }
+
+
 }

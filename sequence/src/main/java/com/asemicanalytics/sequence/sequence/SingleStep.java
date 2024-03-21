@@ -21,7 +21,7 @@ public class SingleStep implements Step {
 
   @Override
   public String toString() {
-    return name;
+    return name + repetition;
   }
 
   @Override
@@ -32,6 +32,11 @@ public class SingleStep implements Step {
   @Override
   public int getIndex() {
     return index;
+  }
+
+  @Override
+  public boolean containsExactRepetition(String stepName) {
+    return name.equals(stepName) && repetition.isExactly();
   }
 
   public StepRepetition getRepetition() {
@@ -55,4 +60,5 @@ public class SingleStep implements Step {
   public int hashCode() {
     return Objects.hash(name, repetition, index);
   }
+
 }

@@ -26,6 +26,7 @@ public class Sequence {
     this.timeHorizon = timeHorizon;
     this.ignoreIncompleteSequences = ignoreIncompleteSequences;
     this.stepsRepository = stepsRepository;
+    validate();
   }
 
   @Override
@@ -72,6 +73,16 @@ public class Sequence {
     if (steps.size() > 1
         && steps.get(0).getStepNames().stream().anyMatch(steps.get(1).getStepNames()::contains)) {
       throw new IllegalArgumentException("First step cannot be repeated");
+    }
+
+    for (int i = 1; i < steps.size(); i++) {
+      for (String stepName : steps.get(i).getStepNames()) {
+        if (steps.get(i - 1).getStepNames().contains(stepName)
+            && !steps.get(i - 1).containsExactRepetition(stepName)) {
+          throw new IllegalArgumentException(
+              "Only last repeated step in sequence can have non exact repetitions!");
+        }
+      }
     }
 
   }

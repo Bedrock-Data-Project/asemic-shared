@@ -20,9 +20,9 @@ public class QueryLanguageEvaluator {
   public Sequence parse(DatetimeInterval datetimeInterval, String query) {
     QueryLanguageLexer lexer = new QueryLanguageLexer(CharStreams.fromString(query));
     QueryLanguageParser parser = new QueryLanguageParser(new CommonTokenStream(lexer));
-    ParseTree tree = parser.sequence();
+    ParseTree tree = parser.statement();
     VisitorResult result = new SequenceVisitor().visit(tree);
-    return new Sequence(result.getSteps(), Set.of(), datetimeInterval,
+    return new Sequence(result.getSteps(), result.getDomain(), datetimeInterval,
         Duration.ofMinutes(10), false, stepRepository);
   }
 }

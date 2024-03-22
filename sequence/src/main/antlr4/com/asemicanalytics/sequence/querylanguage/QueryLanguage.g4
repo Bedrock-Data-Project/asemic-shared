@@ -1,10 +1,12 @@
 grammar QueryLanguage;
 
+statement: domainStatement? matchStatement;
 
-sequence: step chainedStep*;
+domainStatement: 'domain' domainSteps SEPARATOR;
+domainSteps: NAME (',' NAME)*;
 
+matchStatement: 'match' step chainedStep* SEPARATOR;
 chainedStep: ARROW step;
-
 step: singleStep | groupStep;
 singleStep: name=NAME range?;
 groupStep: '(' singleStep (',' singleStep)+ ')';
@@ -14,3 +16,4 @@ NAME: [a-zA-Z][a-zA-Z0-9]*;
 NUMBER: '0' | [1-9] [0-9]* ;
 WS: [ \t\r\n]+ -> skip;
 ARROW: '>>';
+SEPARATOR: ';';

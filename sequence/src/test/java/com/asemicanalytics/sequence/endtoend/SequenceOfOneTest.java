@@ -24,7 +24,7 @@ class SequenceOfOneTest extends SequenceBaseTest {
         new UserActionRow(1, Duration.ofDays(3).plusHours(2).plusSeconds(9))
     ));
 
-    String sequenceQuery = "login";
+    String sequenceQuery = "match login;";
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),

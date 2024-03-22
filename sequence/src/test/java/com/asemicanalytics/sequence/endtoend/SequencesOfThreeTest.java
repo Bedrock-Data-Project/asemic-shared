@@ -1,6 +1,18 @@
 package com.asemicanalytics.sequence.endtoend;
 
+import com.asemicanalytics.core.DatetimeInterval;
+import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.sequence.endtoend.utils.DatabaseHelper;
+import com.asemicanalytics.sequence.endtoend.utils.ResultRow;
 import com.asemicanalytics.sequence.endtoend.utils.SequenceBaseTest;
+import com.asemicanalytics.sequence.endtoend.utils.UserActionRow;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import org.junit.jupiter.api.Test;
 
 class SequencesOfThreeTest extends SequenceBaseTest {
 //  @Test

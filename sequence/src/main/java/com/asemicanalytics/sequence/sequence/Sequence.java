@@ -11,13 +11,13 @@ import java.util.TreeSet;
 
 public class Sequence {
   private final List<Step> steps;
-  private final Set<String> domain;
+  private final TreeSet<String> domain;
   private final DatetimeInterval datetimeInterval;
   private final Duration timeHorizon;
   private final boolean ignoreIncompleteSequences;
   private final Map<String, StepTable> stepsRepository;
 
-  public Sequence(List<Step> steps, Set<String> domain, DatetimeInterval datetimeInterval,
+  public Sequence(List<Step> steps, TreeSet<String> domain, DatetimeInterval datetimeInterval,
                   Duration timeHorizon, boolean ignoreIncompleteSequences,
                   Map<String, StepTable> stepsRepository) {
     this.steps = steps;

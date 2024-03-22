@@ -26,7 +26,7 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         new UserActionRow(1, Duration.ofSeconds(12))
     ));
 
-    String sequenceQuery = "login >> battle";
+    String sequenceQuery = "match login >> battle;";
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
@@ -55,7 +55,7 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         new UserActionRow(1, Duration.ofSeconds(13))
     ));
 
-    String sequenceQuery = "login >> battle";
+    String sequenceQuery = "match login >> battle;";
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
@@ -86,7 +86,7 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         new UserActionRow(1, Duration.ofDays(10))
     ));
 
-    String sequenceQuery = "login >> battle";
+    String sequenceQuery = "match login >> battle;";
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
@@ -111,7 +111,7 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         new UserActionRow(1, Duration.ofSeconds(5))
     ));
 
-    String sequenceQuery = "login >> battle";
+    String sequenceQuery = "match login >> battle;";
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
@@ -119,8 +119,8 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         TableReference.of("sequence_output"));
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofSeconds(1), "battle", 0, 1, 2, 1, 0, false),
-        new ResultRow(1, Duration.ofSeconds(2), "battle", 0, 1, 2, 2, 0, false),
+        new ResultRow(1, Duration.ofSeconds(1), "battle", 0, 0, 2, 1, 0, false),
+        new ResultRow(1, Duration.ofSeconds(2), "battle", 0, 0, 2, 2, 0, false),
         new ResultRow(1, Duration.ofSeconds(3), "login", 1, 1, 1, 1, 1, true),
         new ResultRow(1, Duration.ofSeconds(5), "battle", 1, 2, 1, 1, 2, true)
     ));

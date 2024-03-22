@@ -68,7 +68,8 @@ public class SubsequencesCteBuilder {
         .map(timehorizonCte::column)
         .collect(Collectors.toCollection(ArrayList::new));
     columns.add(new IfExpression(new TemplatedExpression(
-        "{action} = {window}", TemplateDict.noMissing(Map.of(
+        "{sequence} = 0 OR {action} = {window}", TemplateDict.noMissing(Map.of(
+        "sequence", timehorizonCte.column(SequencesCteBuilder.SEQUENCE_COLUMN),
         "action", timehorizonCte.column(DomainCteBuilder.STEP_NAME_COLUMN),
         "window", new WindowFunctionExpression(
             new FunctionExpression("LAG",

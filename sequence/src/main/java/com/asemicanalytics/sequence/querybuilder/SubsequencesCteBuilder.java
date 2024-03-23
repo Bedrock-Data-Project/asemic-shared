@@ -108,7 +108,7 @@ public class SubsequencesCteBuilder {
         Optional.empty()
     ).withAlias(SUBSEQUENCE_COLUMN));
 
-    Cte cte = new Cte("sequence_sequences", queryBuilder.nextCteIndex(),
+    Cte cte = new Cte("sequence_subsequences", queryBuilder.nextCteIndex(),
         new SelectStatement()
             .select(new ExpressionList(columns))
             .from(subsequencePrepCte)

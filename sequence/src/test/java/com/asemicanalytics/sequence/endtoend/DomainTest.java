@@ -20,7 +20,7 @@ class DomainTest extends SequenceBaseTest {
   void testInvalidEventsTaggedCorrectly() throws SQLException, ExecutionException, InterruptedException {
     DatabaseHelper.createUserActionTable(TableReference.of("login"), List.of(
         new UserActionRow(1, Duration.ofSeconds(3)),
-        new UserActionRow(2, Duration.ofSeconds(7))
+        new UserActionRow(1, Duration.ofSeconds(7))
     ));
     DatabaseHelper.createUserActionTable(TableReference.of("battle"), List.of(
         new UserActionRow(1, Duration.ofSeconds(4)),
@@ -29,10 +29,10 @@ class DomainTest extends SequenceBaseTest {
     DatabaseHelper.createUserActionTable(TableReference.of("transaction"), List.of(
         new UserActionRow(1, Duration.ofSeconds(1)),
         new UserActionRow(1, Duration.ofSeconds(2)),
-        new UserActionRow(2, Duration.ofSeconds(5)),
-        new UserActionRow(2, Duration.ofSeconds(6)),
-        new UserActionRow(2, Duration.ofSeconds(9)),
-        new UserActionRow(2, Duration.ofSeconds(10)),
+        new UserActionRow(1, Duration.ofSeconds(5)),
+        new UserActionRow(1, Duration.ofSeconds(6)),
+        new UserActionRow(1, Duration.ofSeconds(9)),
+        new UserActionRow(1, Duration.ofSeconds(10)),
 
         new UserActionRow(2, Duration.ofSeconds(1)),
         new UserActionRow(2, Duration.ofSeconds(2))
@@ -46,19 +46,19 @@ class DomainTest extends SequenceBaseTest {
         TableReference.of("sequence_output"));
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofSeconds(1), "transaction", 0, 1, 2, 1, 0, false),
-        new ResultRow(1, Duration.ofSeconds(2), "transaction", 0, 2, 2, 2, 0, false),
+        new ResultRow(1, Duration.ofSeconds(1), "transaction", 0, 0, 2, 1, 0, false),
+        new ResultRow(1, Duration.ofSeconds(2), "transaction", 0, 0, 2, 2, 0, false),
         new ResultRow(1, Duration.ofSeconds(3), "login", 1, 1, 1, 1, 1, true),
         new ResultRow(1, Duration.ofSeconds(4), "battle", 1, 2, 1, 1, 2, true),
-        new ResultRow(1, Duration.ofSeconds(1), "transaction", 0, 1, 2, 1, 0, false),
-        new ResultRow(1, Duration.ofSeconds(2), "transaction", 0, 2, 2, 2, 0, false),
-        new ResultRow(1, Duration.ofSeconds(3), "login", 2, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(4), "battle", 2, 2, 1, 1, 2, true),
-        new ResultRow(1, Duration.ofSeconds(1), "transaction", 0, 1, 2, 1, 0, false),
-        new ResultRow(1, Duration.ofSeconds(2), "transaction", 0, 2, 2, 2, 0, false),
+        new ResultRow(1, Duration.ofSeconds(5), "transaction", 1, 3, 2, 1, 0, false),
+        new ResultRow(1, Duration.ofSeconds(6), "transaction", 1, 3, 2, 2, 0, false),
+        new ResultRow(1, Duration.ofSeconds(7), "login", 2, 1, 1, 1, 1, true),
+        new ResultRow(1, Duration.ofSeconds(8), "battle", 2, 2, 1, 1, 2, true),
+        new ResultRow(1, Duration.ofSeconds(9), "transaction", 2, 3, 2, 1, 0, false),
+        new ResultRow(1, Duration.ofSeconds(10), "transaction", 2, 3, 2, 2, 0, false),
 
-        new ResultRow(2, Duration.ofSeconds(5), "transaction", 0, 1, 2, 1, 0, false),
-        new ResultRow(2, Duration.ofSeconds(6), "transaction", 0, 2, 2, 2, 0, false)
+        new ResultRow(2, Duration.ofSeconds(1), "transaction", 0, 0, 2, 1, 0, false),
+        new ResultRow(2, Duration.ofSeconds(2), "transaction", 0, 0, 2, 2, 0, false)
     ));
   }
 }

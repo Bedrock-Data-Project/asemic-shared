@@ -38,8 +38,6 @@ public class SequenceService {
         .from(query.steps())
         .orderBy(new ExpressionList(
             query.steps().column(DomainCteBuilder.USER_ID_COLUMN),
-            query.steps().column(SequencesCteBuilder.SEQUENCE_COLUMN),
-            query.steps().column(SubsequencesCteBuilder.SUBSEQUENCE_COLUMN),
             query.steps().column(DomainCteBuilder.STEP_TS_COLUMN)
         ))
     );

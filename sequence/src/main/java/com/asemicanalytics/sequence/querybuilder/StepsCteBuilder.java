@@ -1,5 +1,6 @@
 package com.asemicanalytics.sequence.querybuilder;
 
+import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.sequence.sequence.Sequence;
 import com.asemicanalytics.sequence.sequence.Step;
 import com.asemicanalytics.sql.sql.builder.ExpressionList;
@@ -8,7 +9,6 @@ import com.asemicanalytics.sql.sql.builder.SelectStatement;
 import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
 import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
-import com.asemicanalytics.sql.sql.builder.expression.IfExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import com.asemicanalytics.sql.sql.builder.expression.casecondition.CaseExpression;
@@ -47,6 +47,9 @@ public class StepsCteBuilder {
     var columns = lastStepCte.select().select().columnNames().stream()
         .map(lastStepCte::column)
         .collect(Collectors.toCollection(ArrayList::new));
+
+    // TODO mislim da else false treba samo ako je ovo poslednji cte
+    // ako nije, onda else null
     columns.add(new CaseExpression(
         lastStepCte.column(SubsequencesCteBuilder.SUBSEQUENCE_COLUMN),
         steps.stream()
@@ -58,9 +61,11 @@ public class StepsCteBuilder {
                             .map(Constant::ofString)
                             .collect(Collectors.toList()), ", ")))
                 ))))
-            .collect(Collectors.toList())
+            .collect(Collectors.toList()),
+        new Constant("FALSE", DataType.BOOLEAN)
     ).withAlias(IS_VALID_COLUMN));
 
+    // TODO ovo ne valja, u obsidijanu je resenje
     columns.add(new CaseExpression(
         lastStepCte.column(SubsequencesCteBuilder.SUBSEQUENCE_COLUMN),
         steps.stream()
@@ -81,15 +86,8 @@ public class StepsCteBuilder {
   private static Cte buildCombinedStepsCte(QueryBuilder queryBuilder, Cte lastStepCte) {
     var columns = lastStepCte.select().select().columnNames().stream()
         .filter(c -> !c.equals(IS_VALID_COLUMN))
-        .filter(c -> !c.equals(STEP_COLUMN))
         .map(lastStepCte::column)
         .collect(Collectors.toCollection(ArrayList::new));
-
-    columns.add(new IfExpression(new TemplatedExpression("{sequence} > 0",
-        TemplateDict.noMissing(Map.of(
-            "sequence", lastStepCte.column(SequencesCteBuilder.SEQUENCE_COLUMN)
-        ))), lastStepCte.column(STEP_COLUMN), Constant.ofInt(0))
-        .withAlias(STEP_COLUMN));
 
     columns.add(new WindowFunctionExpression(new FunctionExpression("MIN",
         lastStepCte.column(IS_VALID_COLUMN)),

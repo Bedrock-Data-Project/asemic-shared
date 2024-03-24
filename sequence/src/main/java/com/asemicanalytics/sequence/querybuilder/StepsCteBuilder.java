@@ -9,6 +9,7 @@ import com.asemicanalytics.sql.sql.builder.SelectStatement;
 import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
 import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
+import com.asemicanalytics.sql.sql.builder.expression.IfExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import com.asemicanalytics.sql.sql.builder.expression.casecondition.CaseExpression;
@@ -53,23 +54,29 @@ public class StepsCteBuilder {
     columns.add(new CaseExpression(
         lastStepCte.column(SubsequencesCteBuilder.SUBSEQUENCE_COLUMN),
         steps.stream()
-            .map(s -> new CaseWhenThen(Constant.ofInt(s.getIndex()), new BooleanExpression(
+            .map(s -> new CaseWhenThen(Constant.ofInt(s.getIndex()),
                 new TemplatedExpression("{step} in ({step_actions})",
                     TemplateDict.noMissing(Map.of(
                         "step", lastStepCte.column(DomainCteBuilder.STEP_NAME_COLUMN),
                         "step_actions", new ExpressionList(s.getStepNames().stream()
                             .map(Constant::ofString)
                             .collect(Collectors.toList()), ", ")))
-                ))))
+                )))
             .collect(Collectors.toList()),
         new Constant("FALSE", DataType.BOOLEAN)
     ).withAlias(IS_VALID_COLUMN));
 
-    // TODO ovo ne valja, u obsidijanu je resenje
     columns.add(new CaseExpression(
         lastStepCte.column(SubsequencesCteBuilder.SUBSEQUENCE_COLUMN),
         steps.stream()
-            .map(s -> new CaseWhenThen(Constant.ofInt(s.getIndex()), Constant.ofInt(s.getIndex())))
+            .map(s -> new CaseWhenThen(Constant.ofInt(s.getIndex()),
+                new IfExpression(new TemplatedExpression("{step} in ({step_actions})",
+                    TemplateDict.noMissing(Map.of(
+                        "step", lastStepCte.column(DomainCteBuilder.STEP_NAME_COLUMN),
+                        "step_actions", new ExpressionList(s.getStepNames().stream()
+                            .map(Constant::ofString)
+                            .collect(Collectors.toList()), ", ")))
+                ), Constant.ofInt(s.getIndex()), Constant.ofNull())))
             .collect(Collectors.toList())
     ).withAlias(STEP_COLUMN));
 

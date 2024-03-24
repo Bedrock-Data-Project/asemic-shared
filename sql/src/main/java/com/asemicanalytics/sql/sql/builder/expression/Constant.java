@@ -20,6 +20,10 @@ public class Constant implements Expression {
     return new Constant(value, DataType.STRING);
   }
 
+  public static Expression ofNull() {
+    return new Constant(null, null);
+  }
+
   @Override
   public String render(Dialect dialect) {
     if (value == null) {

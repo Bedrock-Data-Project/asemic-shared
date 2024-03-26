@@ -41,7 +41,9 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
   private Object parseObject(ResultSet resultSet, DataType xaxisType, int columnIndex)
       throws SQLException {
     return switch (xaxisType) {
-      case DATE, DATETIME -> LocalDateTime.parse(resultSet.getString(columnIndex), getFormatter())
+      case DATE -> LocalDateTime.parse(resultSet.getString(columnIndex), getDateFormatter())
+          .atZone(ZoneId.of("UTC"));
+      case DATETIME -> LocalDateTime.parse(resultSet.getString(columnIndex), getDatetimeFormatter())
           .atZone(ZoneId.of("UTC"));
       case NUMBER -> resultSet.getDouble(columnIndex);
       case INTEGER -> resultSet.getLong(columnIndex);
@@ -50,7 +52,11 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
     };
   }
 
-  protected DateTimeFormatter getFormatter() {
+  protected DateTimeFormatter getDateFormatter() {
+    return formatter;
+  }
+
+  protected DateTimeFormatter getDatetimeFormatter() {
     return formatter;
   }
 

@@ -7,13 +7,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class H2QueryExecutor extends JdbcQueryExecutor {
 
-  private static final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+  private static final DateTimeFormatter dateFormatter = new DateTimeFormatterBuilder()
+      .appendPattern("yyyy-MM-dd HH:mm:ss")
+      .toFormatter();
+
+  private static final DateTimeFormatter datetimeFormatter = new DateTimeFormatterBuilder()
       .appendPattern("yyyy-MM-dd HH:mm:ss")
       .appendOffset("+HH", "+00")
       .toFormatter();
@@ -35,10 +37,15 @@ public class H2QueryExecutor extends JdbcQueryExecutor {
     }
   }
 
-  protected DateTimeFormatter getFormatter() {
-    return formatter;
+  @Override
+  public DateTimeFormatter getDateFormatter() {
+    return dateFormatter;
   }
 
+  @Override
+  public DateTimeFormatter getDatetimeFormatter() {
+    return datetimeFormatter;
+  }
 
   @Override
   protected Connection getConnection() throws InterruptedException {

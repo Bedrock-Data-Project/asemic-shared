@@ -14,9 +14,9 @@ public record UserActionRow(long userId, Duration timestamp) {
     ZonedDateTime date = timestamp.truncatedTo(ChronoUnit.DAYS);
 
     return String.format(placeholder, userId,
-        String.format("PARSEDATETIME('%s', 'yyyy-MM-dd HH:mm:ss')",
+        String.format("TIMESTAMP WITH TIME ZONE '%s'",
             timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
-        String.format("PARSEDATETIME('%s', 'yyyy-MM-dd')",
+        String.format("TIMESTAMP '%s'",
             date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
     );
   }

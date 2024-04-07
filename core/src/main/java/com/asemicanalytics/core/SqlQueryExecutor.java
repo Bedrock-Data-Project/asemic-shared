@@ -1,6 +1,7 @@
 package com.asemicanalytics.core;
 
 
+import com.asemicanalytics.core.column.Column;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

@@ -12,6 +12,7 @@ import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import com.asemicanalytics.sql.sql.builder.expression.windowfunction.WindowFunctionExpression;
 import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,6 +44,7 @@ public class SequencesCteBuilder {
     var columns = domainCte.select().select().columnNames().stream()
         .map(domainCte::column)
         .collect(Collectors.toCollection(ArrayList::new));
+
     columns.add(new WindowFunctionExpression(
         windowAggregation,
         new ExpressionList(domainCte.column(DomainCteBuilder.USER_ID_COLUMN)),

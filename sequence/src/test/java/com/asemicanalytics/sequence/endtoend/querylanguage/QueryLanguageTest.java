@@ -3,27 +3,35 @@ package com.asemicanalytics.sequence.endtoend.querylanguage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.core.TimeGrains;
+import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.datasource.UserActionDatasource;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.GroupStep;
 import com.asemicanalytics.sequence.sequence.SingleStep;
 import com.asemicanalytics.sequence.sequence.Step;
 import com.asemicanalytics.sequence.sequence.StepRepetition;
-import com.asemicanalytics.sequence.sequence.StepTable;
+import com.asemicanalytics.sql.sql.builder.tablelike.Table;
+import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
+import com.asemicanalytics.sql.sql.columnsource.TableColumnSource;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 public class QueryLanguageTest {
-  private final Map<String, StepTable> stepRepository = Map.of(
-      "login", stepTable("login"),
-      "battle", stepTable("battle"),
-      "transaction", stepTable("transaction")
+  private final Map<String, ColumnSource> stepColumnSources = Map.of(
+      "login", columnSource("login"),
+      "battle", columnSource("battle"),
+      "transaction", columnSource("transaction")
   );
   private final Duration horizon = Duration.ofDays(1);
 
@@ -31,14 +39,22 @@ public class QueryLanguageTest {
       LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
       LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC")));
 
-  private StepTable stepTable(String stepName) {
-    return new StepTable(stepName, TableReference.of(stepName), List.of(),
-        "user_id", "date_", "ts");
+  private ColumnSource columnSource(String stepName) {
+    return new TableColumnSource(new UserActionDatasource(
+        stepName, "", Optional.empty(), TableReference.of(stepName),
+        new LinkedHashMap<>(Map.of(
+            "date_", Column.ofHidden("date_", DataType.DATE),
+            "ts", Column.ofHidden("ts", DataType.DATETIME),
+            "user_id", Column.ofHidden("user_id", DataType.STRING)
+        )),
+        new LinkedHashMap<>(), Map.of(), TimeGrains.min15,
+        "date_", "ts", "user_id"),
+        new Table(TableReference.of(stepName)));
   }
 
   private void assertSteps(String query, List<Step> expectedSteps) {
     assertEquals(expectedSteps,
-        SequenceService.parseSequence(datetimeInterval, query, stepRepository).getSteps());
+        SequenceService.parseSequence(query, stepColumnSources).getSteps());
   }
 
   @Test
@@ -100,22 +116,23 @@ public class QueryLanguageTest {
   @Test
   void testFirstStepShouldNotBeRepeated() {
     assertThrows(IllegalArgumentException.class, () ->
-        SequenceService.parseSequence(datetimeInterval, "match login >> login;", stepRepository)
+        SequenceService.parseSequence("match login >> login;", stepColumnSources)
     );
   }
 
   @Test
   void testSecondStepCannotBeRepeatedIfNonLastItemIsRepeatedNonFixed() {
     assertThrows(IllegalArgumentException.class, () ->
-        SequenceService.parseSequence(datetimeInterval, "match login >> battle >> battle;", stepRepository)
+        SequenceService.parseSequence( "match login >> battle >> battle;",
+            stepColumnSources)
     );
     assertThrows(IllegalArgumentException.class, () ->
-        SequenceService.parseSequence(datetimeInterval, "match login >> battle{2,3} >> battle;",
-            stepRepository)
+        SequenceService.parseSequence("match login >> battle{2,3} >> battle;",
+            stepColumnSources)
     );
     assertThrows(IllegalArgumentException.class, () ->
-        SequenceService.parseSequence(datetimeInterval, "match login >> battle{2,} >> battle;",
-            stepRepository)
+        SequenceService.parseSequence("match login >> battle{2,} >> battle;",
+            stepColumnSources)
 
     );
   }
@@ -155,25 +172,27 @@ public class QueryLanguageTest {
   @Test
   void testGroupStepsCannotContainDuplicates() {
     assertThrows(IllegalArgumentException.class, () ->
-        SequenceService.parseSequence(datetimeInterval, "match (login, battle, battle{3,3});", stepRepository)
+        SequenceService.parseSequence("match (login, battle, battle{3,3});",
+            stepColumnSources)
     );
 
     assertThrows(IllegalArgumentException.class, () ->
-        SequenceService.parseSequence(datetimeInterval, "match (login, battle, battle);", stepRepository)
+        SequenceService.parseSequence("match (login, battle, battle);",
+            stepColumnSources)
     );
   }
 
   @Test
   void testDomain() {
-    var sequence = SequenceService.parseSequence(datetimeInterval,
-        "domain transaction; match login >> battle;", stepRepository);
+    var sequence = SequenceService.parseSequence(
+        "domain transaction; match login >> battle;", stepColumnSources);
 
     assertEquals(List.of(
-        new SingleStep("login", StepRepetition.oneOrMore(), 1),
-        new SingleStep("battle", StepRepetition.atLeast(1), 2)),
-    sequence.getSteps());
+            new SingleStep("login", StepRepetition.oneOrMore(), 1),
+            new SingleStep("battle", StepRepetition.atLeast(1), 2)),
+        sequence.getSteps());
 
-    assertEquals(Set.of("login", "battle", "transaction"), sequence.getDomainActions());
+    assertEquals(List.of("login", "battle", "transaction"), sequence.getDomainActions());
   }
 
 

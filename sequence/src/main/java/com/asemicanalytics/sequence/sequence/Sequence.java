@@ -1,31 +1,31 @@
 package com.asemicanalytics.sequence.sequence;
 
 import com.asemicanalytics.core.DatetimeInterval;
+import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class Sequence {
   private final List<Step> steps;
   private final TreeSet<String> domain;
-  private final DatetimeInterval datetimeInterval;
   private final Duration timeHorizon;
   private final boolean ignoreIncompleteSequences;
-  private final Map<String, StepTable> stepsRepository;
+  private final Map<String, ColumnSource> stepColumnSources;
 
-  public Sequence(List<Step> steps, TreeSet<String> domain, DatetimeInterval datetimeInterval,
+  public Sequence(List<Step> steps, TreeSet<String> domain,
                   Duration timeHorizon, boolean ignoreIncompleteSequences,
-                  Map<String, StepTable> stepsRepository) {
+                  Map<String, ColumnSource> stepColumnSources) {
     this.steps = steps;
     this.domain = domain;
-    this.datetimeInterval = datetimeInterval;
     this.timeHorizon = timeHorizon;
     this.ignoreIncompleteSequences = ignoreIncompleteSequences;
-    this.stepsRepository = stepsRepository;
+    this.stepColumnSources = stepColumnSources;
     validate();
   }
 
@@ -36,18 +36,28 @@ public class Sequence {
     return joiner.toString();
   }
 
-  public Set<String> getDomainActions() {
-    SortedSet<String> wholeDomain = new TreeSet<>(domain);
-    steps.forEach(step -> wholeDomain.addAll(step.getStepNames()));
-    return wholeDomain;
+  public List<String> getDomainActions() {
+    Set<String> visited = new HashSet<>();
+    List<String> actions = new ArrayList<>();
+    for (Step step : steps) {
+      for (String action : step.getStepNames()) {
+        if (!visited.contains(action)) {
+          visited.add(action);
+          actions.add(action);
+        }
+      }
+    }
+    for (String action : domain) {
+      if (!visited.contains(action)) {
+        visited.add(action);
+        actions.add(action);
+      }
+    }
+    return actions;
   }
 
-  public StepTable getStepTable(String stepName) {
-    return stepsRepository.get(stepName);
-  }
-
-  public DatetimeInterval getDatetimeInterval() {
-    return datetimeInterval;
+  public ColumnSource getStepColumnSource(String stepName) {
+    return stepColumnSources.get(stepName);
   }
 
   public boolean isStartStepRepeated() {

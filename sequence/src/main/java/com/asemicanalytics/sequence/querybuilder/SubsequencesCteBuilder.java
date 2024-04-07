@@ -26,10 +26,11 @@ public class SubsequencesCteBuilder {
   public static final String REPEATITION_COLUMN = "repetition";
   public static final String NEW_SUBSEQUENCE_COLUMN = "new_subsequence";
 
-  public static Cte buildCte(Sequence sequence, QueryBuilder queryBuilder, Cte sequencesCte) {
+  public static Cte buildCte(Sequence sequence, QueryBuilder queryBuilder, Cte sequencesCte,
+                             List<String> includeColumns) {
     var timeHorizonCte = buildTimeHorizonCte(sequence, queryBuilder, sequencesCte);
     var subsequencePrepCte = buildSubsequencePrepCte(queryBuilder, timeHorizonCte);
-    var subsequenceCte = buildSubsequenceCte(queryBuilder, subsequencePrepCte);
+    var subsequenceCte = buildSubsequenceCte(queryBuilder, subsequencePrepCte, includeColumns);
     return buildRepeatedActionsCte(queryBuilder, subsequenceCte);
   }
 
@@ -92,10 +93,12 @@ public class SubsequencesCteBuilder {
     return cte;
   }
 
-  private static Cte buildSubsequenceCte(QueryBuilder queryBuilder, Cte subsequencePrepCte) {
+  private static Cte buildSubsequenceCte(QueryBuilder queryBuilder, Cte subsequencePrepCte,
+                                         List<String> includeColumns) {
 
     var columns = subsequencePrepCte.select().select().columnNames().stream()
         .filter(c -> !c.equals(NEW_SUBSEQUENCE_COLUMN))
+        .filter(c -> !includeColumns.contains(c))
         .map(subsequencePrepCte::column)
         .collect(Collectors.toCollection(ArrayList::new));
     columns.add(new WindowFunctionExpression(new FunctionExpression("SUM",
@@ -107,6 +110,16 @@ public class SubsequencesCteBuilder {
         new ExpressionList(subsequencePrepCte.column(DomainCteBuilder.STEP_TS_COLUMN)),
         Optional.empty()
     ).withAlias(SUBSEQUENCE_COLUMN));
+    includeColumns.forEach(column -> columns.add(new WindowFunctionExpression(
+        new FunctionExpression("MIN",
+        subsequencePrepCte.column(column)),
+        new ExpressionList(List.of(
+            subsequencePrepCte.column(DomainCteBuilder.USER_ID_COLUMN),
+            subsequencePrepCte.column(SequencesCteBuilder.SEQUENCE_COLUMN)),
+            ", "),
+        new ExpressionList(subsequencePrepCte.column(DomainCteBuilder.STEP_TS_COLUMN)),
+        Optional.empty()
+    ).withAlias(column)));
 
     Cte cte = new Cte("sequence_subsequences", queryBuilder.nextCteIndex(),
         new SelectStatement()

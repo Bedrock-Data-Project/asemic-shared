@@ -17,13 +17,13 @@ import java.util.StringJoiner;
 public class SelectStatement implements Token {
   public static final Expression SELECT_STAR = new TemplatedExpression("*", TemplateDict.empty());
   private final List<Join> joins = new ArrayList<>();
-  private Select select;
+  private Select select = new Select(ExpressionList.empty());
   private From from;
   private Where where;
   private Qualify qualify;
-  private GroupBy groupBy;
+  private GroupBy groupBy = new GroupBy(ExpressionList.empty());
   private Having having;
-  private OrderBy orderBy;
+  private OrderBy orderBy = new OrderBy(ExpressionList.empty());
   private Limit limit;
   private SelectStatement unionAll;
 
@@ -77,6 +77,9 @@ public class SelectStatement implements Token {
   }
 
   public SelectStatement join(Join join) {
+    if (joins.stream().map(Join::contentHash).anyMatch(join.contentHash()::equals)) {
+      return this;
+    }
     joins.add(join);
     return this;
   }

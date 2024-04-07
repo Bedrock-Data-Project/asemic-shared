@@ -16,7 +16,8 @@ import org.junit.jupiter.api.Test;
 
 class SequenceOfOneTest extends SequenceBaseTest {
   @Test
-  void testIgnoreEventsOutOfDateInterval() throws SQLException, ExecutionException, InterruptedException {
+  void testIgnoreEventsOutOfDateInterval()
+      throws SQLException, ExecutionException, InterruptedException {
     DatabaseHelper.createUserActionTable(TableReference.of("login"), List.of(
         new UserActionRow(1, Duration.ofHours(2).plusSeconds(1)),
         new UserActionRow(1, Duration.ofHours(2).plusSeconds(7)),
@@ -28,8 +29,8 @@ class SequenceOfOneTest extends SequenceBaseTest {
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
-        sequenceQuery, STEP_REPOSITORY,
-        TableReference.of("sequence_output"));
+        sequenceQuery, STEP_COLUMN_SOURCES,
+        TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
         new ResultRow(1, Duration.ofHours(2).plusSeconds(1), "login", 1, 1, 1, 1, 1, true),

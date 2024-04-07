@@ -30,8 +30,8 @@ class SequenceOfTwoTest extends SequenceBaseTest {
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
-        sequenceQuery, STEP_REPOSITORY,
-        TableReference.of("sequence_output"));
+        sequenceQuery, STEP_COLUMN_SOURCES,
+        TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
         new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1, true),
@@ -42,7 +42,8 @@ class SequenceOfTwoTest extends SequenceBaseTest {
   }
 
   @Test
-  void testTwoValidSequencesWithRepeatingSteps() throws SQLException, ExecutionException, InterruptedException {
+  void testTwoValidSequencesWithRepeatingSteps()
+      throws SQLException, ExecutionException, InterruptedException {
     DatabaseHelper.createUserActionTable(TableReference.of("login"), List.of(
         new UserActionRow(1, Duration.ofSeconds(1)),
         new UserActionRow(1, Duration.ofSeconds(11))
@@ -59,8 +60,8 @@ class SequenceOfTwoTest extends SequenceBaseTest {
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
-        sequenceQuery, STEP_REPOSITORY,
-        TableReference.of("sequence_output"));
+        sequenceQuery, STEP_COLUMN_SOURCES,
+        TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
         new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1, true),
@@ -90,8 +91,8 @@ class SequenceOfTwoTest extends SequenceBaseTest {
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
-        sequenceQuery, STEP_REPOSITORY,
-        TableReference.of("sequence_output"));
+        sequenceQuery, STEP_COLUMN_SOURCES,
+        TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
         new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1, true),
@@ -115,8 +116,8 @@ class SequenceOfTwoTest extends SequenceBaseTest {
     sequenceService.dumpSequenceToTable(new DatetimeInterval(
             LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
             LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
-        sequenceQuery, STEP_REPOSITORY,
-        TableReference.of("sequence_output"));
+        sequenceQuery, STEP_COLUMN_SOURCES,
+        TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
         new ResultRow(1, Duration.ofSeconds(1), "battle", 0, 0, 2, 1, 0, false),

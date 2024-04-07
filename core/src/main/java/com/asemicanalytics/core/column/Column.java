@@ -1,5 +1,6 @@
-package com.asemicanalytics.core;
+package com.asemicanalytics.core.column;
 
+import com.asemicanalytics.core.DataType;
 import java.util.Optional;
 
 public class Column {

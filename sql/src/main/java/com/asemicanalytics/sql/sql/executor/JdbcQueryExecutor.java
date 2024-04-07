@@ -1,12 +1,12 @@
 package com.asemicanalytics.sql.sql.executor;
 
-import com.asemicanalytics.core.Column;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.core.column.Column;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

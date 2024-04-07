@@ -67,7 +67,7 @@ public class H2Dialect implements Dialect {
 
   @Override
   public String intervalDays(long days) {
-    return "'" + days + " DAY'";
+    return "INTERVAL '" + days + "' DAY";
   }
 
   @Override

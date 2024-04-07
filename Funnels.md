@@ -7,7 +7,6 @@
 Noted by `domain` keyword. Optional. Default value is whatever is mentioned in `matched` section.
 It is a collection of `Actions` that will be used to construct sequences.
 
-
 Example 1, implicit domain
 
 ```c
@@ -24,8 +23,8 @@ match Login >> Search >> Purchase
 Example sequence, let's denote Login, Search and Purchase with letters L, S and P:
 `LSPSP`
 
-
 Changing the domain will affect the match.
+
 ```c
 domain Login, Search, Purchase, Tutorial
 match Login >> Search >> Purchase
@@ -46,17 +45,17 @@ domain Login, LevelPlayed group by level as 'Level' + str(level)
 match Login >> SearchMain >> Purchase
 ```
 
-
 ### Split By
 
 #### Interface
 
-Currently implemented only split by 1 action. 
+Currently implemented only split by 1 action.
 `split by Action`
 It can be extended, though, easily...
 `split by (Action1 | Action2 | ...)`
 
-Takes whatever sequence is passed and adds `sequence` tag. Whatever is before the first split Action is tagged with `sequence = 0`. First proper sequence has value `sequence = 1`
+Takes whatever sequence is passed and adds `sequence` tag. Whatever is before the first split Action is tagged
+with `sequence = 0`. First proper sequence has value `sequence = 1`
 
 On repeated use, adds new tags `sequence_1`, `sequence_2`, `sequence_N`...
 
@@ -64,7 +63,9 @@ On repeated use, adds new tags `sequence_1`, `sequence_2`, `sequence_N`...
 split by Action1
 split by Action2
 ```
-First split will add tag `sequence`. The second split will break each separate stream, break it by Action2 and tag it with `sequence_2`.
+
+First split will add tag `sequence`. The second split will break each separate stream, break it by Action2 and tag it
+with `sequence_2`.
 
 ##### Split By One Single Occurence
 
@@ -82,6 +83,7 @@ s BKNLBKNLBKNLLBKLB
 ```
 
 SQL:
+
 ```sql
 sequences AS (
   select
@@ -93,7 +95,8 @@ sequences AS (
 ```
 
 Comment
-`case action when 'Login' then 1 else 2 end` forces the action to be first in row in case of multiple actions having the same timestamp.
+`case action when 'Login' then 1 else 2 end` forces the action to be first in row in case of multiple actions having the
+same timestamp.
 
 ##### Split By N Single Occurence
 
@@ -110,6 +113,7 @@ s BKNLBKNLBKNLLBKLB
 ```
 
 SQL
+
 ```sql
 sequences_prep AS (
   select
@@ -141,6 +145,7 @@ s BKNLBKNLBKNLLBKLB
 ```
 
 SQL
+
 ```sql
 sequences_prep AS (
   select  
@@ -162,7 +167,6 @@ sequences AS (
 
 Let's treat consequtive repeated events as a singular entity, but allow them to appear multiple times in a sequence.
 
-
 ```
 s BKNLBKNLBKNLLBKLB
 0 BKN
@@ -173,6 +177,7 @@ s BKNLBKNLBKNLLBKLB
 ```
 
 SQL
+
 ```sql
 sequences_prep AS (
   select  
@@ -197,7 +202,6 @@ sequences AS (
 ),
 ```
 
-
 ### Combine
 
 Combine implements second part of what is basically map-reduce pattern.
@@ -207,7 +211,8 @@ Combine implements second part of what is basically map-reduce pattern.
 Removes one `sequence` tag, modifies tags on destroyed sequence and calculates something.
 These are all TODO.
 
-For example: 
+For example:
+
 - Combine can count complete pattern and add that to the global parameter of parent sequence
 - Combine can clear all tags except one that satisfies some sequence-level condition
 - etc

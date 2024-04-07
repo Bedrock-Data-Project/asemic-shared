@@ -6,7 +6,6 @@ import com.asemicanalytics.sequence.sequence.Step;
 import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.QueryBuilder;
 import com.asemicanalytics.sql.sql.builder.SelectStatement;
-import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
 import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
 import com.asemicanalytics.sql.sql.builder.expression.IfExpression;

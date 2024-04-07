@@ -1,11 +1,11 @@
 package com.asemicanalytics.sql.bigquery;
 
-import com.asemicanalytics.core.Column;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.sql.sql.executor.ThreadPoolSqlQueryExecutor;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;

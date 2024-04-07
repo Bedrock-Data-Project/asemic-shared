@@ -7,12 +7,19 @@ import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.core.TimeGrains;
+import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.datasource.UserActionDatasource;
 import com.asemicanalytics.sequence.SequenceService;
-import com.asemicanalytics.sequence.sequence.StepTable;
 import com.asemicanalytics.sql.h2.H2QueryExecutor;
+import com.asemicanalytics.sql.sql.builder.tablelike.Table;
+import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
+import com.asemicanalytics.sql.sql.columnsource.TableColumnSource;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,10 +27,10 @@ import org.junit.jupiter.api.BeforeEach;
 public class SequenceBaseTest {
   protected final SqlQueryExecutor executor = new H2QueryExecutor(
       DatabaseHelper.USER, DatabaseHelper.PASSWORD, DatabaseHelper.JDBC_URL, 10);
-  protected final Map<String, StepTable> STEP_REPOSITORY = Map.of(
-      "login", stepTable("login"),
-      "battle", stepTable("battle"),
-      "transaction", stepTable("transaction")
+  protected final Map<String, ColumnSource> STEP_COLUMN_SOURCES = Map.of(
+      "login", columnSource("login"),
+      "battle", columnSource("battle"),
+      "transaction", columnSource("transaction")
   );
   protected SequenceService sequenceService = new SequenceService(executor);
 
@@ -33,9 +40,17 @@ public class SequenceBaseTest {
 
   }
 
-  protected StepTable stepTable(String stepName) {
-    return new StepTable(stepName, TableReference.of(stepName), List.of(),
-        "user_id", "date_", "ts");
+  private ColumnSource columnSource(String stepName) {
+    return new TableColumnSource(new UserActionDatasource(
+        stepName, "", Optional.empty(), TableReference.of(stepName),
+        new LinkedHashMap<>(Map.of(
+            "date_", Column.ofHidden("date_", DataType.DATE),
+            "ts", Column.ofHidden("ts", DataType.DATETIME),
+            "user_id", Column.ofHidden("user_id", DataType.STRING)
+        )),
+        new LinkedHashMap<>(), Map.of(), TimeGrains.min15,
+        "date_", "ts", "user_id"),
+        new Table(TableReference.of(stepName)));
   }
 
   private SqlResult result() throws ExecutionException, InterruptedException {

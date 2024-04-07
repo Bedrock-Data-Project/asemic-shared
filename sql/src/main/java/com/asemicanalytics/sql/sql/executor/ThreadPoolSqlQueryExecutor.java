@@ -1,11 +1,11 @@
 package com.asemicanalytics.sql.sql.executor;
 
-import com.asemicanalytics.core.Column;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.core.column.Column;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;

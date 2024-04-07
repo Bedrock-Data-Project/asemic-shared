@@ -1,13 +1,11 @@
 package com.asemicanalytics.sequence.sequence;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
-import org.checkerframework.checker.units.qual.A;
 
 public class GroupStep implements Step {
   private final List<SingleStep> steps;

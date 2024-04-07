@@ -4,14 +4,14 @@ import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.sequence.querybuilder.DomainCteBuilder;
-import com.asemicanalytics.sequence.querybuilder.SequencesCteBuilder;
+import com.asemicanalytics.sequence.querybuilder.SequenceQuery;
 import com.asemicanalytics.sequence.querybuilder.SqlQueryBuilder;
-import com.asemicanalytics.sequence.querybuilder.SubsequencesCteBuilder;
 import com.asemicanalytics.sequence.querylanguage.QueryLanguageEvaluator;
 import com.asemicanalytics.sequence.sequence.Sequence;
-import com.asemicanalytics.sequence.sequence.StepTable;
 import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.SelectStatement;
+import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
+import java.util.List;
 import java.util.Map;
 
 public class SequenceService {
@@ -21,18 +21,25 @@ public class SequenceService {
     this.sqlQueryExecutor = sqlQueryExecutor;
   }
 
-  public static Sequence parseSequence(
+  public static Sequence parseSequence(String sequenceQuery,
+      Map<String, ColumnSource> stepColumnSources) {
+    QueryLanguageEvaluator queryLanguageEvaluator = new QueryLanguageEvaluator(stepColumnSources);
+    return queryLanguageEvaluator.parse(sequenceQuery);
+  }
+
+  public SequenceQuery getSequenceQuery(
       DatetimeInterval datetimeInterval, String sequenceQuery,
-      Map<String, StepTable> stepRepository) {
-    QueryLanguageEvaluator queryLanguageEvaluator = new QueryLanguageEvaluator(stepRepository);
-    return queryLanguageEvaluator.parse(datetimeInterval, sequenceQuery);
+      Map<String, ColumnSource> stepColumnSources, List<String> includeColumns) {
+    return SqlQueryBuilder.prepareCtes(
+        parseSequence(sequenceQuery, stepColumnSources), datetimeInterval, includeColumns);
+
   }
 
   public String getSequenceSql(
       DatetimeInterval datetimeInterval, String sequenceQuery,
-      Map<String, StepTable> stepRepository) {
-    var query = SqlQueryBuilder.prepareCtes(
-        parseSequence(datetimeInterval, sequenceQuery, stepRepository));
+      Map<String, ColumnSource> stepColumnSources, List<String> includeColumns) {
+    var query =
+        getSequenceQuery(datetimeInterval, sequenceQuery, stepColumnSources, includeColumns);
     query.queryBuilder().select(new SelectStatement()
         .selectStar()
         .from(query.steps())
@@ -46,12 +53,11 @@ public class SequenceService {
 
   public void dumpSequenceToTable(
       DatetimeInterval datetimeInterval, String sequenceQuery,
-      Map<String, StepTable> stepRepository,
-      TableReference tableReference) {
-    var select = getSequenceSql(datetimeInterval, sequenceQuery, stepRepository);
+      Map<String, ColumnSource> stepColumnSources,
+      TableReference tableReference, List<String> includeColumns) {
+    var select = getSequenceSql(datetimeInterval, sequenceQuery, stepColumnSources, includeColumns);
     var createTable =
         sqlQueryExecutor.getDialect().createTableFromSelect(select, tableReference, true);
-    System.out.println(createTable); // TODO remove
     sqlQueryExecutor.executeDdl(createTable);
   }
 

@@ -20,6 +20,10 @@ public class Constant implements Expression {
     return new Constant(value, DataType.STRING);
   }
 
+  public static Constant ofBoolean(boolean value) {
+    return new Constant(Boolean.toString(value).toUpperCase(), DataType.BOOLEAN);
+  }
+
   public static Expression ofNull() {
     return new Constant(null, null);
   }

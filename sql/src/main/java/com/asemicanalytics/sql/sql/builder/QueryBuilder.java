@@ -62,7 +62,6 @@ public class QueryBuilder implements Token {
       for (int i = 0; i < queue.size(); i++) {
         var cte = queue.pop();
         ordered.put(cte.name(), cte);
-        cte.setIndex(0);
 
         cte.getDependentCtes().forEach((key, value) -> {
           if (!ordered.containsKey(key)) {
@@ -81,6 +80,7 @@ public class QueryBuilder implements Token {
         counts.put(cte.tag(), counts.get(cte.tag()) + 1);
       } else {
         counts.put(cte.tag(), 1);
+        cte.setIndex(0);
       }
     }
     return reversed;

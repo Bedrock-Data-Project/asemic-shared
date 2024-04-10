@@ -22,7 +22,7 @@ public class SequenceService {
   }
 
   public static Sequence parseSequence(String sequenceQuery,
-      Map<String, ColumnSource> stepColumnSources) {
+                                       Map<String, ColumnSource> stepColumnSources) {
     QueryLanguageEvaluator queryLanguageEvaluator = new QueryLanguageEvaluator(stepColumnSources);
     return queryLanguageEvaluator.parse(sequenceQuery);
   }

@@ -52,7 +52,7 @@ public class DomainCteBuilder {
   }
 
   private static SelectStatement buildSingleStepSourceStatement(
-      Sequence sequence, String stepName, 
+      Sequence sequence, String stepName,
       DatetimeInterval datetimeInterval, List<String> includeColumns) {
 
     ColumnSource stepColumnSource = sequence.getStepColumnSource(stepName);

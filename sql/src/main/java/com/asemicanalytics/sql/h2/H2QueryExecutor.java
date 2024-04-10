@@ -11,13 +11,8 @@ import java.time.format.DateTimeFormatterBuilder;
 
 public class H2QueryExecutor extends JdbcQueryExecutor {
 
-  private static final DateTimeFormatter dateFormatter = new DateTimeFormatterBuilder()
-      .appendPattern("yyyy-MM-dd HH:mm:ss")
-      .toFormatter();
-
   private static final DateTimeFormatter datetimeFormatter = new DateTimeFormatterBuilder()
       .appendPattern("yyyy-MM-dd HH:mm:ss")
-      .appendOffset("+HH", "+00")
       .toFormatter();
 
   private final String user;
@@ -35,11 +30,6 @@ public class H2QueryExecutor extends JdbcQueryExecutor {
     } catch (ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public DateTimeFormatter getDateFormatter() {
-    return dateFormatter;
   }
 
   @Override

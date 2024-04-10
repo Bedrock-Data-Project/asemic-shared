@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -41,8 +42,8 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
   private Object parseObject(ResultSet resultSet, DataType xaxisType, int columnIndex)
       throws SQLException {
     return switch (xaxisType) {
-      case DATE -> LocalDateTime.parse(resultSet.getString(columnIndex), getDateFormatter())
-          .atZone(ZoneId.of("UTC"));
+      case DATE -> LocalDate.parse(resultSet.getString(columnIndex))
+          .atStartOfDay(ZoneId.of("UTC"));
       case DATETIME -> LocalDateTime.parse(resultSet.getString(columnIndex), getDatetimeFormatter())
           .atZone(ZoneId.of("UTC"));
       case NUMBER -> resultSet.getDouble(columnIndex);
@@ -50,10 +51,6 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
       case STRING -> resultSet.getString(columnIndex);
       case BOOLEAN -> resultSet.getBoolean(columnIndex);
     };
-  }
-
-  protected DateTimeFormatter getDateFormatter() {
-    return formatter;
   }
 
   protected DateTimeFormatter getDatetimeFormatter() {

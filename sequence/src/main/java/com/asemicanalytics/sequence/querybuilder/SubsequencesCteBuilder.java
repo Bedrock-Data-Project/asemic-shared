@@ -112,7 +112,7 @@ public class SubsequencesCteBuilder {
     ).withAlias(SUBSEQUENCE_COLUMN));
     includeColumns.forEach(column -> columns.add(new WindowFunctionExpression(
         new FunctionExpression("MIN",
-        subsequencePrepCte.column(column)),
+            subsequencePrepCte.column(column)),
         new ExpressionList(List.of(
             subsequencePrepCte.column(DomainCteBuilder.USER_ID_COLUMN),
             subsequencePrepCte.column(SequencesCteBuilder.SEQUENCE_COLUMN)),

@@ -1,6 +1,5 @@
 package com.asemicanalytics.sequence.sequence;
 
-import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
 import java.time.Duration;
 import java.util.ArrayList;

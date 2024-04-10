@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 public class QueryLanguageTest {
@@ -123,7 +122,7 @@ public class QueryLanguageTest {
   @Test
   void testSecondStepCannotBeRepeatedIfNonLastItemIsRepeatedNonFixed() {
     assertThrows(IllegalArgumentException.class, () ->
-        SequenceService.parseSequence( "match login >> battle >> battle;",
+        SequenceService.parseSequence("match login >> battle >> battle;",
             stepColumnSources)
     );
     assertThrows(IllegalArgumentException.class, () ->

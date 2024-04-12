@@ -10,6 +10,7 @@ import com.asemicanalytics.core.TimeGrains;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.datasource.UserActionDatasource;
 import com.asemicanalytics.sequence.SequenceService;
+import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sequence.sequence.GroupStep;
 import com.asemicanalytics.sequence.sequence.SingleStep;
 import com.asemicanalytics.sequence.sequence.Step;
@@ -191,7 +192,9 @@ public class QueryLanguageTest {
             new SingleStep("battle", StepRepetition.atLeast(1), 2)),
         sequence.getSteps());
 
-    assertEquals(List.of("login", "battle", "transaction"), sequence.getDomainActions());
+    assertEquals(
+        List.of("transaction", "login", "battle"),
+        sequence.getDomainActions().stream().map(DomainStep::name).toList());
   }
 
 

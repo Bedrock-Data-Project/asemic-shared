@@ -33,6 +33,9 @@ public class Constant implements Expression {
     if (value == null) {
       return "NULL";
     }
+    if (dataType == null) {
+      return value;
+    }
     return dialect.constant(value, dataType);
   }
 }

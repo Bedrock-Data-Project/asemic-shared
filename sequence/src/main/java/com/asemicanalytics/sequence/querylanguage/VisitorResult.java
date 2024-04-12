@@ -1,30 +1,33 @@
 package com.asemicanalytics.sequence.querylanguage;
 
+import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sequence.sequence.Step;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 class VisitorResult {
   private final List<Step> steps;
-  private final TreeSet<String> domain;
+  private final Map<String, DomainStep> domain;
 
-  public VisitorResult(List<Step> steps, Set<String> domain) {
+  public VisitorResult(List<Step> steps, Map<String, DomainStep> domain) {
     this.steps = new ArrayList<>(steps);
-    this.domain = new TreeSet<>(domain);
+    this.domain = new TreeMap<>(domain);
   }
 
   public void merge(VisitorResult toMerge) {
     this.steps.addAll(toMerge.steps);
-    this.domain.addAll(toMerge.domain);
+    this.domain.putAll(toMerge.domain);
   }
 
   public List<Step> getSteps() {
     return steps;
   }
 
-  public TreeSet<String> getDomain() {
+  public Map<String, DomainStep> getDomain() {
     return domain;
   }
 }

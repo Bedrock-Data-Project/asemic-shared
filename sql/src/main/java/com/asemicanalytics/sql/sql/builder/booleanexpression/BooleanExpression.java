@@ -19,6 +19,10 @@ public class BooleanExpression extends TemplatedExpression {
     super(expression.getExpression(), expression.getTemplateDict());
   }
 
+  public BooleanExpression(Expression expression) {
+    super("{e}", TemplateDict.noMissing(Map.of("e", expression)));
+  }
+
 
   public static BooleanExpression fromExpression(Expression expression, String operator,
                                                  List<String> values, DataType dataType) {

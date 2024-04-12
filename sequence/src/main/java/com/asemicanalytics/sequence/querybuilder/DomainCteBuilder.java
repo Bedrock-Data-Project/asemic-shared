@@ -3,6 +3,7 @@ package com.asemicanalytics.sequence.querybuilder;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.datasource.UserActionDatasource;
+import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sequence.sequence.Sequence;
 import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.QueryBuilder;
@@ -25,7 +26,7 @@ public class DomainCteBuilder {
                              DatetimeInterval datetimeInterval, List<String> includeColumns) {
 
     SelectStatement selectStatement = null;
-    for (String domainAction : sequence.getDomainActions()) {
+    for (var domainAction : sequence.getDomainActions()) {
       var domainStatement = buildSingleStepSourceStatement(
           sequence, domainAction, datetimeInterval, includeColumns);
       if (selectStatement == null) {
@@ -52,10 +53,10 @@ public class DomainCteBuilder {
   }
 
   private static SelectStatement buildSingleStepSourceStatement(
-      Sequence sequence, String stepName,
+      Sequence sequence, DomainStep domainStep,
       DatetimeInterval datetimeInterval, List<String> includeColumns) {
 
-    ColumnSource stepColumnSource = sequence.getStepColumnSource(stepName);
+    ColumnSource stepColumnSource = sequence.getStepColumnSource(domainStep.columnSourceName());
     UserActionDatasource stepDatasource = (UserActionDatasource) stepColumnSource.getDatasource();
     var columns = new ExpressionList(
         stepColumnSource.loadColumn(stepDatasource.getUserIdColumn().getId(),
@@ -64,20 +65,22 @@ public class DomainCteBuilder {
             datetimeInterval).withAlias(STEP_TS_COLUMN),
         stepColumnSource.loadColumn(stepDatasource.getDateColumn().getId(),
             datetimeInterval).withAlias(STEP_DATE_COLUMN),
-        new Constant(stepName, DataType.STRING).withAlias(STEP_NAME_COLUMN)
+        new Constant(domainStep.name(), DataType.STRING).withAlias(STEP_NAME_COLUMN)
     );
 
     for (String column : includeColumns) {
-      if (!sequence.getSteps().get(0).getStepNames().contains(stepName)) {
+      if (!sequence.getSteps().get(0).getStepNames().contains(domainStep.name())) {
         columns.add(Constant.ofNull().withAlias(column));
       }
     }
 
-    return new SelectStatement()
+    var statement = new SelectStatement()
         .select(columns)
         .from(stepColumnSource.table())
         .and(BooleanExpression.fromDateInterval(
             stepColumnSource.loadColumn(stepDatasource.getDateColumn().getId(),
                 datetimeInterval), datetimeInterval));
+    domainStep.filter().ifPresent(statement::and);
+    return statement;
   }
 }

@@ -6,18 +6,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 
 public class Sequence {
   private final List<Step> steps;
-  private final TreeSet<String> domain;
+  private final Map<String, DomainStep> domain;
   private final Duration timeHorizon;
   private final boolean ignoreIncompleteSequences;
   private final Map<String, ColumnSource> stepColumnSources;
 
-  public Sequence(List<Step> steps, TreeSet<String> domain,
+  public Sequence(List<Step> steps, Map<String, DomainStep> domain,
                   Duration timeHorizon, boolean ignoreIncompleteSequences,
                   Map<String, ColumnSource> stepColumnSources) {
     this.steps = steps;
@@ -35,23 +36,29 @@ public class Sequence {
     return joiner.toString();
   }
 
-  public List<String> getDomainActions() {
+  public List<DomainStep> getDomainActions() {
     Set<String> visited = new HashSet<>();
-    List<String> actions = new ArrayList<>();
+    List<DomainStep> actions = new ArrayList<>();
+
+    for (var domainStep : domain.values()) {
+      String domainStepName = domainStep.name();
+      if (!visited.contains(domainStepName)) {
+        visited.add(domainStepName);
+        actions.add(domainStep);
+      } else {
+        throw new IllegalArgumentException("Domain step " + domainStepName + " is repeated");
+      }
+    }
+
     for (Step step : steps) {
       for (String action : step.getStepNames()) {
         if (!visited.contains(action)) {
           visited.add(action);
-          actions.add(action);
+          actions.add(new DomainStep(action, Optional.empty(), Optional.empty()));
         }
       }
     }
-    for (String action : domain) {
-      if (!visited.contains(action)) {
-        visited.add(action);
-        actions.add(action);
-      }
-    }
+
     return actions;
   }
 

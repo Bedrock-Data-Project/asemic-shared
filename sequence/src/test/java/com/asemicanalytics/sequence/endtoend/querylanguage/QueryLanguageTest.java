@@ -164,7 +164,7 @@ public class QueryLanguageTest extends QueryLanguageTestBase {
         sequence.getSteps());
 
     assertEquals(
-        List.of("transaction", "login", "battle"),
+        List.of("login", "battle", "transaction"),
         sequence.getDomainActions().stream().map(DomainStep::name).toList());
   }
 

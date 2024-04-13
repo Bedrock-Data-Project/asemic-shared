@@ -44,12 +44,13 @@ public class Sequence {
   public List<DomainStep> getDomainActions() {
     Set<String> visited = new HashSet<>();
     List<DomainStep> actions = new ArrayList<>();
+    List<DomainStep> domainActions = new ArrayList<>();
 
     for (var domainStep : domain.values()) {
       String domainStepName = domainStep.name();
       if (!visited.contains(domainStepName)) {
         visited.add(domainStepName);
-        actions.add(domainStep);
+        domainActions.add(domainStep);
       } else {
         throw new IllegalArgumentException("Domain step " + domainStepName + " is repeated");
       }
@@ -64,6 +65,7 @@ public class Sequence {
       }
     }
 
+    actions.addAll(domainActions);
     return actions;
   }
 

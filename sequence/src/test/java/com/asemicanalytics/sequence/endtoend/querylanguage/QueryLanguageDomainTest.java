@@ -26,7 +26,7 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
         sequence.getSteps());
 
     assertEquals(
-        List.of("transaction", "login", "battle"),
+        List.of("login", "battle", "transaction"),
         sequence.getDomainActions().stream().map(DomainStep::name).toList());
   }
 
@@ -40,7 +40,7 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
         sequence.getSteps());
 
     assertEquals(
-        List.of("login", "transaction", "battle"),
+        List.of("battle", "login", "transaction"),
         sequence.getDomainActions().stream().map(DomainStep::name).toList());
   }
 

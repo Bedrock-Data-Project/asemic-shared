@@ -7,14 +7,23 @@ import com.asemicanalytics.sql.sql.builder.expression.Expression;
 import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 class ExpressionVisitor extends QueryLanguageBaseVisitor<Expression> {
+
+  private final TableLike tableLike;
+
+  ExpressionVisitor(TableLike tableLike) {
+    this.tableLike = tableLike;
+  }
+
   @Override
   public Expression visitLiteral(QueryLanguageParser.LiteralContext ctx) {
     if (ctx.STRING_LITERAL() != null) {
-      return Constant.ofString(ctx.STRING_LITERAL().getText());
+      return Constant.ofString(ctx.STRING_LITERAL()
+          .getText().substring(1, ctx.STRING_LITERAL().getText().length() - 1));
     } else {
       return new Constant(ctx.getText(), DataType.INTEGER); // hack as number is rendered as it
     }
@@ -22,7 +31,7 @@ class ExpressionVisitor extends QueryLanguageBaseVisitor<Expression> {
 
   @Override
   public Expression visitParamName(QueryLanguageParser.ParamNameContext ctx) {
-    return new Constant(ctx.getText(), DataType.INTEGER);
+    return tableLike.column(ctx.getText());
   }
 
   @Override
@@ -100,7 +109,7 @@ class ExpressionVisitor extends QueryLanguageBaseVisitor<Expression> {
   @Override
   public Expression visitFunctionExpression(QueryLanguageParser.FunctionExpressionContext ctx) {
     return new FunctionExpression(ctx.functionName().getText(), new ExpressionList(
-        ctx.expression().stream().map(this::visit).collect(Collectors.toList())));
+        ctx.expression().stream().map(this::visit).collect(Collectors.toList()), ", "));
   }
 
   @Override

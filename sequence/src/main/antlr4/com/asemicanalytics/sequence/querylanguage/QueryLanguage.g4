@@ -2,22 +2,21 @@ grammar QueryLanguage;
 
 statement: domainStatement? matchStatement;
 
-domainStatement: 'domain' domainSteps SEPARATOR;
+domainStatement: DOMAIN domainSteps SEPARATOR;
 domainSteps: demainStep (COMMA demainStep)*;
 demainStep: NAME domainStepFilter? domainStepAlias?;
 domainStepFilter: WHERE expression;
 domainStepAlias: AS NAME;
 
-matchStatement: 'match' step chainedStep* SEPARATOR;
+matchStatement: MATCH step chainedStep* SEPARATOR;
 chainedStep: ARROW step;
 step: singleStep | groupStep;
 singleStep: name=NAME range?;
 groupStep: '(' singleStep (COMMA singleStep)+ ')';
-range: '{' from=NATURAL_NUMBER COMMA to=NATURAL_NUMBER? '}';
+range: '{' from=INTEGER COMMA to=INTEGER? '}';
 
 expression
-    : literal  #LiteralExpression
-    | paramName  #ParamExpression
+    : paramName  #ParamExpression
     | unaryOperator expression  #UnaryExpression
     | expression ( STAR | DIVIDE | MOD ) expression  #MultiplicativeExpression
     | expression ( PLUS | MINUS ) expression  #AdditiveExpression
@@ -29,6 +28,7 @@ expression
     | expression IS NOT? NULL  #IsNullExpression
     | expression NOT? BETWEEN expression AND expression  #BetweenExpression
     | expression NOT? IN OPEN_PAR expression ( COMMA expression )* CLOSE_PAR  #InExpression
+    | literal  #LiteralExpression
     ;
 
 unaryOperator
@@ -37,7 +37,8 @@ unaryOperator
     ;
 
 literal
-    : NUMERIC_LITERAL
+    : DOUBLE
+    | INTEGER
     | STRING_LITERAL
     | TRUE
     | FALSE
@@ -46,14 +47,6 @@ literal
 
 functionName: NAME;
 paramName: NAME;
-
-AS: 'as';
-WHERE: 'where';
-NAME: [a-zA-Z][a-zA-Z0-9]*;
-NATURAL_NUMBER: '0' | [1-9] [0-9]* ;
-WS: [ \t\r\n]+ -> skip;
-ARROW: '>>';
-SEPARATOR: ';';
 
 // expression
 STAR: '*';
@@ -68,20 +61,59 @@ GT: '>';
 GTE: '>=';
 LT: '<';
 LTE: '<=';
-IS: 'IS';
-NOT: 'NOT';
-IN: 'IN';
-LIKE: 'LIKE';
-AND: 'AND';
-OR: 'OR';
-NUMERIC_LITERAL: ((DIGIT+ ('.' DIGIT*)?) | ('.' DIGIT+)) ('E' [-+]? DIGIT+)?;
+IS: I S;
+NOT: N O T;
+IN: I N;
+LIKE: L I K E;
+AND: A N D;
+OR: O R;
+NUMERIC_LITERAL: DIGIT+ ('.' DIGIT+)?;
 STRING_LITERAL: '\'' ( ~'\'' | '\'\'')* '\'';
-TRUE: 'true';
-FALSE: 'false';
-NULL: 'null';
+TRUE: T R U E;
+FALSE: F A L S E;
+NULL: N U L L;
 OPEN_PAR: '(';
 CLOSE_PAR: ')';
 BETWEEN: 'between';
 COMMA: ',';
 
-fragment DIGIT     : [0-9];
+MATCH: M A T C H;
+DOMAIN: D O M A I N;
+AS: A S;
+WHERE: W H E R E;
+NAME: [a-zA-Z_][a-zA-Z0-9_]*;
+INTEGER: MINUS? [0-9]+ ;
+DOUBLE: MINUS? [0-9]+ '.' [0-9]+ ;
+WS: [ \t\r\n]+ -> skip;
+ARROW: '>>';
+SEPARATOR: ';';
+
+fragment DIGIT: [0-9];
+
+// for case insensitive keywords
+fragment A : [aA];
+fragment B : [bB];
+fragment C : [cC];
+fragment D : [dD];
+fragment E : [eE];
+fragment F : [fF];
+fragment G : [gG];
+fragment H : [hH];
+fragment I : [iI];
+fragment J : [jJ];
+fragment K : [kK];
+fragment L : [lL];
+fragment M : [mM];
+fragment N : [nN];
+fragment O : [oO];
+fragment P : [pP];
+fragment Q : [qQ];
+fragment R : [rR];
+fragment S : [sS];
+fragment T : [tT];
+fragment U : [uU];
+fragment V : [vV];
+fragment W : [wW];
+fragment X : [xX];
+fragment Y : [yY];
+fragment Z : [zZ];

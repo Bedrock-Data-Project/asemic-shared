@@ -36,6 +36,11 @@ public class Sequence {
     return joiner.toString();
   }
 
+  public DomainStep getDomainForStep(String stepName) {
+    return domain.getOrDefault(stepName,
+        new DomainStep(stepName, Optional.empty(), Optional.empty()));
+  }
+
   public List<DomainStep> getDomainActions() {
     Set<String> visited = new HashSet<>();
     List<DomainStep> actions = new ArrayList<>();

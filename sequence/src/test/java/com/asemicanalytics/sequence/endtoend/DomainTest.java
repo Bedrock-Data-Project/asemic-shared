@@ -62,4 +62,32 @@ class DomainTest extends SequenceBaseTest {
         new ResultRow(2, Duration.ofSeconds(2), "transaction", 0, 0, 2, 2, 0, false)
     ));
   }
+
+  @Test
+  void testDomainFilter()
+      throws SQLException, ExecutionException, InterruptedException {
+
+    DatabaseHelper.createUserActionTable(TableReference.of("transaction"), List.of(
+        new UserActionRow(1, Duration.ofSeconds(1)),
+        new UserActionRow(1, Duration.ofSeconds(2)),
+        new UserActionRow(2, Duration.ofSeconds(5)),
+        new UserActionRow(3, Duration.ofSeconds(6)),
+        new UserActionRow(4, Duration.ofSeconds(9)),
+        new UserActionRow(5, Duration.ofSeconds(10))
+    ));
+
+    String sequenceQuery = "domain transaction where user_id > 1; match transaction;";
+    sequenceService.dumpSequenceToTable(new DatetimeInterval(
+            LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
+            LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
+        sequenceQuery, STEP_COLUMN_SOURCES,
+        TableReference.of("sequence_output"), List.of());
+
+    assertResult(List.of(
+        new ResultRow(2, Duration.ofSeconds(5), "transaction", 1, 1, 1, 1, 1, true),
+        new ResultRow(3, Duration.ofSeconds(6), "transaction", 1, 1, 1, 1, 1, true),
+        new ResultRow(4, Duration.ofSeconds(9), "transaction", 1, 1, 1, 1, 1, true),
+        new ResultRow(5, Duration.ofSeconds(10), "transaction", 1, 1, 1, 1, 1, true)
+    ));
+  }
 }

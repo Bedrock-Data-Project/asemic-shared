@@ -20,7 +20,14 @@ class VisitorResult {
 
   public void merge(VisitorResult toMerge) {
     this.steps.addAll(toMerge.steps);
-    this.domain.putAll(toMerge.domain);
+
+    for (var domainStep : toMerge.domain.values()) {
+      String domainStepName = domainStep.name();
+      if (this.domain.containsKey(domainStepName)) {
+        throw new IllegalArgumentException("Domain step " + domainStepName + " is repeated");
+      }
+      this.domain.put(domainStepName, domainStep);
+    }
   }
 
   public List<Step> getSteps() {

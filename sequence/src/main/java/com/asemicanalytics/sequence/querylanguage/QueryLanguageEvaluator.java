@@ -19,7 +19,7 @@ public class QueryLanguageEvaluator {
     QueryLanguageLexer lexer = new QueryLanguageLexer(CharStreams.fromString(query));
     QueryLanguageParser parser = new QueryLanguageParser(new CommonTokenStream(lexer));
     ParseTree tree = parser.statement();
-    VisitorResult result = new SequenceVisitor().visit(tree);
+    VisitorResult result = new SequenceVisitor(stepColumnSources).visit(tree);
     return new Sequence(result.getSteps(), result.getDomain(),
         Duration.ofDays(3), false, stepColumnSources);
   }

@@ -12,8 +12,8 @@ matchStatement: MATCH step chainedStep* SEPARATOR;
 chainedStep: ARROW step;
 step: singleStep | groupStep;
 singleStep: name=NAME range?;
-groupStep: '(' singleStep (COMMA singleStep)+ ')';
-range: '{' from=INTEGER COMMA to=INTEGER? '}';
+groupStep: OPEN_PAR singleStep (COMMA singleStep)+ CLOSE_PAR;
+range: OPEN_CURLY from=number COMMA to=number? CLOSE_CURLY;
 
 expression
     : paramName  #ParamExpression
@@ -37,13 +37,14 @@ unaryOperator
     ;
 
 literal
-    : DOUBLE
-    | INTEGER
+    : number
     | STRING_LITERAL
     | TRUE
     | FALSE
     | NULL
     ;
+
+ number: INTEGER | DOUBLE;
 
 functionName: NAME;
 paramName: NAME;
@@ -67,13 +68,14 @@ IN: I N;
 LIKE: L I K E;
 AND: A N D;
 OR: O R;
-NUMERIC_LITERAL: DIGIT+ ('.' DIGIT+)?;
 STRING_LITERAL: '\'' ( ~'\'' | '\'\'')* '\'';
 TRUE: T R U E;
 FALSE: F A L S E;
 NULL: N U L L;
 OPEN_PAR: '(';
 CLOSE_PAR: ')';
+OPEN_CURLY: '{';
+CLOSE_CURLY: '}';
 BETWEEN: 'between';
 COMMA: ',';
 
@@ -82,7 +84,7 @@ DOMAIN: D O M A I N;
 AS: A S;
 WHERE: W H E R E;
 NAME: [a-zA-Z_][a-zA-Z0-9_]*;
-INTEGER: MINUS? [0-9]+ ;
+INTEGER: MINUS? DIGIT+ ;
 DOUBLE: MINUS? [0-9]+ '.' [0-9]+ ;
 WS: [ \t\r\n]+ -> skip;
 ARROW: '>>';

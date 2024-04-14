@@ -79,4 +79,9 @@ public class BigQueryDialect implements Dialect {
   public String epochSeconds(String timestamp) {
     return "UNIX_SECONDS(" + timestamp + ")";
   }
+
+  @Override
+  public String matchesRegex(String expression, String regex) {
+    return "REGEXP_CONTAINS(" + expression + ", r" + constant(regex, DataType.STRING) + ")";
+  }
 }

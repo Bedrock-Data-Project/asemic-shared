@@ -79,4 +79,9 @@ public class H2Dialect implements Dialect {
   public String epochSeconds(String timestamp) {
     return "DATEDIFF('SECOND', '1970-01-01 00:00:00', " + timestamp + ")";
   }
+
+  @Override
+  public String matchesRegex(String expression, String regex) {
+    return "REGEXP_MATCHES(" + expression + ", " + constant(regex, DataType.STRING) + ")";
+  }
 }

@@ -6,7 +6,7 @@
 
     <groupId>com.asemicanalytics</groupId>
     <artifactId>asemic-shared</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
     <packaging>pom</packaging>
     <name>Asemic Shared</name>
     <description>Collection for utilities that power up asemic query engine</description>
@@ -132,7 +132,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
+                <version>1.7</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>

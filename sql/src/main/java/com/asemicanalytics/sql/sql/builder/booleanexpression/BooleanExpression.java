@@ -6,6 +6,7 @@ import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.expression.RegexExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import java.util.ArrayList;
@@ -38,6 +39,17 @@ public class BooleanExpression extends TemplatedExpression {
       case "not_like" ->
           new BooleanExpression(new TemplatedExpression("{expression} NOT LIKE {value}",
               TemplateDict.noMissing(Map.of("expression", expression, "value", constants.get(0)))));
+      case "contains" -> new BooleanExpression(new TemplatedExpression("{expression} LIKE {value}",
+          TemplateDict.noMissing(Map.of("expression", expression, "value",
+              Constant.ofString("%" + values.get(0) + "%")))));
+      case "not_contains" ->
+          new BooleanExpression(new TemplatedExpression("{expression} NOT LIKE {value}",
+              TemplateDict.noMissing(Map.of("expression", expression, "value",
+                  Constant.ofString("%" + values.get(0) + "%")))));
+      case "regex" ->
+          new BooleanExpression(new TemplatedExpression("{expression}",
+              TemplateDict.noMissing(Map.of("expression",
+                  new RegexExpression(expression, values.get(0))))));
       case "in" -> new BooleanExpression(new TemplatedExpression("{expression} IN ({values})",
           TemplateDict.noMissing(Map.of("expression", expression, "values", valueList))));
       case "not_in" ->

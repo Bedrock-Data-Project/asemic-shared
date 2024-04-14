@@ -42,5 +42,7 @@ public interface Dialect {
   }
 
   String epochSeconds(String timestamp);
+
+  String matchesRegex(String expression, String regex);
 }
 

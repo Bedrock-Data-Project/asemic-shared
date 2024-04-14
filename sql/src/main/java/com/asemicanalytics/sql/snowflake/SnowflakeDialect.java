@@ -80,4 +80,10 @@ public class SnowflakeDialect implements Dialect {
   public String epochSeconds(String timestamp) {
     return "DATE_PART('second', " + timestamp + ")";
   }
+
+  @Override
+  public String matchesRegex(String expression, String regex) {
+    return "REGEXP_LIKE(" + expression + ", " + constant(regex, DataType.STRING) + ")";
+
+  }
 }

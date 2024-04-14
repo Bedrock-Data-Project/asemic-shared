@@ -46,10 +46,9 @@ public class BooleanExpression extends TemplatedExpression {
           new BooleanExpression(new TemplatedExpression("{expression} NOT LIKE {value}",
               TemplateDict.noMissing(Map.of("expression", expression, "value",
                   Constant.ofString("%" + values.get(0) + "%")))));
-      case "regex" ->
-          new BooleanExpression(new TemplatedExpression("{expression}",
-              TemplateDict.noMissing(Map.of("expression",
-                  new RegexExpression(expression, values.get(0))))));
+      case "regex" -> new BooleanExpression(new TemplatedExpression("{expression}",
+          TemplateDict.noMissing(Map.of("expression",
+              new RegexExpression(expression, values.get(0))))));
       case "in" -> new BooleanExpression(new TemplatedExpression("{expression} IN ({values})",
           TemplateDict.noMissing(Map.of("expression", expression, "values", valueList))));
       case "not_in" ->
@@ -62,6 +61,10 @@ public class BooleanExpression extends TemplatedExpression {
               TemplateDict.noMissing(Map.of("expression", expression))));
       case "boolean_is" -> new BooleanExpression(new TemplatedExpression("{expression} IS {value}",
           TemplateDict.noMissing(Map.of("expression", expression, "value", constants.get(0)))));
+      case "is_true" -> new BooleanExpression(new TemplatedExpression("{expression} IS TRUE",
+          TemplateDict.noMissing(Map.of("expression", expression))));
+      case "is_false" -> new BooleanExpression(new TemplatedExpression("{expression} IS FALSE",
+          TemplateDict.noMissing(Map.of("expression", expression))));
       case "boolean_is_not" ->
           new BooleanExpression(new TemplatedExpression("{expression} IS NOT {value}",
               TemplateDict.noMissing(Map.of("expression", expression, "value", constants.get(0)))));

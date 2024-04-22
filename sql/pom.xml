@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.asemicanalytics</groupId>
         <artifactId>asemic-shared</artifactId>
-        <version>1.8</version>
+        <version>1.9</version>
     </parent>
 
     <artifactId>asemic-sql</artifactId>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>com.asemicanalytics</groupId>
             <artifactId>asemic-core</artifactId>
-            <version>1.8</version>
+            <version>1.9</version>
         </dependency>
     </dependencies>
 

@@ -18,7 +18,7 @@ public class EventLikeDatasource extends TemporalDatasource {
                              Map<String, Kpi> kpis,
                              TimeGrain minTimeGrain,
                              String dateColumn, String timestampColumn) {
-    super(id, label, description, table, table, columns, computedColumns, kpis,
+    super(id, label, description, table, columns, computedColumns, kpis,
         minTimeGrain, dateColumn);
     this.timestampColumn = timestampColumn;
   }

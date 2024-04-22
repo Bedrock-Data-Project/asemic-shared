@@ -16,11 +16,11 @@ public class TemporalDatasource extends Datasource {
   protected final Map<String, Kpi> kpis;
 
   public TemporalDatasource(String id, String label, Optional<String> description,
-                            TableReference table, TableReference enrichmentTable,
+                            TableReference table,
                             SequencedMap<String, Column> columns,
                             SequencedMap<String, ComputedColumn> computedColumns,
                             Map<String, Kpi> kpis, TimeGrain minTimeGrain, String dateColumn) {
-    super(id, label, description, table, enrichmentTable, columns, computedColumns);
+    super(id, label, description, table, columns, computedColumns);
     this.minTimeGrain = minTimeGrain;
     this.dateColumn = dateColumn;
     this.kpis = kpis;

@@ -14,22 +14,21 @@ public class Datasource {
   protected final String id;
   protected final String label;
   protected final Optional<String> description;
+
   protected final TableReference table;
-  protected final TableReference enrichmentTable;
   protected final SequencedMap<String, Column> tableColumns;
   protected final SequencedMap<String, ComputedColumn> computedColumns;
 
   protected final List<Enrichment> enrichments = new ArrayList<>();
 
   public Datasource(String id, String label, Optional<String> description,
-                    TableReference table, TableReference enrichmentTable,
+                    TableReference table,
                     SequencedMap<String, Column> columns,
                     SequencedMap<String, ComputedColumn> computedColumns) {
     this.id = id;
     this.label = label;
     this.description = description;
     this.table = table;
-    this.enrichmentTable = enrichmentTable;
     this.tableColumns = columns;
     this.computedColumns = computedColumns;
   }
@@ -57,11 +56,6 @@ public class Datasource {
   public SequencedMap<String, ComputedColumn> getComputedColumns() {
     return computedColumns;
   }
-
-  public TableReference getEnrichmentTable() {
-    return enrichmentTable;
-  }
-
 
   public SequencedMap<String, Column> getAllColumns() {
     var allColumns = new LinkedHashMap<String, Column>();

@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Asemic" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="ASEMIC_API_TOKEN" value="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhcHBJZHMiOiJoZXJvaWNtaW5pLGNsb25lbWluaSIsImV4cCI6MTcxNTE5NDI4Nn0.dDqKsgPyF3aZNWGRXkNNLupA3YqOo6RibLYNtFLTY8U" />
+      <env name="ASEMIC_APP_ID_DIR" value="$PROJECT_DIR$/../bedrock-demo/config/heroicmini" />
+      <env name="ASEMIC_API_URL" value="http://localhost:8083" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.asemicanalytics.cli.Asemic" />
+    <module name="cli" />
+    <option name="PROGRAM_PARAMETERS" value="semantic-layer validate" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.asemicanalytics.cli.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

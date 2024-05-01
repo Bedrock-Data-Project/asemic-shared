@@ -35,6 +35,7 @@
         <module>sql</module>
         <module>core</module>
         <module>sequence</module>
+        <module>cli</module>
     </modules>
 
     <properties>

@@ -1,5 +1,6 @@
 package com.asemicanalytics.cli.semanticlayer;
 
+import com.asemicanalytics.cli.api.ConfigureDatasourcesControllerApi;
 import com.asemicanalytics.cli.api.DatasourcesControllerApi;
 import com.asemicanalytics.cli.invoker.ApiException;
 import com.asemicanalytics.cli.semanticlayer.internal.ApiClientFactory;
@@ -11,7 +12,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import picocli.CommandLine;
 
-@CommandLine.Command(name = "validate", mixinStandardHelpOptions = true)
+@CommandLine.Command(name = "push", mixinStandardHelpOptions = true)
 public class PushCommand implements Runnable {
 
   public static void push(String version) throws IOException, ApiException {
@@ -22,7 +23,7 @@ public class PushCommand implements Runnable {
       Map<String, String> headers = version != null
           ? Map.of("AppConfigVersion", version)
           : Map.of();
-      var api = new DatasourcesControllerApi(ApiClientFactory.create(headers));
+      var api = new ConfigureDatasourcesControllerApi(ApiClientFactory.create(headers));
       api.submitAppConfig(GlobalConfig.getAppId(), zipFilePath.toFile());
     } finally {
       if (zipFilePath != null) {
@@ -39,6 +40,7 @@ public class PushCommand implements Runnable {
   public void run() {
     try {
       push();
+      System.out.println("@|fg(green) OK|@");
     } catch (IOException | ApiException e) {
       throw new RuntimeException(e);
     }

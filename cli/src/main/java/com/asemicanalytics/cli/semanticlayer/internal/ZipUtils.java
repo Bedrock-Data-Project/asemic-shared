@@ -42,13 +42,12 @@ public class ZipUtils {
     return zipFile;
   }
 
-  public static Path unzipDirectory(Path zipPath) throws IOException {
-    var destination = Files.createTempDirectory(null);
+  public static void unzipToDirectory(Path zipPath, Path unzipDestination) throws IOException {
     try (ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipPath.toFile()))) {
       byte[] buffer = new byte[1024];
       ZipEntry zipEntry = zipIn.getNextEntry();
       while (zipEntry != null) {
-        Path filePath = destination.resolve(zipEntry.getName());
+        Path filePath = unzipDestination.resolve(zipEntry.getName());
         if (zipEntry.isDirectory()) {
           Files.createDirectories(filePath);
         } else {
@@ -64,6 +63,5 @@ public class ZipUtils {
         zipEntry = zipIn.getNextEntry();
       }
     }
-    return destination;
   }
 }

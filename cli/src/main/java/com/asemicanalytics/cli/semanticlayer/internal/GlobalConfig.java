@@ -28,10 +28,7 @@ public class GlobalConfig {
       return Path.of(appIdDir);
     }
 
-    ProtectionDomain protectionDomain = GlobalConfig.class.getProtectionDomain();
-    File jarFile = new File(protectionDomain.getCodeSource().getLocation().getPath());
-    String jarFilePath = jarFile.getAbsolutePath();
-    return Path.of(jarFilePath).getParent();
+    return Path.of(System.getProperty("user.dir"));
   }
 
   public static String getAppId() {

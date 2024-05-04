@@ -1,5 +1,5 @@
 {
-  "$id": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_kpis.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_kpis.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [],
@@ -10,7 +10,7 @@
     "kpis": {
       "type": "array",
       "items": {
-        "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_kpi.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_kpi.json"
       },
       "minItems": 1
     },
@@ -24,7 +24,7 @@
     "cohorted_daily_kpis": {
       "type": "array",
       "items": {
-        "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_kpi_cohorted.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_kpi_cohorted.json"
       },
       "minItems": 1
     }

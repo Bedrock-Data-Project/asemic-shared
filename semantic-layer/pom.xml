@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.asemicanalytics</groupId>
         <artifactId>asemic-shared</artifactId>
-        <version>1.10</version>
+        <version>1.11</version>
     </parent>
 
     <artifactId>semantic-layer</artifactId>
@@ -78,7 +78,7 @@
                         <configuration>
                             <target>
                                 <replace dir="${project.build.directory}/schemas" includes="**/*.json"
-                                         token="http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/"
+                                         token="http://schema.asemicanalytics.com/v1/semantic_layer/"
                                          value=""/>
                             </target>
                         </configuration>
@@ -97,6 +97,7 @@
                     <useOptionalForGetters>true</useOptionalForGetters>
                     <includeConstructors>true</includeConstructors>
                     <includeAllPropertiesConstructor>true</includeAllPropertiesConstructor>
+                    <inclusionLevel>NON_EMPTY</inclusionLevel>
                 </configuration>
                 <executions>
                     <execution>

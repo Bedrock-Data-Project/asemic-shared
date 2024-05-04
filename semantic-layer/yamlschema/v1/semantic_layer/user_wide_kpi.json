@@ -1,5 +1,5 @@
 {
-  "$id": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_kpi.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_kpi.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
@@ -26,10 +26,10 @@
       "type": "string"
     },
     "sql": {
-      "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/kpi_sql.json"
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_sql.json"
     },
     "unit": {
-      "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/unit.json"
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/unit.json"
     },
     "x_axis": {
       "type": "array",

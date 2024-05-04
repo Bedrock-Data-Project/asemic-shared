@@ -1,5 +1,5 @@
 {
-  "$id": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_columns.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_columns.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
@@ -26,26 +26,26 @@
     "registration_columns": {
       "type": "array",
       "items": {
-        "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_column_registration.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_column_registration.json"
       },
       "minItems": 1
     },
     "user_action_columns": {
       "type": "array",
       "items": {
-        "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_column_user_action.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_column_user_action.json"
       }
     },
     "total_columns": {
       "type": "array",
       "items": {
-        "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_column_total.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_column_total.json"
       }
     },
     "computed_columns": {
       "type": "array",
       "items": {
-        "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/column_computed.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column_computed.json"
       }
     }
   },

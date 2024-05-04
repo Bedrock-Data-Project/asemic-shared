@@ -6,7 +6,6 @@
       <env name="ASEMIC_API_URL" value="http://localhost:8083" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.asemicanalytics.cli.Asemic" />
-    <module name="cli" />
     <option name="PROGRAM_PARAMETERS" value="semantic-layer push" />
     <option name="VM_PARAMETERS" value="-Djdk.console=jdk.internal.le" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/cli/target/heroicmini" />

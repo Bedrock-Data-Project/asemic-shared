@@ -1,5 +1,5 @@
 {
-  "$id": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/unit.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/unit.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [

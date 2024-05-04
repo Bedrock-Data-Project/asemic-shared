@@ -1,5 +1,5 @@
 {
-  "$id": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_column_user_action.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_column_user_action.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
@@ -10,7 +10,7 @@
   ],
   "properties": {
     "column": {
-      "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/column.json"
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
     },
     "table": {
       "type": "string"

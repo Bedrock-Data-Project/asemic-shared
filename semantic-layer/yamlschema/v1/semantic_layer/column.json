@@ -1,5 +1,5 @@
 {
-  "$id": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/column.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
@@ -9,7 +9,6 @@
   "properties": {
     "id": {
       "type": "string"
-      // TODO pattern
     },
     "data_type": {
       "enum": [

@@ -1,0 +1,34 @@
+{
+  "$id": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/user_wide_column_total.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "column",
+    "table",
+    "aggregation_expression",
+    "missing_value",
+    "merge_expression"
+  ],
+  "properties": {
+    "column": {
+      "$ref": "http://schema.asemicanalytics.com/asemic-schemas/v1/semantic_layer/column.json"
+    },
+    "table": {
+      "type": "string"
+    },
+    "aggregation_expression": {
+      "type": "string"
+    },
+    "where": {
+      "type": "string"
+    },
+    "missing_value": {},
+    "merge_expression": {
+      "type": "string"
+    },
+    "source_column": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

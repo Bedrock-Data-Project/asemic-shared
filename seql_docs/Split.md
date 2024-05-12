@@ -1,49 +1,4 @@
-# Funnels
-
-## Operations
-
-### Domain
-
-Noted by `domain` keyword. Optional. Default value is whatever is mentioned in `matched` section.
-It is a collection of `Actions` that will be used to construct sequences.
-
-Example 1, implicit domain
-
-```c
-match Login >> Search >> Purchase
-```
-
-Domain is consisted of three Events, namely: Login, Search and Purchase. It is equivalent to writing:
-
-```c
-domain Login, Search, Purchase
-match Login >> Search >> Purchase
-```
-
-Example sequence, let's denote Login, Search and Purchase with letters L, S and P:
-`LSPSP`
-
-Changing the domain will affect the match.
-
-```c
-domain Login, Search, Purchase, Tutorial
-match Login >> Search >> Purchase
-```
-
-Example sequence:
-`LTSPTSP`
-
-##### Options:
-
-```sql
-domain Login, Search where location = 'main screen' as SearchMain, Purchase
-match Login >> SearchMain >> Purchase
-```
-
-```sql
-domain Login, LevelPlayed group by level as 'Level' + str(level)
-match Login >> SearchMain >> Purchase
-```
+## [.. (back)](index.md)
 
 ### Split By
 
@@ -68,6 +23,10 @@ First split will add tag `sequence`. The second split will break each separate s
 with `sequence_2`.
 
 ##### Split By One Single Occurence
+
+```sql
+split by Login{1}
+```
 
 Example, split on every Login.
 `LBKNLBKNLLBKLB`
@@ -99,6 +58,15 @@ Comment
 same timestamp.
 
 ##### Split By N Single Occurence
+
+```sql
+split by [2]Login{1}
+or
+split by Login{1}=2
+or
+...
+```
+
 
 Similar to previous, but we want every sequence to have events from two sessions.
 
@@ -133,6 +101,10 @@ sequences AS (
 
 ##### Split By One Repeated Event
 
+```sql
+split by Login
+```
+
 Let's treat consequtive repeated events as a singular entity.
 
 ```
@@ -164,6 +136,14 @@ sequences AS (
 ```
 
 ##### Split By N Repeated Event
+
+```sql
+split by [2]Login
+or
+split by Login=2
+or
+...
+```
 
 Let's treat consequtive repeated events as a singular entity, but allow them to appear multiple times in a sequence.
 
@@ -202,17 +182,16 @@ sequences AS (
 ),
 ```
 
-### Combine
 
-Combine implements second part of what is basically map-reduce pattern.
+##### Split By pattern
 
-##### Interface
+It's simple to extend this to examples like:
 
-Removes one `sequence` tag, modifies tags on destroyed sequence and calculates something.
-These are all TODO.
+```sql
+split by Login >> AnotherAction // splits on Login followed by AnotherAction
 
-For example:
+split by [] >> [] >> Login  // splits not on Login, but two "places" before
 
-- Combine can count complete pattern and add that to the global parameter of parent sequence
-- Combine can clear all tags except one that satisfies some sequence-level condition
-- etc
+...
+
+```

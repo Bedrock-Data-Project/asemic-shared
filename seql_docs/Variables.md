@@ -1,6 +1,6 @@
 ## [.. (back)](index.md)
 
-### Working with variables
+## Working with variables
 
 Once steps are properly tagged, you can make a mapping to access variables in a Python-like fashion.
 

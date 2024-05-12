@@ -1,8 +1,8 @@
 ## [.. (back)](index.md)
 
-### Split By
+## Split By
 
-#### Interface
+### Interface
 
 Currently implemented only split by 1 action.
 `split by Action`

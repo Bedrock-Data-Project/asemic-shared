@@ -1,40 +1,41 @@
 ## [.. (back)](index.md)
 
-### Combine
+## Combine
 
 Combine implements second part of what is basically map-reduce pattern.
 
-##### Interface
+### Interface
 
 Removes one deepest `sequence` tag, keeps tags in the sequence with the most tags, resets all other tags and destroys duplicate sequences created by previous split by. Also adds count of colapsed sequences.
 
 Tag the sequence with the most valid steps:
 ```sql
-sequence_level_calc AS (
+combine_aux1 AS (
 select
   *,
-  count(first_occurence) over (partition by user_id, sequence_2) as valid_steps
+  sum(if(is_valid, first_occurence, 0)) over (partition by user_id, sequence_2) as valid_steps
 from tagged_steps
 ),
-all_sequences AS (
+combine_aux2 AS (
 select
   *,
-  max(valid_count) over (partition by user_id, sequence_1) as max_valid_steps
+  max(valid_steps) over (partition by user_id, sequence_1) = valid_steps as valid_sequence
 from tagged_steps
 )
 ```
+Take the first (leftmost) valid sequence, if it exists.
 
-Default `combine` should depend on the type of `split by`.
+```sql
+select
+  * except(steps),
+  if(valid_sequence, steps, null) as steps
+from combine_aux2
+qualify sequence_2 - if(valid_sequence, -1000, 0) = min(sequence_2 - if(valid_sequence, -1000, 0)) over (partition by user_id, row_id)
+```
 
-1. `split by Login{1}`
-Keep all sequences, remove tags from all but one ("leftmost" one with the most matched steps).
-
-2. `split by Login`
-Keep only a sequence with the most matched steps
+The above algorithm can be simplified if we know the split can not create duplicates. TODO for performance pass.
 
 
-For example:
+#### TODO and questions
 
-- Combine can count complete pattern and add that to the global parameter of parent sequence
-- Combine can clear all tags except one that satisfies some sequence-level condition
-- etc
+- Maybe this can be extended (in the future) to make true map-reduce framework.

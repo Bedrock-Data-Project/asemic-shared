@@ -7,43 +7,43 @@
 The representative is a pattern like:
 
 ```sql
-Action1 >> Action2 >> Action3 >> Action4
+match Action1 >> Action2 >> Action3 >> Action4
 ```
 or
 ```sql
-Action1{1} >> Action1 >> Action2 >> Action2
+match Action1{1} >> Action1 >> Action2 >> Action2
 ```
 
-Implicitly split the starting sequence with Action1 and then just check the order of events.
+Just check the order of events.
 
 ```sql
-match_pattern AS (
-  select 
+step1_2_3_4 AS (
+  select
     *,
-    case true_step
+    case subsequence
       when 1 then action in ('Action1')
       when 2 then action in ('Action2')
       when 3 then action in ('Action3')
       when 4 then action in ('Action4')
-      when 5 then action in ('Battle') and repetitions >= 1
-    end as is_valid
+      else null
+    end as is_valid,
+    case subsequence
+      when 1 then 1
+      when 2 then 2
+      when 3 then 3
+      when 4 then 4
+      else null
+    end as step,
+    3 as next_subsequnece,
+    1 as next_repetition
   from repeated_actions
-  where     
-    case true_step
-      when 1 then repetition = 1 -- Take only First Occurence
-      when 2 then repetition = 1 -- Take only First Occurence
-      when 3 then repetition = 1 -- Take only First Occurence
-      when 4 then repetition = 1 -- Take only First Occurence
-      when 5 then repetition = repetitions -- Take only Last Occurence
-      else false
-    end
-)
+),
 ```
 
 ### Conesequtive steps with optional steps
 
 ```sql
-Action1 >> Action2 >> [Action3] >> Action4
+match Action1 >> Action2 >> [Action3] >> Action4
 ```
 
 SQL
@@ -129,13 +129,25 @@ step3_4_prep2 AS (
   from step3_4_prep
   window w as (partition by user_id, sequence order by subsequence)
 )
-// now mark the steps
+// now mark the steps using Consequtive non-optional steps technique
+// or Conesequtive steps with optional steps technique
 ```
 
 ### Non-consequitive steps with optional steps
 
 ```sql
-Action1 >> * >> [Action2] >> Action3 >> Action4
+match Action1 >> * >> [Action2] >> Action3 >> * >> Action4
+```
+TODO: needs to be more precise
+Transform this into following steps:
+1. match Action1
+2. `split by` [] >> Action3 so each split goes until the end of original sequence
+3. `match` the remaining part of the pattern ([Action2] >> Action3 >> * >> Action4). If needed, split again like this
+4. `merge` for every `split by`
+
+### Leading optional steps
+```sql
+match [] >> [] >> Action1 >> Action2
 ```
 
-
+???

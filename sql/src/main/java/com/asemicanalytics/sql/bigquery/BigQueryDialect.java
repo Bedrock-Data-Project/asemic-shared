@@ -4,7 +4,10 @@ import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrains;
+import com.asemicanalytics.core.column.Column;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class BigQueryDialect implements Dialect {
@@ -76,6 +79,27 @@ public class BigQueryDialect implements Dialect {
   }
 
   @Override
+  public String createTableIfNotExists(TableReference tableReference, List<Column> columns,
+                                       Optional<Column> dateColumn) {
+
+    String sql = "CREATE TABLE IF NOT EXISTS " + tableIdentifier(tableReference)
+        + " (\n" + columns.stream()
+        .map(c -> columnIdentifier(c.getId()) + " " + getBigQueryDataType(c.getDataType()))
+        .reduce((a, b) -> a + ",\n" + b)
+        .orElse("") + "\n)";
+    if (dateColumn.isPresent()) {
+      sql += "PARTITION BY DATE_TRUNC(" + columnIdentifier(dateColumn.get().getId()) + ", MONTH);";
+    }
+    return sql;
+  }
+
+  @Override
+  public String addColumn(TableReference tableReference, Column column) {
+    return "ALTER TABLE " + tableIdentifier(tableReference) + " ADD COLUMN "
+        + columnIdentifier(column.getId()) + " " + getBigQueryDataType(column.getDataType());
+  }
+
+  @Override
   public String epochSeconds(String timestamp) {
     return "UNIX_SECONDS(" + timestamp + ")";
   }
@@ -83,5 +107,16 @@ public class BigQueryDialect implements Dialect {
   @Override
   public String matchesRegex(String expression, String regex) {
     return "REGEXP_CONTAINS(" + expression + ", r" + constant(regex, DataType.STRING) + ")";
+  }
+
+  private String getBigQueryDataType(DataType dataType) {
+    return switch (dataType) {
+      case NUMBER -> "NUMERIC";
+      case INTEGER -> "INT64";
+      case BOOLEAN -> "BOOL";
+      case STRING -> "STRING";
+      case DATE -> "DATE";
+      case DATETIME -> "TIMESTAMP";
+    };
   }
 }

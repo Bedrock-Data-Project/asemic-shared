@@ -4,7 +4,10 @@ import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrains;
+import com.asemicanalytics.core.column.Column;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class H2Dialect implements Dialect {
@@ -76,6 +79,23 @@ public class H2Dialect implements Dialect {
   }
 
   @Override
+  public String createTableIfNotExists(TableReference tableReference, List<Column> columns,
+                                       Optional<Column> dateColumn) {
+    String sql = "CREATE TABLE IF NOT EXISTS " + tableIdentifier(tableReference)
+        + " (\n" + columns.stream()
+        .map(c -> columnIdentifier(c.getId()) + " " + getH2DataType(c.getDataType()))
+        .reduce((a, b) -> a + ",\n" + b)
+        .orElse("") + "\n)";
+    return sql;
+  }
+
+  @Override
+  public String addColumn(TableReference tableReference, Column column) {
+    return "ALTER TABLE " + tableIdentifier(tableReference) + " ADD  "
+        + columnIdentifier(column.getId()) + " " + getH2DataType(column.getDataType());
+  }
+
+  @Override
   public String epochSeconds(String timestamp) {
     return "DATEDIFF('SECOND', '1970-01-01 00:00:00', " + timestamp + ")";
   }
@@ -83,5 +103,16 @@ public class H2Dialect implements Dialect {
   @Override
   public String matchesRegex(String expression, String regex) {
     return "REGEXP_MATCHES(" + expression + ", " + constant(regex, DataType.STRING) + ")";
+  }
+
+  private String getH2DataType(DataType dataType) {
+    return switch (dataType) {
+      case NUMBER -> "DOUBLE";
+      case INTEGER -> "INT";
+      case BOOLEAN -> "BOOLEAN";
+      case STRING -> "VARCHAR(50)";
+      case DATE -> "DATE";
+      case DATETIME -> "TIMESTAMP";
+    };
   }
 }

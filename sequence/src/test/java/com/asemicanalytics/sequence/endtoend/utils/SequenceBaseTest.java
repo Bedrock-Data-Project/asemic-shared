@@ -48,7 +48,7 @@ public class SequenceBaseTest {
             "ts", Column.ofHidden("ts", DataType.DATETIME),
             "user_id", Column.ofHidden("user_id", DataType.STRING)
         )),
-        new LinkedHashMap<>(), Map.of(), TimeGrains.min15,
+        Map.of(), TimeGrains.min15,
         "date_", "ts", "user_id"),
         new Table(TableReference.of(stepName)));
   }

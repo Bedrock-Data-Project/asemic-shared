@@ -53,7 +53,7 @@ public class H2QueryExecutor extends JdbcQueryExecutor {
       case "TIMESTAMP", "TIMESTAMPTZ" -> DataType.DATETIME;
       case "FLOAT", "REAL", "DOUBLE" -> DataType.NUMBER;
       case "INTEGER", "SMALLINT", "BIGINT", "DECIMAL" -> DataType.INTEGER;
-      case "STRING", "TEXT", "CHAR", "VARCHAR" -> DataType.STRING;
+      case "STRING", "TEXT", "CHAR", "VARCHAR", "CHARACTER VARYING" -> DataType.STRING;
       case "BOOLEAN" -> DataType.BOOLEAN;
       default -> throw new RuntimeException("Unsupported column type: " + columnType);
     };

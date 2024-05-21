@@ -1,4 +1,6 @@
-package com.asemicanalytics.core.column;
+package com.asemicanalytics.sql.sql.columnsource;
+
+import com.asemicanalytics.core.column.Column;
 
 public class ComputedColumn extends Column {
   private final String formula;

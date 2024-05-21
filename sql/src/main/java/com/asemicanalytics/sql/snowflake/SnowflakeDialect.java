@@ -4,7 +4,10 @@ import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrains;
+import com.asemicanalytics.core.column.Column;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class SnowflakeDialect implements Dialect {
@@ -74,6 +77,17 @@ public class SnowflakeDialect implements Dialect {
   public String epochDays(String date) {
     // TODO untested
     return "DATE_PART('day', " + date + "::timestamp)";
+  }
+
+  @Override
+  public String createTableIfNotExists(TableReference tableReference, List<Column> columns,
+                                       Optional<Column> dateColumn) {
+    throw new UnsupportedOperationException("Not implemented");
+  }
+
+  @Override
+  public String addColumn(TableReference tableReference, Column column) {
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override

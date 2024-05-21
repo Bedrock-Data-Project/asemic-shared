@@ -2,9 +2,7 @@ package com.asemicanalytics.core.datasource;
 
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.column.ComputedColumn;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.SequencedMap;
@@ -16,21 +14,22 @@ public class Datasource {
   protected final Optional<String> description;
 
   protected final TableReference table;
-  protected final SequencedMap<String, Column> tableColumns;
-  protected final SequencedMap<String, ComputedColumn> computedColumns;
+  protected final SequencedMap<String, Column> columns;
 
   protected final List<Enrichment> enrichments = new ArrayList<>();
 
   public Datasource(String id, String label, Optional<String> description,
                     TableReference table,
-                    SequencedMap<String, Column> columns,
-                    SequencedMap<String, ComputedColumn> computedColumns) {
+                    SequencedMap<String, Column> columns) {
     this.id = id;
     this.label = label;
     this.description = description;
     this.table = table;
-    this.tableColumns = columns;
-    this.computedColumns = computedColumns;
+    this.columns = columns;
+
+    if (columns.isEmpty()) {
+      throw new IllegalArgumentException("Datasource " + id + " must have at least one column");
+    }
   }
 
   public String getId() {
@@ -49,23 +48,12 @@ public class Datasource {
     return table;
   }
 
-  public SequencedMap<String, Column> getTableColumns() {
-    return tableColumns;
-  }
-
-  public SequencedMap<String, ComputedColumn> getComputedColumns() {
-    return computedColumns;
-  }
-
-  public SequencedMap<String, Column> getAllColumns() {
-    var allColumns = new LinkedHashMap<String, Column>();
-    allColumns.putAll(tableColumns);
-    allColumns.putAll(computedColumns);
-    return allColumns;
+  public SequencedMap<String, Column> getColumns() {
+    return columns;
   }
 
   public Column column(String id) {
-    return getAllColumns().get(id);
+    return getColumns().get(id);
   }
 
   public List<Enrichment> getEnrichments() {

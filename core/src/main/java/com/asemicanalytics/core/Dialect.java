@@ -1,6 +1,10 @@
 package com.asemicanalytics.core;
 
 
+import com.asemicanalytics.core.column.Column;
+import java.util.List;
+import java.util.Optional;
+
 public interface Dialect {
   String referenceAliasedExpression(String renderedExpression, String alias);
 
@@ -19,6 +23,11 @@ public interface Dialect {
   String intervalDays(long days);
 
   String epochDays(String date);
+
+  String createTableIfNotExists(
+      TableReference tableReference, List<Column> columns, Optional<Column> dateColumn);
+
+  String addColumn(TableReference tableReference, Column column);
 
   default String caseExpression(String switchExpression, String whenThens, String ifFalse) {
     return "CASE " + switchExpression + " " + whenThens + " " + ifFalse + " END";

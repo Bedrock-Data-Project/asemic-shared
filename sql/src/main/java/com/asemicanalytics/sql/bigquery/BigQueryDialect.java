@@ -111,7 +111,7 @@ public class BigQueryDialect implements Dialect {
 
   private String getBigQueryDataType(DataType dataType) {
     return switch (dataType) {
-      case NUMBER -> "NUMERIC";
+      case NUMBER -> "FLOAT64";
       case INTEGER -> "INT64";
       case BOOLEAN -> "BOOL";
       case STRING -> "STRING";

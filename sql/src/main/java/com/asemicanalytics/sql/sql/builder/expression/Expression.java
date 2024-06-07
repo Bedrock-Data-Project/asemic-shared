@@ -17,4 +17,8 @@ public interface Expression extends Token {
     return new AliasedExpression(this, alias);
   }
 
+  default String contentHash() {
+    return hashString(renderDefinition(contentHashDialect())).substring(0, 4);
+  }
+
 }

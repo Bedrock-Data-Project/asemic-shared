@@ -21,9 +21,4 @@ public class IfExpression implements Expression {
         ifTrue.render(dialect),
         ifFalse.renderDefinition(dialect));
   }
-
-  @Override
-  public String renderDefinition(Dialect dialect) {
-    return Expression.super.renderDefinition(dialect);
-  }
 }

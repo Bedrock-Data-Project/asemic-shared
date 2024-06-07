@@ -19,9 +19,4 @@ public class TimeGrainTruncatedExpression implements Expression {
   public String render(Dialect dialect) {
     return dialect.truncateTimestamp(expression.render(dialect), timeGrain, shiftDays);
   }
-
-  @Override
-  public String renderDefinition(Dialect dialect) {
-    return Expression.super.renderDefinition(dialect);
-  }
 }

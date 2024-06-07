@@ -2,6 +2,7 @@ package com.asemicanalytics.sql.sql.builder.expression;
 
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.Dialect;
+import java.time.LocalDate;
 
 public class Constant implements Expression {
   private final String value;
@@ -22,6 +23,10 @@ public class Constant implements Expression {
 
   public static Constant ofBoolean(boolean value) {
     return new Constant(Boolean.toString(value).toUpperCase(), DataType.BOOLEAN);
+  }
+
+  public static Constant ofDate(LocalDate value) {
+    return new Constant(value.toString(), DataType.DATE);
   }
 
   public static Expression ofNull() {

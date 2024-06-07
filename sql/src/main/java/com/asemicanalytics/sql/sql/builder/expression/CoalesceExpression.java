@@ -16,9 +16,4 @@ public class CoalesceExpression extends FunctionExpression {
     }
     return super.render(dialect);
   }
-
-  @Override
-  public String renderDefinition(Dialect dialect) {
-    return super.renderDefinition(dialect);
-  }
 }

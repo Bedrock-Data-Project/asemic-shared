@@ -61,6 +61,11 @@ public class H2Dialect implements Dialect {
   }
 
   @Override
+  public String dateAdd(String column, int days) {
+    return column + days;
+  }
+
+  @Override
   public String covertToTimestamp(String column, int shiftDays) {
     if (shiftDays == 0) {
       return "CAST(" + column + " AS TIMESTAMP)";
@@ -103,6 +108,20 @@ public class H2Dialect implements Dialect {
   @Override
   public String matchesRegex(String expression, String regex) {
     return "REGEXP_MATCHES(" + expression + ", " + constant(regex, DataType.STRING) + ")";
+  }
+
+  @Override
+  public Optional<String> prepareForInsertOverwrite(TableReference table, String partitionColumn,
+                                                    String partitionValue) {
+    return Optional.of("DELETE FROM " + tableIdentifier(table)
+        + " WHERE " + columnIdentifier(partitionColumn)
+        + " = " + constant(partitionValue, DataType.DATE));
+  }
+
+  @Override
+  public String insertOverwrite(TableReference table, String select, String partitionColumn,
+                                String partitionValue) {
+    return "";
   }
 
   private String getH2DataType(DataType dataType) {

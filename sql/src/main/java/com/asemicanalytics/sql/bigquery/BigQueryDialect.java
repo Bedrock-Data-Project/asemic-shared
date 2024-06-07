@@ -61,6 +61,11 @@ public class BigQueryDialect implements Dialect {
   }
 
   @Override
+  public String dateAdd(String column, int days) {
+    return "DATE_ADD(" + column + ", INTERVAL " + days + " DAY)";
+  }
+
+  @Override
   public String covertToTimestamp(String column, int shiftDays) {
     if (shiftDays == 0) {
       return "TIMESTAMP(" + column + ")";
@@ -107,6 +112,18 @@ public class BigQueryDialect implements Dialect {
   @Override
   public String matchesRegex(String expression, String regex) {
     return "REGEXP_CONTAINS(" + expression + ", r" + constant(regex, DataType.STRING) + ")";
+  }
+
+  @Override
+  public String insertOverwrite(TableReference table, String select, String partitionColumn,
+                                String partitionValue) {
+    return "MERGE " + tableIdentifier(table) + "USING (" + select + ") ON FALSE"
+        + " WHEN NOT MATCHED AND " + columnIdentifier(partitionColumn)
+        + " = " + constant(partitionValue, DataType.DATE) + " THEN"
+        + " INSERT ROW"
+        + " WHEN NOT MATCHED BY SOURCE AND "
+        + columnIdentifier(partitionColumn) + " = "
+        + constant(partitionValue, DataType.DATE) + " THEN DELETE";
   }
 
   private String getBigQueryDataType(DataType dataType) {

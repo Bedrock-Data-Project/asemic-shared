@@ -28,9 +28,4 @@ public class FunctionExpression implements Expression {
   public String render(Dialect dialect) {
     return functionName.toUpperCase() + "(" + arguments.render(dialect) + ")";
   }
-
-  @Override
-  public String renderDefinition(Dialect dialect) {
-    return Expression.super.renderDefinition(dialect);
-  }
 }

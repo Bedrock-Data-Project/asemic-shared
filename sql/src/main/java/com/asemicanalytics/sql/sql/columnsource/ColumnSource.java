@@ -8,6 +8,7 @@ import com.asemicanalytics.sql.sql.builder.expression.Formatter;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class ColumnSource {
@@ -22,6 +23,7 @@ public abstract class ColumnSource {
   private Expression parseColumnExpression(String columnExpression, DatetimeInterval interval) {
     // TODO this is very primitive implementation to support cohort_day for user wide
     // we can consider improving the syntax in the future to offer database agnostic definitions
+
     if (columnExpression.contains("(") && columnExpression.contains(")")) {
       var functionName = columnExpression.substring(0, columnExpression.indexOf("("));
       var arguments = columnExpression

@@ -61,6 +61,11 @@ public class SnowflakeDialect implements Dialect {
   }
 
   @Override
+  public String dateAdd(String column, int days) {
+    return "DATEADD(DAY, " + days + ", " + column + ")";
+  }
+
+  @Override
   public String covertToTimestamp(String column, int shiftDays) {
     if (shiftDays == 0) {
       return "TO_TIMESTAMP(" + column + ")";
@@ -99,5 +104,11 @@ public class SnowflakeDialect implements Dialect {
   public String matchesRegex(String expression, String regex) {
     return "REGEXP_LIKE(" + expression + ", " + constant(regex, DataType.STRING) + ")";
 
+  }
+
+  @Override
+  public String insertOverwrite(TableReference table, String select, String partitionColumn,
+                                String partitionValue) {
+    throw new UnsupportedOperationException("Not implemented");
   }
 }

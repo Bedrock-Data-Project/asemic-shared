@@ -18,6 +18,8 @@ public interface Dialect {
 
   String truncateTimestamp(String column, TimeGrains timeGrain, int shiftDays);
 
+  String dateAdd(String column, int days);
+
   String covertToTimestamp(String column, int shiftDays);
 
   String intervalDays(long days);
@@ -53,5 +55,17 @@ public interface Dialect {
   String epochSeconds(String timestamp);
 
   String matchesRegex(String expression, String regex);
+
+  /**
+   * If a database does not support INSERT OVERWRITE, this method can be overriden
+   * to delete the partition before inserting the data with insertOverwrite.
+   */
+  default Optional<String> prepareForInsertOverwrite(
+      TableReference table, String partitionColumn, String partitionValue) {
+    return Optional.empty();
+  }
+
+  String insertOverwrite(
+      TableReference table, String select, String partitionColumn, String partitionValue);
 }
 

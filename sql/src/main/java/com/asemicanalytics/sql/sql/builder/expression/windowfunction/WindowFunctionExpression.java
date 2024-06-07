@@ -37,9 +37,4 @@ public class WindowFunctionExpression implements Expression {
     }
     return function.render(dialect) + " OVER (" + String.join(" ", overTokens) + ")";
   }
-
-  @Override
-  public String renderDefinition(Dialect dialect) {
-    return Expression.super.renderDefinition(dialect);
-  }
 }

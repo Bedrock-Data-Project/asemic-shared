@@ -1,30 +1,30 @@
 package com.asemicanalytics.config.enrichment;
 
-import com.asemicanalytics.core.datasource.Datasource;
-import com.asemicanalytics.core.datasource.Enrichment;
-import com.asemicanalytics.core.datasource.EnrichmentColumnPair;
-import com.asemicanalytics.core.datasource.useraction.UserActionDatasource;
-import com.asemicanalytics.core.datasource.userwide.UserWideDatasource;
+import com.asemicanalytics.core.logicaltable.Enrichment;
+import com.asemicanalytics.core.logicaltable.EnrichmentColumnPair;
+import com.asemicanalytics.core.logicaltable.LogicalTable;
+import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class EnrichmentResolver {
-  public static void resolve(Map<String, Datasource> datasources,
-                             Optional<UserWideDatasource> userWideDatasource,
+  public static void resolve(Map<String, ? extends LogicalTable> logicalTables,
+                             Optional<EntityLogicalTable> entityLogicalTable,
                              List<EnrichmentDefinition> enrichmentDefinitions) {
     enrichmentDefinitions.forEach(e -> {
-      var source = datasources.get(e.sourceDatasourceId());
-      var target = datasources.get(e.targetDatasourceId());
+      var source = logicalTables.get(e.sourceLogicalTable());
+      var target = logicalTables.get(e.targetLogicalTable());
       source.addEnrichment(new Enrichment(target, e.enrichmentColumnPairs()));
     });
 
-    userWideDatasource.ifPresent(uw -> datasources.values().stream()
-        .filter(d -> d instanceof UserActionDatasource)
-        .map(d -> (UserActionDatasource) d)
+    entityLogicalTable.ifPresent(uw -> logicalTables.values().stream()
+        .filter(d -> d instanceof ActionLogicalTable)
+        .map(d -> (ActionLogicalTable) d)
         .forEach(d -> d.addEnrichment(new Enrichment(uw, List.of(
                 new EnrichmentColumnPair(d.getDateColumn().getId(), uw.getDateColumn().getId()),
-                new EnrichmentColumnPair(d.getUserIdColumn().getId(), uw.getUserIdColumn().getId())
+                new EnrichmentColumnPair(d.entityIdColumn().getId(), uw.entityIdColumn().getId())
             ))
         )));
 

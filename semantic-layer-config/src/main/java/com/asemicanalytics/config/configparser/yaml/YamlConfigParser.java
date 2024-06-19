@@ -1,11 +1,11 @@
 package com.asemicanalytics.config.configparser.yaml;
 
 import com.asemicanalytics.config.configparser.ConfigParser;
-import com.asemicanalytics.config.configparser.UserWideDatasourceDto;
-import com.asemicanalytics.core.datasource.useraction.UserActionDatasource;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.CustomDailyDatasourceDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.StaticDatasourceDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.UserActionDatasourceDto;
+import com.asemicanalytics.config.configparser.EntityDto;
+import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.CustomDailyLogicalTableDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.StaticLogicalTableDto;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -22,28 +22,31 @@ public class YamlConfigParser implements ConfigParser {
     this.yamlFileLoader = fileLoader;
   }
 
-  private <T> Map<String, T> readTopLevelDatasource(String appId, String prefix, Class<T> clazz) {
-    Map<String, T> datasources = new HashMap<>();
+  private <T> Map<String, T> readTopLevelLogicalTables(String appId,
+                                                       Class<T> clazz) {
+    Map<String, T> logicalTables = new HashMap<>();
 
-    Arrays.stream(appsPath.resolve(appId).toFile().listFiles())
-        .filter(file -> file.getName().startsWith(prefix))
+    Arrays.stream(
+            appsPath
+                .resolve(appId)
+                .resolve("userentity")
+                .resolve("actions").toFile().listFiles())
         .forEach(file -> {
           try {
             String[] tokens = file.getName().split("\\.");
-            if (tokens.length != 4) {
-              throw new IllegalArgumentException("Invalid datasource file name: " + file.getName());
+            if (tokens.length != 2) {
+              throw new IllegalArgumentException(
+                  "Invalid logical table file name: " + file.getName());
             }
-            String datasourceId = tokens[2];
-
-            // TODO validate using json schema
-            datasources.put(
-                datasourceId, yamlFileLoader.load(Files.readString(file.toPath()), clazz));
+            String logicalTableId = tokens[0];
+            logicalTables.put(
+                logicalTableId, yamlFileLoader.load(Files.readString(file.toPath()), clazz));
           } catch (Exception e) {
             throw new RuntimeException(e);
           }
         });
 
-    return datasources;
+    return logicalTables;
   }
 
   @Override
@@ -54,24 +57,24 @@ public class YamlConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, StaticDatasourceDto> parseStaticDatasources(String appId) {
-    return readTopLevelDatasource(appId, "ds.static", StaticDatasourceDto.class);
+  public Map<String, StaticLogicalTableDto> parseStaticLogicalTables(String appId) {
+    return readTopLevelLogicalTables(appId, StaticLogicalTableDto.class);
   }
 
   @Override
-  public Map<String, UserActionDatasourceDto> parseUserActionDatasources(String appId) {
-    return readTopLevelDatasource(appId, "ds.user_action", UserActionDatasourceDto.class);
+  public Map<String, ActionLogicalTableDto> parseActionLogicalTables(String appId) {
+    return readTopLevelLogicalTables(appId, ActionLogicalTableDto.class);
   }
 
   @Override
-  public Map<String, CustomDailyDatasourceDto> parseCustomDailyDatasources(String appId) {
-    return readTopLevelDatasource(appId, "ds.custom_daily", CustomDailyDatasourceDto.class);
+  public Map<String, CustomDailyLogicalTableDto> parseCustomDailyLogicalTables(String appId) {
+    return readTopLevelLogicalTables(appId, CustomDailyLogicalTableDto.class);
   }
 
   @Override
-  public Optional<UserWideDatasourceDto> parseUserWideDatasource(
-      String appId, Map<String, UserActionDatasource> userActionDatasources) {
-    return new UserWideDatasourcesParser(yamlFileLoader)
-        .parse(appId, appsPath.resolve(appId), userActionDatasources);
+  public Optional<EntityDto> parseEntityLogicalTable(
+      String appId, Map<String, ActionLogicalTable> userActionLogicalTables) {
+    return new EntityLogicalTableParser(yamlFileLoader)
+        .parse(appsPath.resolve(appId).resolve("userentity"), userActionLogicalTables);
   }
 }

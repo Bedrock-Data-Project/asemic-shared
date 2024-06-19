@@ -1,7 +1,7 @@
 package com.asemicanalytics.config.configloader;
 
 public record FullColumnId(
-    String datasourceId,
+    String logicalTableId,
     String columnId
 ) {
   public static FullColumnId parse(String fullColumnId) {

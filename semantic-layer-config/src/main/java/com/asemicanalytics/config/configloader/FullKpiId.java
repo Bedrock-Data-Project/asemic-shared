@@ -1,7 +1,7 @@
 package com.asemicanalytics.config.configloader;
 
 public record FullKpiId(
-    String datasourceId,
+    String logicalTableId,
     String kpiId
 ) {
   public static FullKpiId parse(String fullKpiId) {

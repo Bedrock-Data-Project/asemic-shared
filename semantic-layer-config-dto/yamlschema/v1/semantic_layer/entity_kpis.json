@@ -1,0 +1,33 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_kpis.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [],
+  "properties": {
+    "category": {
+      "type": "string"
+    },
+    "kpis": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_kpi.json"
+      },
+      "minItems": 1
+    },
+    "cohorted_daily_kpis_days": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1
+    },
+    "cohorted_daily_kpis": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_kpi_cohorted.json"
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": false
+}

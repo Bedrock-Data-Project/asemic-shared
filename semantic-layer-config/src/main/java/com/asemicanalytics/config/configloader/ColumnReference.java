@@ -2,13 +2,13 @@ package com.asemicanalytics.config.configloader;
 
 
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.datasource.Datasource;
+import com.asemicanalytics.core.logicaltable.LogicalTable;
 
 public record ColumnReference(
-    Datasource datasource,
+    LogicalTable logicalTable,
     String columnId
 ) {
   public Column column() {
-    return datasource.getColumns().column(columnId);
+    return logicalTable.getColumns().column(columnId);
   }
 }

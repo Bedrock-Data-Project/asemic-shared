@@ -1,0 +1,35 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_properties.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+  ],
+  "properties": {
+    "first_appearance_properties": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_first_appearance.json"
+      },
+      "minItems": 1
+    },
+    "action_properties": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json"
+      }
+    },
+    "total_properties": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_total.json"
+      }
+    },
+    "computed_properties": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column_computed.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}

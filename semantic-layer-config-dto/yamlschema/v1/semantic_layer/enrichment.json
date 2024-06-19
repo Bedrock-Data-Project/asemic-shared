@@ -3,11 +3,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "datasource",
+    "logical_table",
     "on"
   ],
   "properties": {
-    "datasource": {
+    "logical_table": {
       "type": "string"
     },
     "on": {

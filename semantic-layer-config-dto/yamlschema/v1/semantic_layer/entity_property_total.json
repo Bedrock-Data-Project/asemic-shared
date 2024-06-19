@@ -1,0 +1,22 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_total.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "column",
+    "source_column",
+    "merge_expression"
+  ],
+  "properties": {
+    "column": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
+    },
+    "source_column": {
+      "type": "string"
+    },
+    "merge_expression": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

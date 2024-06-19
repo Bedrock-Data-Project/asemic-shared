@@ -1,29 +1,29 @@
 package com.asemicanalytics.config.configloader;
 
 import com.asemicanalytics.config.configparser.ConfigParser;
-import com.asemicanalytics.config.configparser.UserWideDatasourceDto;
-import com.asemicanalytics.core.datasource.useraction.UserActionDatasource;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.CustomDailyDatasourceDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.StaticDatasourceDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.UserActionDatasourceDto;
+import com.asemicanalytics.config.configparser.EntityDto;
+import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.CustomDailyLogicalTableDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.StaticLogicalTableDto;
 import java.util.Map;
 import java.util.Optional;
 
 public class TestConfigParser implements ConfigParser {
 
-  private final Map<String, StaticDatasourceDto> staticDatasources;
-  private final Map<String, UserActionDatasourceDto> userActionDatasources;
-  private final Map<String, CustomDailyDatasourceDto> customDailyDatasources;
-  private final Optional<UserWideDatasourceDto> userWideDatasourceDto;
+  private final Map<String, StaticLogicalTableDto> staticLogicalTables;
+  private final Map<String, ActionLogicalTableDto> actionLogicalTables;
+  private final Map<String, CustomDailyLogicalTableDto> customDailyLogicalTables;
+  private final Optional<EntityDto> entityDto;
 
-  public TestConfigParser(Map<String, StaticDatasourceDto> staticDatasources,
-                          Map<String, UserActionDatasourceDto> userActionDatasources,
-                          Map<String, CustomDailyDatasourceDto> customDailyDatasources,
-                          Optional<UserWideDatasourceDto> userWideDatasourceDto) {
-    this.staticDatasources = staticDatasources;
-    this.userActionDatasources = userActionDatasources;
-    this.customDailyDatasources = customDailyDatasources;
-    this.userWideDatasourceDto = userWideDatasourceDto;
+  public TestConfigParser(Map<String, StaticLogicalTableDto> staticLogicalTables,
+                          Map<String, ActionLogicalTableDto> actionLogicalTables,
+                          Map<String, CustomDailyLogicalTableDto> customDailyLogicalTables,
+                          Optional<EntityDto> entityDto) {
+    this.staticLogicalTables = staticLogicalTables;
+    this.actionLogicalTables = actionLogicalTables;
+    this.customDailyLogicalTables = customDailyLogicalTables;
+    this.entityDto = entityDto;
   }
 
   @Override
@@ -32,23 +32,23 @@ public class TestConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, StaticDatasourceDto> parseStaticDatasources(String appId) {
-    return staticDatasources;
+  public Map<String, StaticLogicalTableDto> parseStaticLogicalTables(String appId) {
+    return staticLogicalTables;
   }
 
   @Override
-  public Map<String, UserActionDatasourceDto> parseUserActionDatasources(String appId) {
-    return userActionDatasources;
+  public Map<String, ActionLogicalTableDto> parseActionLogicalTables(String appId) {
+    return actionLogicalTables;
   }
 
   @Override
-  public Map<String, CustomDailyDatasourceDto> parseCustomDailyDatasources(String appId) {
-    return customDailyDatasources;
+  public Map<String, CustomDailyLogicalTableDto> parseCustomDailyLogicalTables(String appId) {
+    return customDailyLogicalTables;
   }
 
   @Override
-  public Optional<UserWideDatasourceDto> parseUserWideDatasource(
-      String appId, Map<String, UserActionDatasource> userActionDatasources) {
-    return userWideDatasourceDto;
+  public Optional<EntityDto> parseEntityLogicalTable(
+      String appId, Map<String, ActionLogicalTable> userActionLogicalTables) {
+    return entityDto;
   }
 }

@@ -3,7 +3,7 @@ package com.asemicanalytics.config.configloader;
 import com.asemicanalytics.core.kpi.Kpi;
 
 public record KpiReference(
-    String datasourceId,
+    String logicalTableId,
     Kpi kpi
 ) {
 }

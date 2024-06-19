@@ -19,7 +19,8 @@ match Action1{1} >> Action1 >> Action2 >> Action2
 Just check the order of events.
 
 ```sql
-step1_2_3_4 AS (
+step1_2_3_4
+AS (
   select
     *,
     case subsequence
@@ -51,7 +52,8 @@ match Action1 >> Action2 >> [Action3] >> Action4
 SQL
 
 ```sql
-step1_2 AS (
+step1_2
+AS (
   select
     *,
     case subsequence
@@ -108,7 +110,8 @@ step_else as (
 ### Non-consequtive steps
 
 ```sql
-Action1 >> Action2 >> * >> Action3 >> Action4
+Action1
+>> Action2 >> * >> Action3 >> Action4
 ```
 
 SQL

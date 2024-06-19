@@ -12,7 +12,8 @@ duplicate sequences created by previous split by. Also adds count of colapsed se
 Tag the sequence with the most valid steps:
 
 ```sql
-combine_aux1 AS (
+combine_aux1
+AS (
 select
   *,
   sum(if(is_valid, first_occurence, 0)) over (partition by user_id, sequence_2) as valid_steps
@@ -29,8 +30,10 @@ from tagged_steps
 Take the first (leftmost) valid sequence, if it exists.
 
 ```sql
-select
-  * except(steps),
+select *
+except
+(steps)
+,
   if(valid_sequence, steps, null) as steps
 from combine_aux2
 qualify sequence_2 - if(valid_sequence, -1000, 0) = min(sequence_2 - if(valid_sequence, -1000, 0)) over (partition by user_id, row_id)

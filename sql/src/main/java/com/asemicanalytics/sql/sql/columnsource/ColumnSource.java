@@ -2,7 +2,7 @@ package com.asemicanalytics.sql.sql.columnsource;
 
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.column.ComputedColumn;
-import com.asemicanalytics.core.datasource.Datasource;
+import com.asemicanalytics.core.logicaltable.LogicalTable;
 import com.asemicanalytics.sql.sql.builder.expression.EpochDays;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
 import com.asemicanalytics.sql.sql.builder.expression.Formatter;
@@ -12,10 +12,10 @@ import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.stream.Collectors;
 
 public abstract class ColumnSource {
-  private final Datasource datasource;
+  private final LogicalTable logicalTable;
 
-  protected ColumnSource(Datasource datasource) {
-    this.datasource = datasource;
+  protected ColumnSource(LogicalTable logicalTable) {
+    this.logicalTable = logicalTable;
   }
 
   public abstract TableLike table();
@@ -44,10 +44,10 @@ public abstract class ColumnSource {
   }
 
   public Expression loadColumn(String columnName, DatetimeInterval interval) {
-    var column = datasource.getColumns().column(columnName);
+    var column = logicalTable.getColumns().column(columnName);
     if (column == null) {
       throw new IllegalArgumentException(
-          "Column not found: " + columnName + " in datasource " + datasource.getId());
+          "Column not found: " + columnName + " in logical table " + logicalTable.getId());
     }
 
     if (column instanceof ComputedColumn computedColumn) {
@@ -63,8 +63,8 @@ public abstract class ColumnSource {
     return table().column(columnName);
   }
 
-  public Datasource getDatasource() {
-    return datasource;
+  public LogicalTable getLogicalTable() {
+    return logicalTable;
   }
 
 }

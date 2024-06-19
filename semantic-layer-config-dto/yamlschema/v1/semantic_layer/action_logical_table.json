@@ -1,0 +1,46 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/action_logical_table.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "table_name",
+    "columns"
+  ],
+  "properties": {
+    "table_name": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "label": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json",
+        "minItems": 1
+      }
+    },
+    "computed_columns": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column_computed.json"
+      }
+    },
+    "enrichments": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/enrichment.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}

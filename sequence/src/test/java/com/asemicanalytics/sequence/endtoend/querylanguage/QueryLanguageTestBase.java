@@ -6,7 +6,7 @@ import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.datasource.useraction.UserActionDatasource;
+import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.Step;
 import com.asemicanalytics.sql.sql.builder.tablelike.Table;
@@ -26,15 +26,15 @@ public class QueryLanguageTestBase {
   );
 
   private ColumnSource columnSource(String stepName) {
-    return new TableColumnSource(new UserActionDatasource(
+    return new TableColumnSource(new ActionLogicalTable(
         stepName, "", Optional.empty(), TableReference.of(stepName),
         new Columns(new LinkedHashMap<>(Map.of(
             "date_",
-            Column.ofHidden("date_", DataType.DATE).withTag(UserActionDatasource.DATE_COLUMN_TAG),
+            Column.ofHidden("date_", DataType.DATE).withTag(ActionLogicalTable.DATE_COLUMN_TAG),
             "ts", Column.ofHidden("ts", DataType.DATETIME)
-                .withTag(UserActionDatasource.TIMESTAMP_COLUMN_TAG),
+                .withTag(ActionLogicalTable.TIMESTAMP_COLUMN_TAG),
             "user_id", Column.ofHidden("user_id", DataType.STRING)
-                .withTag(UserActionDatasource.USER_ID_COLUMN_TAG)
+                .withTag(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)
         ))),
         Map.of(), Set.of()),
         new Table(TableReference.of(stepName)));

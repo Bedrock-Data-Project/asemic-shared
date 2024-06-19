@@ -1,0 +1,46 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "column",
+    "action_logical_table",
+    "aggregation_expression",
+    "missing_value"
+  ],
+  "properties": {
+    "column": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
+    },
+    "action_logical_table": {
+      "type": "string"
+    },
+    "aggregation_expression": {
+      "type": "string"
+    },
+    "where": {
+      "type": "string"
+    },
+    "missing_value": {
+      "type": "string"
+    },
+    "days": {
+      "type": "integer"
+    },
+    "window": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "window_aggregation": {
+      "type": "string"
+    },
+    "can_materialize": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

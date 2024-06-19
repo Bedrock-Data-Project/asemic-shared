@@ -9,9 +9,9 @@ import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.datasource.EventLikeDatasource;
-import com.asemicanalytics.core.datasource.TemporalDatasource;
-import com.asemicanalytics.core.datasource.useraction.UserActionDatasource;
+import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
+import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sql.sql.builder.tablelike.Table;
 import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
@@ -44,15 +44,15 @@ public class SequenceBaseTest {
   }
 
   private ColumnSource columnSource(String stepName) {
-    return new TableColumnSource(new UserActionDatasource(
+    return new TableColumnSource(new ActionLogicalTable(
         stepName, "", Optional.empty(), TableReference.of(stepName),
         new Columns(new LinkedHashMap<>(Map.of(
             "date_",
-            Column.ofHidden("date_", DataType.DATE).withTag(TemporalDatasource.DATE_COLUMN_TAG),
+            Column.ofHidden("date_", DataType.DATE).withTag(TemporalLogicalTable.DATE_COLUMN_TAG),
             "ts", Column.ofHidden("ts", DataType.DATETIME)
-                .withTag(EventLikeDatasource.TIMESTAMP_COLUMN_TAG),
+                .withTag(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG),
             "user_id", Column.ofHidden("user_id", DataType.STRING)
-                .withTag(UserActionDatasource.USER_ID_COLUMN_TAG)
+                .withTag(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)
         ))),
         Map.of(), Set.of()),
         new Table(TableReference.of(stepName)));

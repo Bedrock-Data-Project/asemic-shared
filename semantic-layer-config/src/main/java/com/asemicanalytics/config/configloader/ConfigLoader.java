@@ -1,13 +1,14 @@
 package com.asemicanalytics.config.configloader;
 
-import com.asemicanalytics.config.configloader.dtomapper.CustomDailyDatasourceDtoMapper;
-import com.asemicanalytics.config.configloader.dtomapper.StaticDatasourceDtoMapper;
-import com.asemicanalytics.config.configloader.dtomapper.UserActionDatasourceDtoMapper;
-import com.asemicanalytics.config.configloader.dtomapper.UserWideDatasourceMapper;
+import com.asemicanalytics.config.EntityModelConfig;
+import com.asemicanalytics.config.configloader.dtomapper.ActionDtoMapper;
+import com.asemicanalytics.config.configloader.dtomapper.CustomDailyLogicalTableDtoMapper;
+import com.asemicanalytics.config.configloader.dtomapper.EntityMapper;
+import com.asemicanalytics.config.configloader.dtomapper.StaticLogicalTableDtoMapper;
 import com.asemicanalytics.config.configparser.ConfigParser;
 import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
-import com.asemicanalytics.core.datasource.Datasource;
-import com.asemicanalytics.core.datasource.useraction.UserActionDatasource;
+import com.asemicanalytics.core.logicaltable.LogicalTable;
+import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,30 +22,21 @@ public class ConfigLoader {
     this.configParser = configParser;
   }
 
-  public SemanticLayerConfig parse(String appId) throws IOException {
+  public EntityModelConfig parse(String appId) throws IOException {
     configParser.init(appId);
     List<EnrichmentDefinition> enrichmentCollector = new ArrayList<>();
-    var datasources = loadTopLevelDatasources(appId, enrichmentCollector);
-    Map<String, UserActionDatasource> userActionDatasources = datasources.values().stream()
-        .filter(ds -> ds instanceof UserActionDatasource)
-        .map(ds -> (UserActionDatasource) ds)
-        .collect(HashMap::new, (m, ds) -> m.put(ds.getId(), ds), HashMap::putAll);
-    var userWide = this.configParser.parseUserWideDatasource(appId, userActionDatasources)
-        .map(dto -> new UserWideDatasourceMapper(appId).apply(dto));
-    return new SemanticLayerConfig(datasources, userWide, enrichmentCollector);
+    var actionLogicalTables = loadTopLevelLogicalTables(appId, enrichmentCollector);
+    var entity = this.configParser.parseEntityLogicalTable(appId, actionLogicalTables)
+        .map(dto -> new EntityMapper(appId).apply(dto));
+    return new EntityModelConfig(actionLogicalTables, entity, enrichmentCollector);
   }
 
-  private Map<String, Datasource> loadTopLevelDatasources(
+  private Map<String, ActionLogicalTable> loadTopLevelLogicalTables(
       String appId, List<EnrichmentDefinition> enrichmentCollector) {
-    Map<String, Datasource> datasources = new HashMap<>();
-    this.configParser.parseStaticDatasources(appId)
-        .forEach((k, v) -> datasources.put(k, new StaticDatasourceDtoMapper(k, appId).apply(v)));
-    this.configParser.parseCustomDailyDatasources(appId)
-        .forEach((k, v) -> datasources.put(k,
-            new CustomDailyDatasourceDtoMapper(k, appId, enrichmentCollector).apply(v)));
-    this.configParser.parseUserActionDatasources(appId)
-        .forEach((k, v) -> datasources.put(k,
-            new UserActionDatasourceDtoMapper(k, appId, enrichmentCollector).apply(v)));
-    return datasources;
+    Map<String, ActionLogicalTable> logicalTables = new HashMap<>();
+    this.configParser.parseActionLogicalTables(appId)
+        .forEach((k, v) -> logicalTables.put(k,
+            new ActionDtoMapper(k, appId, enrichmentCollector).apply(v)));
+    return logicalTables;
   }
 }

@@ -20,20 +20,16 @@ Step1[1]
 Keeps the variable only for the Step1, it's value will be NULL for other steps.
 
 ```sql
-select
-  *,
-  max(if(step = 1 and repetition = 1, p_login, null)) over 
-    (partition by user_id, sequence_N, step)
+select *,
+       max(if(step = 1 and repetition = 1, p_login, null)) over (partition by user_id, sequence_N, step)
 from tagged_steps
 ```
 
 Or, expose the variable for the whole sequence:
 
 ```sql
-select
-  *,
-  max(if(step = 1 and repetition = 1, p_login, null)) over 
-    (partition by user_id, sequence_N)
+select *,
+       max(if(step = 1 and repetition = 1, p_login, null)) over (partition by user_id, sequence_N)
 from tagged_steps
 ```
 
@@ -44,27 +40,28 @@ Step1[end] or Step1[-1]
 SQL snippet:
 
 ```sql
-select
-  *,
-  max(if(step = 1 and repetition = repetitions, p_login, null)) over (partition by user_id, sequence_N)
+select *,
+       max(if(step = 1 and repetition = repetitions, p_login, null)) over (partition by user_id, sequence_N)
 from tagged_steps
 ```
 
 If index is out of bounds, the last value will be taken. So, it's for anything except `Step[1]` and `Step[end]`
 
 ```sql
-select
-  *,
-  max(if(step = 2 and repetition = least(2, repetitions), p_login, null)) over (partition by user_id, sequence_N)
+select *,
+       max(if(step = 2 and repetition = least(2, repetitions), p_login, null)) over (partition by user_id, sequence_N)
 from tagged_steps
 ```
 
 Following variables should be always available
 
 ```sql
-Step.name            // event / derivate name
+Step
+.
+name
+// event / derivate name
 Step.pick            // which consequitive event will represent the step;
-                     // 1 by default
+// 1 by default
 Step.repetition      // order in the group
 Step.repetitions     // total in the group
 Step.gap             // time between previous and the current event
@@ -77,15 +74,21 @@ The following sintax is in order:
 ```sql
 // exposing particular parameter
 match Login >> Search >> Purchase
-set Step1.p_login = Step1[end].p_login
+set Step1.p_login = Step1[
+end
+].p_login
 ```
 
 ```sql
 // expressing gap in this way, although 
 match Login >> Search >> Purchase
 set Step1.gap = null
-set Step2.gap = Step2[1].time - Step1[end].time
-set Step3.gap = Step3[1].time - Step2[end].time
+set Step2.gap = Step2[1].time - Step1[
+end
+].time
+set Step3.gap = Step3[1].time - Step2[
+end
+].time
 ```
 
 ```sql

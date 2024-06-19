@@ -3,30 +3,28 @@ package com.asemicanalytics.core.datasource;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrain;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.kpi.Kpi;
 import java.util.Map;
 import java.util.Optional;
-import java.util.SequencedMap;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class TemporalDatasource extends Datasource {
 
+  public static final String DATE_COLUMN_TAG = "date_column";
   protected final TimeGrain minTimeGrain;
   protected final String dateColumn;
   protected final Map<String, Kpi> kpis;
 
   public TemporalDatasource(String id, String label, Optional<String> description,
                             TableReference table,
-                            SequencedMap<String, Column> columns,
-                            Map<String, Kpi> kpis, TimeGrain minTimeGrain, String dateColumn) {
-    super(id, label, description, table, columns);
+                            Columns columns,
+                            Map<String, Kpi> kpis, TimeGrain minTimeGrain, Set<String> tags) {
+    super(id, label, description, table, columns, tags);
+    this.kpis = new TreeMap<>(kpis);
     this.minTimeGrain = minTimeGrain;
-    this.dateColumn = dateColumn;
-    this.kpis = kpis;
-
-    if (!columns.containsKey(dateColumn)) {
-      throw new IllegalArgumentException(
-          "Date column not found: " + dateColumn + " in datasource " + id);
-    }
+    this.dateColumn = columns.getColumnIdByTag(DATE_COLUMN_TAG);
   }
 
   public TimeGrain getMinTimeGrain() {
@@ -34,7 +32,11 @@ public class TemporalDatasource extends Datasource {
   }
 
   public Column getDateColumn() {
-    return column(dateColumn);
+    return columns.column(dateColumn);
+  }
+
+  public String getDateColumnId() {
+    return dateColumn;
   }
 
   public Map<String, Kpi> getKpis() {

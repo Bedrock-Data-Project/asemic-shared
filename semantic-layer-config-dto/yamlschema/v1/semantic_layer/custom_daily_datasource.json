@@ -1,0 +1,50 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/custom_daily_datasource.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "table_name",
+    "date_column",
+    "columns"
+  ],
+  "properties": {
+    "table_name": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date_column": {
+      "type": "string"
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json",
+        "minItems": 1
+      }
+    },
+    "computed_columns": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column_computed.json"
+      }
+    },
+    "enrichments": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/enrichment.json"
+      }
+    },
+    "kpis": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}

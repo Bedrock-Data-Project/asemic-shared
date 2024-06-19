@@ -1,11 +1,11 @@
 package com.asemicanalytics.core.datasource;
 
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.column.Columns;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.SequencedMap;
+import java.util.Set;
 
 public class Datasource {
 
@@ -14,22 +14,20 @@ public class Datasource {
   protected final Optional<String> description;
 
   protected final TableReference table;
-  protected final SequencedMap<String, Column> columns;
+  protected final Columns columns;
+  protected final Set<String> tags;
 
   protected final List<Enrichment> enrichments = new ArrayList<>();
 
   public Datasource(String id, String label, Optional<String> description,
                     TableReference table,
-                    SequencedMap<String, Column> columns) {
+                    Columns columns, Set<String> tags) {
     this.id = id;
     this.label = label;
     this.description = description;
     this.table = table;
     this.columns = columns;
-
-    if (columns.isEmpty()) {
-      throw new IllegalArgumentException("Datasource " + id + " must have at least one column");
-    }
+    this.tags = tags;
   }
 
   public String getId() {
@@ -48,12 +46,8 @@ public class Datasource {
     return table;
   }
 
-  public SequencedMap<String, Column> getColumns() {
+  public Columns getColumns() {
     return columns;
-  }
-
-  public Column column(String id) {
-    return getColumns().get(id);
   }
 
   public List<Enrichment> getEnrichments() {
@@ -89,6 +83,14 @@ public class Datasource {
 
   public String getType() {
     return "generic";
+  }
+
+  public Set<String> getTags() {
+    return tags;
+  }
+
+  public boolean hasTag(String tag) {
+    return tags.contains(tag);
   }
 }
 

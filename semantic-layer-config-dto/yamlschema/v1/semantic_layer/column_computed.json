@@ -1,0 +1,18 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/column_computed.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "column",
+    "formula"
+  ],
+  "properties": {
+    "column": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
+    },
+    "formula": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,18 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/unit.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "symbol",
+    "is_prefix"
+  ],
+  "properties": {
+    "symbol": {
+      "type": "string"
+    },
+    "is_prefix": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

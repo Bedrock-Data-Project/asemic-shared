@@ -7,19 +7,22 @@ import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.TimeGrains;
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.datasource.UserActionDatasource;
+import com.asemicanalytics.core.column.Columns;
+import com.asemicanalytics.core.datasource.EventLikeDatasource;
+import com.asemicanalytics.core.datasource.TemporalDatasource;
+import com.asemicanalytics.core.datasource.useraction.UserActionDatasource;
 import com.asemicanalytics.sequence.SequenceService;
-import com.asemicanalytics.sql.h2.H2QueryExecutor;
 import com.asemicanalytics.sql.sql.builder.tablelike.Table;
 import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
 import com.asemicanalytics.sql.sql.columnsource.TableColumnSource;
+import com.asemicanalytics.sql.sql.h2.H2QueryExecutor;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,13 +46,15 @@ public class SequenceBaseTest {
   private ColumnSource columnSource(String stepName) {
     return new TableColumnSource(new UserActionDatasource(
         stepName, "", Optional.empty(), TableReference.of(stepName),
-        new LinkedHashMap<>(Map.of(
-            "date_", Column.ofHidden("date_", DataType.DATE),
-            "ts", Column.ofHidden("ts", DataType.DATETIME),
+        new Columns(new LinkedHashMap<>(Map.of(
+            "date_",
+            Column.ofHidden("date_", DataType.DATE).withTag(TemporalDatasource.DATE_COLUMN_TAG),
+            "ts", Column.ofHidden("ts", DataType.DATETIME)
+                .withTag(EventLikeDatasource.TIMESTAMP_COLUMN_TAG),
             "user_id", Column.ofHidden("user_id", DataType.STRING)
-        )),
-        Map.of(), TimeGrains.min15,
-        "date_", "ts", "user_id"),
+                .withTag(UserActionDatasource.USER_ID_COLUMN_TAG)
+        ))),
+        Map.of(), Set.of()),
         new Table(TableReference.of(stepName)));
   }
 

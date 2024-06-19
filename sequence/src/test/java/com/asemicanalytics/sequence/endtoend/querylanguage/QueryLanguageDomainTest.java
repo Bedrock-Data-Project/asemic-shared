@@ -7,7 +7,7 @@ import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sequence.sequence.SingleStep;
 import com.asemicanalytics.sequence.sequence.StepRepetition;
-import com.asemicanalytics.sql.bigquery.BigQueryDialect;
+import com.asemicanalytics.sql.sql.bigquery.BigQueryDialect;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -78,9 +78,9 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
         "domain transaction, transaction as t; match transaction >> t;", stepColumnSources);
 
     assertEquals(List.of(
-            new SingleStep("transaction", StepRepetition.atLeast(1), 1),
-            new SingleStep("t", StepRepetition.atLeast(1), 2)
-        ), sequence.getSteps());
+        new SingleStep("transaction", StepRepetition.atLeast(1), 1),
+        new SingleStep("t", StepRepetition.atLeast(1), 2)
+    ), sequence.getSteps());
 
     assertEquals(
         List.of("t", "transaction"),

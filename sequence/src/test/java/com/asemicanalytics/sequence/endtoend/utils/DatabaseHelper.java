@@ -1,7 +1,7 @@
 package com.asemicanalytics.sequence.endtoend.utils;
 
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.sql.h2.H2Dialect;
+import com.asemicanalytics.sql.sql.h2.H2Dialect;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

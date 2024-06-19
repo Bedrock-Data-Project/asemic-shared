@@ -1,7 +1,6 @@
 package com.asemicanalytics.sql.sql.builder;
 
 import com.asemicanalytics.core.Dialect;
-import com.asemicanalytics.sql.bigquery.BigQueryDialect;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,7 +9,7 @@ public interface Token {
   String render(Dialect dialect);
 
   default Dialect contentHashDialect() {
-    return new BigQueryDialect();
+    return new ContentHashDialect();
   }
 
   default String hashString(String input) {

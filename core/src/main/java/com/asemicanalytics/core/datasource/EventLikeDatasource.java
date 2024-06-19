@@ -1,32 +1,30 @@
 package com.asemicanalytics.core.datasource;
 
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.TimeGrain;
+import com.asemicanalytics.core.TimeGrains;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.kpi.Kpi;
 import java.util.Map;
 import java.util.Optional;
-import java.util.SequencedMap;
+import java.util.Set;
 
 public class EventLikeDatasource extends TemporalDatasource {
+  public static final String TIMESTAMP_COLUMN_TAG = "timestamp_column";
   protected final String timestampColumn;
 
   public EventLikeDatasource(String id, String label, Optional<String> description,
-                             TableReference table, SequencedMap<String, Column> columns,
-                             Map<String, Kpi> kpis,
-                             TimeGrain minTimeGrain,
-                             String dateColumn, String timestampColumn) {
-    super(id, label, description, table, columns, kpis,
-        minTimeGrain, dateColumn);
-    this.timestampColumn = timestampColumn;
-
-    if (!columns.containsKey(timestampColumn)) {
-      throw new IllegalArgumentException(
-          "Timestamp column not found: " + timestampColumn + " in datasource " + id);
-    }
+                             TableReference table, Columns columns,
+                             Map<String, Kpi> kpis, Set<String> tags) {
+    super(id, label, description, table, columns, kpis, TimeGrains.min15, tags);
+    this.timestampColumn = columns.getColumnIdByTag(TIMESTAMP_COLUMN_TAG);
   }
 
   public Column getTimestampColumn() {
-    return column(timestampColumn);
+    return columns.column(timestampColumn);
+  }
+
+  public String getTimestampColumnId() {
+    return timestampColumn;
   }
 }

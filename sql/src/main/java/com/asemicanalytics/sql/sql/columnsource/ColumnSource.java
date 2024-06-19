@@ -1,6 +1,7 @@
 package com.asemicanalytics.sql.sql.columnsource;
 
 import com.asemicanalytics.core.DatetimeInterval;
+import com.asemicanalytics.core.column.ComputedColumn;
 import com.asemicanalytics.core.datasource.Datasource;
 import com.asemicanalytics.sql.sql.builder.expression.EpochDays;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
@@ -8,7 +9,6 @@ import com.asemicanalytics.sql.sql.builder.expression.Formatter;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class ColumnSource {
@@ -44,7 +44,7 @@ public abstract class ColumnSource {
   }
 
   public Expression loadColumn(String columnName, DatetimeInterval interval) {
-    var column = datasource.column(columnName);
+    var column = datasource.getColumns().column(columnName);
     if (column == null) {
       throw new IllegalArgumentException(
           "Column not found: " + columnName + " in datasource " + datasource.getId());

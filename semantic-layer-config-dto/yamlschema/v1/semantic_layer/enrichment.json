@@ -1,0 +1,33 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/enrichment.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "datasource",
+    "on"
+  ],
+  "properties": {
+    "datasource": {
+      "type": "string"
+    },
+    "on": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

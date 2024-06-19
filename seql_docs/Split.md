@@ -67,7 +67,6 @@ or
 ...
 ```
 
-
 Similar to previous, but we want every sequence to have events from two sessions.
 
 ```
@@ -181,7 +180,6 @@ sequences AS (
     cross join unnest(sequences) as sequence
 ),
 ```
-
 
 ##### Split By pattern
 

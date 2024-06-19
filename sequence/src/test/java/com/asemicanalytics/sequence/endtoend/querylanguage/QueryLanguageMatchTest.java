@@ -1,10 +1,8 @@
 package com.asemicanalytics.sequence.endtoend.querylanguage;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.asemicanalytics.sequence.SequenceService;
-import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sequence.sequence.GroupStep;
 import com.asemicanalytics.sequence.sequence.SingleStep;
 import com.asemicanalytics.sequence.sequence.StepRepetition;

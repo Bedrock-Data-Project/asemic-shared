@@ -1,7 +1,10 @@
 package com.asemicanalytics.core.column;
 
 import com.asemicanalytics.core.DataType;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class Column {
   protected final String id;
@@ -10,23 +13,34 @@ public class Column {
   protected final Optional<String> description;
   protected final boolean canFilter;
   protected final boolean canGroupBy;
+  protected Set<String> tags;
 
   public Column(String id, DataType dataType, String label, Optional<String> description,
-                boolean canFilter, boolean canGroupBy) {
+                boolean canFilter, boolean canGroupBy, Set<String> tags) {
     this.id = id;
     this.dataType = dataType;
     this.label = label;
     this.description = description;
     this.canFilter = canFilter;
     this.canGroupBy = canGroupBy;
+    this.tags = Collections.unmodifiableSet(tags);
   }
 
   public static Column of(String id, DataType dataType, boolean canFilter, boolean canGroupBy) {
-    return new Column(id, dataType, id.replace("_", " "), Optional.empty(), canFilter, canGroupBy);
+    return new Column(id, dataType, id.replace("_", " "),
+        Optional.empty(), canFilter, canGroupBy, Set.of());
   }
 
   public static Column ofHidden(String id, DataType dataType) {
-    return new Column(id, dataType, id.replace("_", " "), Optional.empty(), false, false);
+    return new Column(id, dataType, id.replace("_", " "),
+        Optional.empty(), false, false, Set.of());
+  }
+
+  public Column withTag(String tag) {
+    var tags = new HashSet<>(this.tags);
+    tags.add(tag);
+    return new Column(id, dataType, label, description, canFilter, canGroupBy,
+        tags);
   }
 
   public String getId() {
@@ -51,5 +65,13 @@ public class Column {
 
   public boolean canGroupBy() {
     return canGroupBy;
+  }
+
+  public Set<String> getTags() {
+    return tags;
+  }
+
+  public boolean hasTag(String tag) {
+    return tags.contains(tag);
   }
 }

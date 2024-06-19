@@ -6,7 +6,7 @@
 
     <groupId>com.asemicanalytics</groupId>
     <artifactId>asemic-shared</artifactId>
-    <version>1.13</version>
+    <version>1.14</version>
     <packaging>pom</packaging>
     <name>Asemic Shared</name>
     <description>Collection for utilities that power up asemic query engine</description>
@@ -35,6 +35,9 @@
         <module>sql</module>
         <module>core</module>
         <module>sequence</module>
+        <module>semantic-layer-config</module>
+        <module>semantic-layer-config-dto</module>
+        <module>sql-database</module>
     </modules>
 
     <properties>

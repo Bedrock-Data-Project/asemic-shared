@@ -3,28 +3,12 @@ package com.asemicanalytics.sequence.endtoend.querylanguage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.asemicanalytics.core.DataType;
-import com.asemicanalytics.core.DatetimeInterval;
-import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.TimeGrains;
-import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.datasource.UserActionDatasource;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sequence.sequence.GroupStep;
 import com.asemicanalytics.sequence.sequence.SingleStep;
-import com.asemicanalytics.sequence.sequence.Step;
 import com.asemicanalytics.sequence.sequence.StepRepetition;
-import com.asemicanalytics.sql.sql.builder.tablelike.Table;
-import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
-import com.asemicanalytics.sql.sql.columnsource.TableColumnSource;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class QueryLanguageTest extends QueryLanguageTestBase {

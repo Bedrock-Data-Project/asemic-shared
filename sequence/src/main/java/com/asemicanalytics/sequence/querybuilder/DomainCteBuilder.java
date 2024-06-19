@@ -2,7 +2,7 @@ package com.asemicanalytics.sequence.querybuilder;
 
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.DatetimeInterval;
-import com.asemicanalytics.core.datasource.UserActionDatasource;
+import com.asemicanalytics.core.datasource.useraction.UserActionDatasource;
 import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sequence.sequence.Sequence;
 import com.asemicanalytics.sql.sql.builder.ExpressionList;

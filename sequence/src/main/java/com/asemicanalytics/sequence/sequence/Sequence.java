@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.TreeSet;
 
 public class Sequence {
   private final List<Step> steps;

@@ -1,0 +1,46 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/user_wide_kpi.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "id",
+    "x_axis"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "recommended": {
+      "type": "boolean"
+    },
+    "formula": {
+      "type": "string"
+    },
+    "sql": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_sql.json"
+    },
+    "unit": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/unit.json"
+    },
+    "x_axis": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "total": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

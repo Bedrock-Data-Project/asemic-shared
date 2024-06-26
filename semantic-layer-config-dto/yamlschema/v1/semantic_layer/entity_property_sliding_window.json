@@ -1,28 +1,36 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_total.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
     "column",
     "source_property",
-    "function"
+    "function",
+    "relative_days_from",
+    "relative_days_to"
   ],
   "properties": {
     "column": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
     },
     "source_property": {
-      "type": "string"
+      "type": "integer"
     },
     "function": {
       "type": "string",
       "enum": [
         "sum",
+        "avg",
+        "count",
         "min",
-        "max",
-        "last_value",
-        "first_value"
+        "max"
       ]
+    },
+    "relative_days_from": {
+      "type": "integer"
+    },
+    "relative_days_to": {
+      "type": "integer"
     }
   },
   "additionalProperties": false

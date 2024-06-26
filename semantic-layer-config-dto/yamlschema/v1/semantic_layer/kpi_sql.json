@@ -1,9 +1,0 @@
-{
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_sql.json",
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "required": [],
-  "additionalProperties": {
-    "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_sql_component.json"
-  }
-}

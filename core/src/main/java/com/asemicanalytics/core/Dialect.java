@@ -18,7 +18,7 @@ public interface Dialect {
 
   String truncateTimestamp(String column, TimeGrains timeGrain, int shiftDays);
 
-  String dateAdd(String column, int days);
+  String dateAdd(String column, String days);
 
   String covertToTimestamp(String column, int shiftDays);
 
@@ -67,5 +67,7 @@ public interface Dialect {
 
   String insertOverwrite(
       TableReference table, String select, String partitionColumn, String partitionValue);
+
+  String generateNumberArray(String from, String to);
 }
 

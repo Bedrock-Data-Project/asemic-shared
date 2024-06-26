@@ -61,7 +61,7 @@ public class H2Dialect implements Dialect {
   }
 
   @Override
-  public String dateAdd(String column, int days) {
+  public String dateAdd(String column, String days) {
     return column + days;
   }
 
@@ -122,6 +122,11 @@ public class H2Dialect implements Dialect {
   public String insertOverwrite(TableReference table, String select, String partitionColumn,
                                 String partitionValue) {
     return "";
+  }
+
+  @Override
+  public String generateNumberArray(String from, String to) {
+    return "SELECT SEQUENCE(" + from + ", " + to + ")";
   }
 
   private String getH2DataType(DataType dataType) {

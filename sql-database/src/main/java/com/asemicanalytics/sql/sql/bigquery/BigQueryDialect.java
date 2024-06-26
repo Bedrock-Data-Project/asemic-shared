@@ -61,7 +61,7 @@ public class BigQueryDialect implements Dialect {
   }
 
   @Override
-  public String dateAdd(String column, int days) {
+  public String dateAdd(String column, String days) {
     return "DATE_ADD(" + column + ", INTERVAL " + days + " DAY)";
   }
 
@@ -124,6 +124,11 @@ public class BigQueryDialect implements Dialect {
         + " WHEN NOT MATCHED BY SOURCE AND "
         + columnIdentifier(partitionColumn) + " = "
         + constant(partitionValue, DataType.DATE) + " THEN DELETE";
+  }
+
+  @Override
+  public String generateNumberArray(String from, String to) {
+    return "GENERATE_ARRAY(" + from + ", " + to + ")";
   }
 
   private String getBigQueryDataType(DataType dataType) {

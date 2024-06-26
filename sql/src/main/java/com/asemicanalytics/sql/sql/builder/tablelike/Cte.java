@@ -5,7 +5,7 @@ import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.sql.sql.builder.SelectStatement;
 import java.util.Map;
 
-public class Cte extends TableLike {
+public class Cte implements TableLike {
   private final SelectStatement select;
   private String tag;
   private int index;

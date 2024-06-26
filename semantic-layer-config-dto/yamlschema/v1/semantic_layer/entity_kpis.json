@@ -10,7 +10,7 @@
     "kpis": {
       "type": "array",
       "items": {
-        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_kpi.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi.json"
       },
       "minItems": 1
     },
@@ -24,7 +24,7 @@
     "cohorted_daily_kpis": {
       "type": "array",
       "items": {
-        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_kpi_cohorted.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_cohorted.json"
       },
       "minItems": 1
     }

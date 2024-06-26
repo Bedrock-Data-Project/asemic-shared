@@ -4,15 +4,20 @@ import com.asemicanalytics.core.Dialect;
 
 public class DateAddExpression implements Expression {
   private final Expression dateExpression;
-  private final int days;
+  private final Expression daysExpression;
 
   public DateAddExpression(Expression dateExpression, int days) {
     this.dateExpression = dateExpression;
-    this.days = days;
+    this.daysExpression = Constant.ofInt(days);
+  }
+
+  public DateAddExpression(Expression dateExpression, Expression days) {
+    this.dateExpression = dateExpression;
+    this.daysExpression = days;
   }
 
   @Override
   public String render(Dialect dialect) {
-    return dialect.dateAdd(dateExpression.render(dialect), days);
+    return dialect.dateAdd(dateExpression.render(dialect), daysExpression.render(dialect));
   }
 }

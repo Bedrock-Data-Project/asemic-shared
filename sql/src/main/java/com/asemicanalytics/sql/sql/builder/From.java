@@ -12,7 +12,7 @@ public class From implements Token {
 
   @Override
   public String render(Dialect dialect) {
-    return "FROM " + tableLike.render(dialect);
+    return "FROM " + tableLike.renderTableDeclaration(dialect);
   }
 
   public TableLike table() {

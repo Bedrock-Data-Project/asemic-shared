@@ -1,0 +1,140 @@
+package com.asemicanalytics.config.mapper.dtomapper.entity;
+
+import com.asemicanalytics.config.mapper.dtomapper.column.ColumnComputedDtoMapper;
+import com.asemicanalytics.config.mapper.dtomapper.kpi.KpisDtoMergeMapper;
+import com.asemicanalytics.config.mapper.dtomapper.kpi.KpisUnfolder;
+import com.asemicanalytics.config.mapper.dtomapper.kpi.UnfoldingKpi;
+import com.asemicanalytics.config.parser.EntityDto;
+import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.column.Columns;
+import com.asemicanalytics.core.kpi.Kpi;
+import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.SequencedMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+public class EntityMapper
+    implements Function<EntityDto, EntityLogicalTable> {
+  private final String appId;
+
+  public EntityMapper(String appId) {
+    this.appId = appId;
+  }
+
+  @Override
+  public EntityLogicalTable apply(EntityDto dto) {
+    var firstAppearanceActionLogicalTable =
+        (FirstAppearanceActionLogicalTable) dto.actionLogicalTables()
+            .values().stream()
+            .filter(d -> d instanceof FirstAppearanceActionLogicalTable)
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("No logical table tagged with "
+                + FirstAppearanceActionLogicalTable.TAG + " found"));
+    var activityLogicalTable = (ActivityLogicalTable) dto.actionLogicalTables()
+        .values().stream()
+        .filter(d -> d instanceof ActivityLogicalTable)
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("No action logical table tagged with "
+            + ActivityLogicalTable.TAG + " found"));
+
+    EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
+    SequencedMap<String, Column> columns =
+        buildColumnsMap(dto, mergedColumns);
+
+    var mergedKpis = new KpisDtoMergeMapper(
+        firstAppearanceActionLogicalTable.getDateColumnId()
+    ).apply(dto.kpis());
+    var unfoldedKpis = new KpisUnfolder(mergedKpis, columns.keySet()).unfold();
+
+    var kpis = buildKpisMap(dto, unfoldedKpis);
+
+    return new EntityLogicalTable(
+        dto.config().getBaseTablePrefix().replace("{app_id}", appId),
+        !columns.isEmpty() ? Optional.of(new Columns(columns)) : Optional.empty(),
+        firstAppearanceActionLogicalTable,
+        activityLogicalTable,
+
+        // TODO should be able to configure this
+        List.of(1, 90),
+        List.of(1, 2, 3, 4, 5, 6, 7, 14, 30, 60, 90, 180, 360),
+
+        kpis);
+  }
+
+  private static SequencedMap<String, Column> buildColumnsMap(EntityDto dto,
+                                                              EntityPropertiesDto mergedColumns) {
+    var firstAppearancePropertiesMap =
+        mergedColumns.getFirstAppearanceProperties().orElse(List.of()).stream()
+            .collect(Collectors.toMap(
+                c -> c.getColumn().getId(),
+                new FirstAppearancePropertyDtoMapper(),
+                (a, b) -> a,
+                LinkedHashMap::new));
+
+    var actionPropertiesMap =
+        mergedColumns.getActionProperties().orElse(List.of()).stream()
+            .collect(Collectors.toMap(
+                c -> c.getColumn().getId(),
+                new ActionPropertyDtoMapper(dto.actionLogicalTables()),
+                (a, b) -> a,
+                LinkedHashMap::new));
+
+    var totalPropertiesMap =
+        mergedColumns.getTotalProperties().orElse(List.of()).stream()
+            .collect(Collectors.toMap(
+                c -> c.getColumn().getId(),
+                new TotalPropertyDtoMapper(),
+                (a, b) -> a,
+                LinkedHashMap::new));
+
+    var computedPropertiesMap =
+        mergedColumns.getComputedProperties().orElse(List.of()).stream()
+            .collect(Collectors.toMap(
+                c -> c.getColumn().getId(),
+                new ColumnComputedDtoMapper(),
+                (a, b) -> a,
+                LinkedHashMap::new
+            ));
+
+    SequencedMap<String, Column> columns = new LinkedHashMap<>();
+    firstAppearancePropertiesMap.values().forEach(c -> columns.put(c.getId(), c));
+    actionPropertiesMap.values().forEach(c -> {
+      if (columns.put(c.getId(), c) != null) {
+        throw new IllegalArgumentException("Duplicate column id: " + c.getId() + " in entity");
+      }
+    });
+    totalPropertiesMap.values().forEach(c -> {
+      if (columns.put(c.getId(), c) != null) {
+        throw new IllegalArgumentException("Duplicate column id: " + c.getId() + " in entity");
+      }
+    });
+    computedPropertiesMap.values().forEach(c -> {
+      if (columns.put(c.getId(), c) != null) {
+        throw new IllegalArgumentException("Duplicate column id: " + c.getId() + " in entity");
+      }
+    });
+    return columns;
+  }
+
+  private Map<String, Kpi> buildKpisMap(EntityDto dto,
+                                        List<UnfoldingKpi> kpiList) {
+    Map<String, Kpi> kpis = new HashMap<>();
+    for (var unfoldingKpi : kpiList) {
+      var kpi = unfoldingKpi.buildKpi();
+      if (!kpis.containsKey(kpi.id())) {
+        kpis.put(kpi.id(), kpi);
+      } else {
+        kpis.get(kpi.id()).merge(kpi);
+      }
+    }
+    return kpis;
+  }
+}

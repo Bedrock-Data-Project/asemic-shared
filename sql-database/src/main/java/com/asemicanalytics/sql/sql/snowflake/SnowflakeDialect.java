@@ -61,7 +61,7 @@ public class SnowflakeDialect implements Dialect {
   }
 
   @Override
-  public String dateAdd(String column, int days) {
+  public String dateAdd(String column, String days) {
     return "DATEADD(DAY, " + days + ", " + column + ")";
   }
 
@@ -109,6 +109,11 @@ public class SnowflakeDialect implements Dialect {
   @Override
   public String insertOverwrite(TableReference table, String select, String partitionColumn,
                                 String partitionValue) {
+    throw new UnsupportedOperationException("Not implemented");
+  }
+
+  @Override
+  public String generateNumberArray(String from, String to) {
     throw new UnsupportedOperationException("Not implemented");
   }
 }

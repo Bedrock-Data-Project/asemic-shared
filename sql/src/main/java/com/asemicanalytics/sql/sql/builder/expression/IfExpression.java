@@ -19,6 +19,6 @@ public class IfExpression implements Expression {
     return dialect.ifExpression(
         condition.render(dialect),
         ifTrue.render(dialect),
-        ifFalse.renderDefinition(dialect));
+        ifFalse.render(dialect));
   }
 }

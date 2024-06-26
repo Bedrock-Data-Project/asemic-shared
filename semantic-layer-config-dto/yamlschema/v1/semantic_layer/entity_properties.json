@@ -18,6 +18,12 @@
         "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json"
       }
     },
+    "sliding_window_properties": {
+      "type": "array",
+      "items": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_sliding_window.json"
+      }
+    },
     "total_properties": {
       "type": "array",
       "items": {

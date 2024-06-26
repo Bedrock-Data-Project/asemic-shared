@@ -1,11 +1,10 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_cohorted.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
     "id",
-    "aggregation_expression",
-    "x_axis"
+    "aggregation_expression"
   ],
   "properties": {
     "id": {
@@ -20,7 +19,7 @@
     "category": {
       "type": "string"
     },
-    "recommended": {
+    "recommeded": {
       "type": "boolean"
     },
     "aggregation_expression": {
@@ -29,10 +28,10 @@
     "unit": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/unit.json"
     },
-    "x_axis": {
+    "cohorted_days": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "integer"
       },
       "minItems": 1
     },

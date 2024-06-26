@@ -42,6 +42,10 @@ public class Join implements Token {
 
   @Override
   public String render(Dialect dialect) {
-    return joinType + " JOIN " + table.render(dialect) + " ON " + joinExpression.render(dialect);
+    String join = joinType + " JOIN " + table.renderTableDeclaration(dialect);
+    if (joinExpression != null) {
+      return join + " ON " + joinExpression.render(dialect);
+    }
+    return join;
   }
 }

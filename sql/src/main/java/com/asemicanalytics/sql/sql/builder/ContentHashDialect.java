@@ -42,7 +42,7 @@ public class ContentHashDialect implements Dialect {
   }
 
   @Override
-  public String dateAdd(String column, int days) {
+  public String dateAdd(String column, String days) {
     return "dateAdd_" + column + "_" + days;
   }
 
@@ -87,5 +87,10 @@ public class ContentHashDialect implements Dialect {
   public String insertOverwrite(TableReference table, String select, String partitionColumn,
                                 String partitionValue) {
     throw new UnsupportedOperationException("Not implemented");
+  }
+
+  @Override
+  public String generateNumberArray(String from, String to) {
+    return "generateNumberArray_" + from + "_" + to;
   }
 }

@@ -4,7 +4,7 @@
   "type": "object",
   "required": [
     "id",
-    "aggregation_expression"
+    "select"
   ],
   "properties": {
     "id": {
@@ -22,7 +22,10 @@
     "recommeded": {
       "type": "boolean"
     },
-    "aggregation_expression": {
+    "select": {
+      "type": "string"
+    },
+    "where": {
       "type": "string"
     },
     "unit": {

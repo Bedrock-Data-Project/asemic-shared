@@ -24,18 +24,19 @@ public class KpisDtoMergeMapper
     List<KpiDto> allKpis = new ArrayList<>();
 
     dto.getKpis().orElse(List.of()).forEach(kpi ->
-      allKpis.add(new KpiDto(
-          kpi.getId(),
-          kpi.getLabel().orElse(null),
-          kpi.getDescription().orElse(null),
-          kpi.getCategory().or(dto::getCategory).orElse(null),
-          kpi.getRecommended().orElse(null),
-          kpi.getAggregationExpression(),
-          kpi.getUnit().orElse(null),
-          kpi.getxAxis(),
-          kpi.getTotalFunction().orElse(KpiDto.TotalFunction.SUM),
-          kpi.getHidden().orElse(false)
-      )));
+        allKpis.add(new KpiDto(
+            kpi.getId(),
+            kpi.getLabel().orElse(null),
+            kpi.getDescription().orElse(null),
+            kpi.getCategory().or(dto::getCategory).orElse(null),
+            kpi.getRecommended().orElse(null),
+            kpi.getSelect(),
+            kpi.getWhere().orElse(null),
+            kpi.getUnit().orElse(null),
+            kpi.getxAxis(),
+            kpi.getTotalFunction().orElse(KpiDto.TotalFunction.SUM),
+            kpi.getHidden().orElse(false)
+        )));
 
     dto.getCohortedDailyKpis().orElse(List.of()).forEach(cohortedKpi -> {
       List<Integer> cohortedDays = cohortedKpi.getCohortedDays().orElse(List.of());
@@ -50,7 +51,8 @@ public class KpisDtoMergeMapper
               cohortedKpi.getDescription().orElse(null),
               cohortedKpi.getCategory().or(dto::getCategory).orElse(null),
               cohortedKpi.getRecommeded().orElse(null),
-              cohortedKpi.getAggregationExpression(),
+              cohortedKpi.getSelect(),
+              cohortedKpi.getWhere().orElse(null),
               cohortedKpi.getUnit().orElse(null),
               List.of(datecolumn),
               KpiDto.TotalFunction.fromValue(

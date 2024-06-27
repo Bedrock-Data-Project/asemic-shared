@@ -1,11 +1,9 @@
 package com.asemicanalytics.core.kpi;
 
-import com.asemicanalytics.core.TableReference;
-import java.util.Optional;
+import java.util.TreeSet;
 
 public record KpiComponent(
     String select,
-    Optional<String> where,
-    TableReference table
+    TreeSet<String> filters
 ) {
 }

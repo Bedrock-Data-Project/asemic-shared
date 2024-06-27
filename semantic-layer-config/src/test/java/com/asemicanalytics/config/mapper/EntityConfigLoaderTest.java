@@ -8,6 +8,7 @@ import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
+import com.asemicanalytics.core.kpi.KpiComponent;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
@@ -17,18 +18,19 @@ import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnComputedDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyTotalDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyFirstAppearanceDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyTotalDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 
 class EntityConfigLoaderTest {
@@ -69,7 +71,7 @@ class EntityConfigLoaderTest {
         null,
         null,
         null),
-        "registration", "l", "d", "c", 1, List.of(0, 0), "MAX", true
+        "registration", "l", "d", "c", true
     );
   }
 
@@ -122,13 +124,14 @@ class EntityConfigLoaderTest {
             new EntityConfigDto("{app_id}.table"),
             columnsDtos,
             kpisDtos,
-            Map.of("registration", firstAppearanceActionLogicalTable, "activity", activityLogicalTable)))));
+            Map.of("registration", firstAppearanceActionLogicalTable, "activity",
+                activityLogicalTable)))));
 
     return configLoader.parse("app").getEntityLogicalTable().get();
   }
 
   @Test
-  void testSimple() throws IOException {
+  void shouldLoadEntityAndKpi_whenSingleKpi() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(),
         List.of(new EntityKpisDto("kpis", List.of(
@@ -140,6 +143,7 @@ class EntityConfigLoaderTest {
                 true,
                 "1",
                 null,
+                null,
                 List.of("date"),
                 null,
                 null)),
@@ -148,10 +152,11 @@ class EntityConfigLoaderTest {
     assertEquals("table_1d", ds.getTable().tableName());
     assertEquals(DataType.DATE, ds.getColumns().column("registration_date").getDataType());
     assertEquals("label", ds.kpi("kpi").label());
+    assertEquals("1", ds.kpi("kpi").xaxisConfig().get("date").formula());
   }
 
   @Test
-  void testNoKpisIsValid() throws IOException {
+  void shouldFail_whenNoKpis() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(),
         List.of());
@@ -159,7 +164,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void testDuplicateFirstAppearanceColumnInSameFile() {
+  void shouldFail_whenDuplicatePropertiesOfSameTypeInSameGroup() {
     assertThrows(IllegalArgumentException.class, () -> {
       fromColumnsAndKpis(List.of(
               new EntityPropertiesDto(List.of(
@@ -176,7 +181,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void testDuplicateDifferentTypeColumnsInSameFile() {
+  void shouldFail_whenDuplicatePropertiesOfDifferentTypeInSameGroup() {
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(List.of(
                 new EntityPropertiesDto(
@@ -189,7 +194,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void testDuplicateDifferentTypeColumnsInDifferentFiles() {
+  void shouldFail_whenDuplicatePropertiesOfDifferentTypeInDifferentGroups() {
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(List.of(
                 new EntityPropertiesDto(
@@ -208,7 +213,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void testValidColumnsInMultipleFiles() throws IOException {
+  void shouldLoadProperties_whenNoDuplicatesInDifferentGroups() throws IOException {
     var ds = fromColumnsAndKpis(List.of(
             new EntityPropertiesDto(
                 List.of(registrationColumn("r1")),
@@ -234,6 +239,437 @@ class EntityConfigLoaderTest {
             "registration_date", "date_", "unique_id", "last_login_date", "_dau_date", "cohort_day",
             "cohort_size"),
         ds.getColumns().getColumns().keySet());
+  }
+
+  @Test
+  void shouldLoadKpi_whenItDependsOnProperties() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(registrationColumn("r1")),
+            List.of(userActionColumn("ua1")),
+            List.of(),
+            List.of(totalColumn("t1")),
+            List.of(computedColumn("c1"))
+        )),
+        List.of(new EntityKpisDto("kpis", List.of(
+            new KpiDto(
+                "kpi",
+                "label",
+                "description",
+                "category",
+                true,
+                "SUM({property.r1}) + SUM({property.ua1}) + SUM({property.t1}) + SUM({property.c1})",
+                null,
+                null,
+                List.of("date"),
+                null,
+                null)),
+            List.of(), List.of())));
+    assertEquals(1, ds.kpi("kpi").xaxisConfig().size());
+    assertEquals(
+        "SUM({r1_1}) + SUM({ua1_0}) + SUM({t1_3}) + SUM({c1_2})"
+        , ds.kpi("kpi").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r1_1",
+        new KpiComponent("{r1}", new TreeSet<>()),
+        "ua1_0",
+        new KpiComponent("{ua1}", new TreeSet<>()),
+        "t1_3",
+        new KpiComponent("{t1}", new TreeSet<>()),
+        "c1_2",
+        new KpiComponent("{c1}", new TreeSet<>())
+    ), ds.kpi("kpi").xaxisConfig().get("date").components());
+  }
+
+  @Test
+  void shouldFail_whenItDependsNonExistingProperty() throws IOException {
+    assertThrows(IllegalArgumentException.class, () ->
+        fromColumnsAndKpis(
+            List.of(new EntityPropertiesDto(
+                List.of(registrationColumn("r1")),
+                List.of(userActionColumn("ua1")),
+                List.of(),
+                List.of(totalColumn("t1")),
+                List.of(computedColumn("c1"))
+            )),
+            List.of(new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({property.r10})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)),
+                List.of(), List.of()))));
+  }
+
+  @Test
+  void shouldLoadKpi_whenItDependsOnAnotherKpis() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(registrationColumn("r1"), registrationColumn("r2"), registrationColumn("r3")),
+            List.of(),
+            List.of(),
+            List.of(),
+            List.of()
+        )),
+        List.of(
+            new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi1",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "{kpi.kpi2} + {kpi.kpi2} + {kpi.kpi3} - SUM({property.r3})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null),
+                new KpiDto(
+                    "kpi2",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "AVG({property.r2})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)
+            ), List.of(), List.of()),
+            new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi3",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "MIN({property.r2}) + MAX({property.r3})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)
+            ), List.of(), List.of())
+        ));
+    assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
+    assertEquals(
+        "(AVG({r2_0})) + (AVG({r2_0})) + (MIN({r2_0}) + MAX({r3_1})) - SUM({r3_1})"
+        , ds.kpi("kpi1").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r2_0",
+        new KpiComponent("{r2}", new TreeSet<>()),
+        "r3_1",
+        new KpiComponent("{r3}", new TreeSet<>())
+    ), ds.kpi("kpi1").xaxisConfig().get("date").components());
+
+    assertEquals(1, ds.kpi("kpi2").xaxisConfig().size());
+    assertEquals("AVG({r2_0})", ds.kpi("kpi2").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r2_0",
+        new KpiComponent("{r2}", new TreeSet<>())
+    ), ds.kpi("kpi2").xaxisConfig().get("date").components());
+
+    assertEquals(1, ds.kpi("kpi3").xaxisConfig().size());
+    assertEquals("MIN({r2_0}) + MAX({r3_1})", ds.kpi("kpi3").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r2_0",
+        new KpiComponent("{r2}", new TreeSet<>()),
+        "r3_1",
+        new KpiComponent("{r3}", new TreeSet<>())
+    ), ds.kpi("kpi3").xaxisConfig().get("date").components());
+  }
+
+  @Test
+  void shouldLoadKpi_whenItDependsOnAnotherKpisWithFilters() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(registrationColumn("r1"), registrationColumn("r2"), registrationColumn("r3")),
+            List.of(),
+            List.of(),
+            List.of(),
+            List.of()
+        )),
+        List.of(
+            new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi1",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "{kpi.kpi2} + SUM({property.r1})",
+                    "F1",
+                    null,
+                    List.of("date"),
+                    null,
+                    null),
+                new KpiDto(
+                    "kpi2",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "AVG({property.r1}) + {kpi.kpi3} + {kpi.kpi3}",
+                    "F2",
+                    null,
+                    List.of("date"),
+                    null,
+                    null),
+                new KpiDto(
+                    "kpi3",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "MAX({property.r1})",
+                    "F3",
+                    null,
+                    List.of("date"),
+                    null,
+                    null)
+            ), List.of(), List.of())
+        ));
+
+    assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
+    assertEquals(
+        "(AVG({r1_1}) + (MAX({r1_0})) + (MAX({r1_0}))) + SUM({r1_2})"
+        , ds.kpi("kpi1").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r1_0",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("F1", "F2", "F3"))),
+        "r1_1",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("F1", "F2"))),
+        "r1_2",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("F1")))
+    ), ds.kpi("kpi1").xaxisConfig().get("date").components());
+
+    assertEquals(1, ds.kpi("kpi2").xaxisConfig().size());
+    assertEquals(
+        "AVG({r1_4}) + (MAX({r1_3})) + (MAX({r1_3}))"
+        , ds.kpi("kpi2").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r1_3",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("F2", "F3"))),
+        "r1_4",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("F2")))
+    ), ds.kpi("kpi2").xaxisConfig().get("date").components());
+
+    assertEquals(1, ds.kpi("kpi3").xaxisConfig().size());
+    assertEquals(
+        "MAX({r1_5})"
+        , ds.kpi("kpi3").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r1_5",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("F3")))
+    ), ds.kpi("kpi3").xaxisConfig().get("date").components());
+  }
+
+
+  @Test
+  void shouldFail_whenKpiLoopOf1() throws IOException {
+    assertThrows(IllegalArgumentException.class, () ->
+        fromColumnsAndKpis(
+            List.of(new EntityPropertiesDto(
+                List.of(registrationColumn("r1")),
+                List.of(userActionColumn("ua1")),
+                List.of(),
+                List.of(totalColumn("t1")),
+                List.of(computedColumn("c1"))
+            )),
+            List.of(new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({kpi.kpi})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)),
+                List.of(), List.of()))));
+  }
+
+  @Test
+  void shouldFail_whenItDependsOnNonExistingKpi() throws IOException {
+    assertThrows(IllegalArgumentException.class, () ->
+        fromColumnsAndKpis(
+            List.of(new EntityPropertiesDto(
+                List.of(registrationColumn("r1")),
+                List.of(userActionColumn("ua1")),
+                List.of(),
+                List.of(totalColumn("t1")),
+                List.of(computedColumn("c1"))
+            )),
+            List.of(new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({kpi.kpiNonExisting})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)),
+                List.of(), List.of()))));
+  }
+
+  @Test
+  void shouldFail_whenItDependsOnInvalidPrefix() throws IOException {
+    assertThrows(IllegalArgumentException.class, () ->
+        fromColumnsAndKpis(
+            List.of(new EntityPropertiesDto(
+                List.of(registrationColumn("r1")),
+                List.of(userActionColumn("ua1")),
+                List.of(),
+                List.of(totalColumn("t1")),
+                List.of(computedColumn("c1"))
+            )),
+            List.of(new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({invalid.kpiNonExisting})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)),
+                List.of(), List.of()))));
+  }
+
+  @Test
+  void shouldFail_whenItDependsOnNoPrefix() throws IOException {
+    assertThrows(IllegalArgumentException.class, () ->
+        fromColumnsAndKpis(
+            List.of(new EntityPropertiesDto(
+                List.of(registrationColumn("r1")),
+                List.of(userActionColumn("ua1")),
+                List.of(),
+                List.of(totalColumn("t1")),
+                List.of(computedColumn("c1"))
+            )),
+            List.of(new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({kpiNonExisting})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)),
+                List.of(), List.of()))));
+  }
+
+  @Test
+  void shouldFail_whenKpiLoopOf2() throws IOException {
+    assertThrows(IllegalArgumentException.class, () ->
+        fromColumnsAndKpis(
+            List.of(new EntityPropertiesDto(
+                List.of(registrationColumn("r1")),
+                List.of(userActionColumn("ua1")),
+                List.of(),
+                List.of(totalColumn("t1")),
+                List.of(computedColumn("c1"))
+            )),
+            List.of(new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi1",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({kpi.kpi2})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null),
+                new KpiDto(
+                    "kpi2",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({kpi.kpi1})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)),
+                List.of(), List.of()))));
+  }
+
+  @Test
+  void shouldFail_whenKpiLoopOf3() throws IOException {
+    assertThrows(IllegalArgumentException.class, () ->
+        fromColumnsAndKpis(
+            List.of(new EntityPropertiesDto(
+                List.of(registrationColumn("r1")),
+                List.of(userActionColumn("ua1")),
+                List.of(),
+                List.of(totalColumn("t1")),
+                List.of(computedColumn("c1"))
+            )),
+            List.of(new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi1",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({kpi.kpi2})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null),
+                new KpiDto(
+                    "kpi2",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({kpi.kpi3})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null),
+                new KpiDto(
+                    "kpi3",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({kpi.kpi1})",
+                    null,
+                    null,
+                    List.of("date"),
+                    null,
+                    null)),
+                List.of(), List.of()))));
   }
 
 }

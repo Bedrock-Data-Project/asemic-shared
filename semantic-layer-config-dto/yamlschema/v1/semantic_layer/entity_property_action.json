@@ -5,7 +5,7 @@
   "required": [
     "column",
     "action_logical_table",
-    "aggregation_expression",
+    "select",
     "missing_value"
   ],
   "properties": {
@@ -15,27 +15,13 @@
     "action_logical_table": {
       "type": "string"
     },
-    "aggregation_expression": {
+    "select": {
       "type": "string"
     },
     "where": {
       "type": "string"
     },
     "missing_value": {
-      "type": "string"
-    },
-    "days": {
-      "type": "integer"
-    },
-    "window": {
-      "type": "array",
-      "items": {
-        "type": "integer"
-      },
-      "minItems": 2,
-      "maxItems": 2
-    },
-    "window_aggregation": {
       "type": "string"
     },
     "can_materialize": {

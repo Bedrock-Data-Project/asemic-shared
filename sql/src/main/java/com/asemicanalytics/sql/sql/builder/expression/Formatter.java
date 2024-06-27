@@ -1,7 +1,8 @@
 package com.asemicanalytics.sql.sql.builder.expression;
 
 import com.asemicanalytics.core.Dialect;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.SequencedSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +11,7 @@ public class Formatter {
   private static final Pattern PATTERN = Pattern.compile("\\{([^{}]+)}");
 
   public static Set<String> extractKeys(String input) {
-    Set<String> extractedValues = new HashSet<>();
+    SequencedSet<String> extractedValues = new LinkedHashSet<>();
     Matcher matcher = PATTERN.matcher(input);
     while (matcher.find()) {
       String extractedValue = matcher.group(1);

@@ -1,11 +1,11 @@
 package com.asemicanalytics.config;
 
+import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
+import com.asemicanalytics.config.enrichment.EnrichmentResolver;
 import com.asemicanalytics.config.mapper.ColumnReference;
 import com.asemicanalytics.config.mapper.FullColumnId;
 import com.asemicanalytics.config.mapper.FullKpiId;
 import com.asemicanalytics.config.mapper.KpiReference;
-import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
-import com.asemicanalytics.config.enrichment.EnrichmentResolver;
 import com.asemicanalytics.core.logicaltable.LogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;

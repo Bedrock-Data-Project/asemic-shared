@@ -1,10 +1,10 @@
 package com.asemicanalytics.config.mapper;
 
 import com.asemicanalytics.config.EntityModelConfig;
+import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
 import com.asemicanalytics.config.mapper.dtomapper.ActionDtoMapper;
 import com.asemicanalytics.config.mapper.dtomapper.entity.EntityMapper;
 import com.asemicanalytics.config.parser.ConfigParser;
-import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import java.io.IOException;
 import java.util.ArrayList;

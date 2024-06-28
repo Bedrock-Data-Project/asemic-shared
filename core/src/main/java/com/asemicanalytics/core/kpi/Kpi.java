@@ -12,7 +12,8 @@ public record Kpi(
     Optional<String> category,
     boolean recommended,
     Optional<String> description,
-    Optional<Unit> unit
+    Optional<Unit> unit,
+    boolean hidden
 ) {
   public boolean isDailyKpi(TemporalLogicalTable logicalTable) {
     return xaxisConfig.containsKey(logicalTable.getDateColumn().getId());

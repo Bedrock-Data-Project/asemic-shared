@@ -59,7 +59,8 @@ public class UnfoldingKpi {
         kpiDto.getCategory(),
         kpiDto.getRecommended().orElse(false),
         kpiDto.getDescription(),
-        kpiDto.getUnit().map(unitDto -> new Unit(unitDto.getSymbol(), unitDto.getIsPrefix()))
+        kpiDto.getUnit().map(unitDto -> new Unit(unitDto.getSymbol(), unitDto.getIsPrefix())),
+        kpiDto.getHidden().orElse(false)
     );
   }
 

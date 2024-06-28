@@ -14,7 +14,7 @@
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
     },
     "source_property": {
-      "type": "integer"
+      "type": "string"
     },
     "function": {
       "type": "string",

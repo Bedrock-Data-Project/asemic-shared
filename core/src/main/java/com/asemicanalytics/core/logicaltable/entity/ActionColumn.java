@@ -11,9 +11,6 @@ public class ActionColumn extends Column {
   private final String aggregationTableExpression;
   private final Optional<LocalDate> materializedFrom;
   private final String missingValue;
-  private final int relativeDaysFrom;
-  private final int relativeDaysTo;
-  private final String windowAggregation;
   private final boolean canMaterialize;
 
   public ActionColumn(
@@ -23,9 +20,6 @@ public class ActionColumn extends Column {
       String aggregationTableExpression,
       Optional<LocalDate> materializedFrom,
       String missingValue,
-      int relativeDaysFrom,
-      int relativeDaysTo,
-      String windowAggregation,
       boolean canMaterialize) {
     super(column.getId(), column.getDataType(), column.getLabel(), column.getDescription(),
         column.canFilter(), column.canGroupBy(), column.getTags());
@@ -34,9 +28,6 @@ public class ActionColumn extends Column {
     this.aggregationTableExpression = aggregationTableExpression;
     this.materializedFrom = materializedFrom;
     this.missingValue = missingValue;
-    this.relativeDaysFrom = relativeDaysFrom;
-    this.relativeDaysTo = relativeDaysTo;
-    this.windowAggregation = windowAggregation;
     this.canMaterialize = canMaterialize;
   }
 
@@ -46,12 +37,10 @@ public class ActionColumn extends Column {
       Optional<String> where,
       String aggregationTableExpression,
       Optional<LocalDate> materializedFrom,
-      String missingValue,
-      int relativeDaysFrom,
-      int relativeDaysTo, String windowAggregation
+      String missingValue
   ) {
     this(column, actionLogicalTable, where, aggregationTableExpression, materializedFrom,
-        missingValue, relativeDaysFrom, relativeDaysTo, windowAggregation, true);
+        missingValue, true);
   }
 
   public ActionLogicalTable getActionLogicalTable() {
@@ -76,17 +65,5 @@ public class ActionColumn extends Column {
 
   public String getMissingValue() {
     return missingValue;
-  }
-
-  public int getRelativeDaysFrom() {
-    return relativeDaysFrom;
-  }
-
-  public int getRelativeDaysTo() {
-    return relativeDaysTo;
-  }
-
-  public String getWindowAggregation() {
-    return windowAggregation;
   }
 }

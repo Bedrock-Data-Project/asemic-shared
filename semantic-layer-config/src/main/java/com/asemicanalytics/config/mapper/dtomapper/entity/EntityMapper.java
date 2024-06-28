@@ -54,7 +54,7 @@ public class EntityMapper
     ).apply(dto.kpis());
     var unfoldedKpis = new KpisUnfolder(mergedKpis, columns.keySet()).unfold();
 
-    var kpis = buildKpisMap(dto, unfoldedKpis);
+    var kpis = buildKpisMap(unfoldedKpis);
 
     return new EntityLogicalTable(
         dto.config().getBaseTablePrefix().replace("{app_id}", appId),
@@ -71,61 +71,56 @@ public class EntityMapper
 
   private static SequencedMap<String, Column> buildColumnsMap(EntityDto dto,
                                                               EntityPropertiesDto mergedColumns) {
-    var firstAppearancePropertiesMap =
-        mergedColumns.getFirstAppearanceProperties().orElse(List.of()).stream()
-            .collect(Collectors.toMap(
-                c -> c.getColumn().getId(),
-                new FirstAppearancePropertyDtoMapper(),
-                (a, b) -> a,
-                LinkedHashMap::new));
-
-    var actionPropertiesMap =
-        mergedColumns.getActionProperties().orElse(List.of()).stream()
-            .collect(Collectors.toMap(
-                c -> c.getColumn().getId(),
-                new ActionPropertyDtoMapper(dto.actionLogicalTables()),
-                (a, b) -> a,
-                LinkedHashMap::new));
-
-    var totalPropertiesMap =
-        mergedColumns.getTotalProperties().orElse(List.of()).stream()
-            .collect(Collectors.toMap(
-                c -> c.getColumn().getId(),
-                new TotalPropertyDtoMapper(),
-                (a, b) -> a,
-                LinkedHashMap::new));
-
-    var computedPropertiesMap =
-        mergedColumns.getComputedProperties().orElse(List.of()).stream()
-            .collect(Collectors.toMap(
-                c -> c.getColumn().getId(),
-                new ColumnComputedDtoMapper(),
-                (a, b) -> a,
-                LinkedHashMap::new
-            ));
 
     SequencedMap<String, Column> columns = new LinkedHashMap<>();
-    firstAppearancePropertiesMap.values().forEach(c -> columns.put(c.getId(), c));
-    actionPropertiesMap.values().forEach(c -> {
-      if (columns.put(c.getId(), c) != null) {
-        throw new IllegalArgumentException("Duplicate column id: " + c.getId() + " in entity");
-      }
-    });
-    totalPropertiesMap.values().forEach(c -> {
-      if (columns.put(c.getId(), c) != null) {
-        throw new IllegalArgumentException("Duplicate column id: " + c.getId() + " in entity");
-      }
-    });
-    computedPropertiesMap.values().forEach(c -> {
-      if (columns.put(c.getId(), c) != null) {
-        throw new IllegalArgumentException("Duplicate column id: " + c.getId() + " in entity");
-      }
-    });
+    addColumns(mergedColumns.getFirstAppearanceProperties().orElse(List.of()).stream()
+        .collect(Collectors.toMap(
+            c -> c.getColumn().getId(),
+            new FirstAppearancePropertyDtoMapper(),
+            (a, b) -> a,
+            LinkedHashMap::new)), columns);
+
+    addColumns(mergedColumns.getActionProperties().orElse(List.of()).stream()
+        .collect(Collectors.toMap(
+            c -> c.getColumn().getId(),
+            new ActionPropertyDtoMapper(dto.actionLogicalTables()),
+            (a, b) -> a,
+            LinkedHashMap::new)), columns);
+
+    addColumns(mergedColumns.getSlidingWindowProperties().orElse(List.of()).stream()
+        .collect(Collectors.toMap(
+            c -> c.getColumn().getId(),
+            new SlidingWindowPropertyDtoMapper(),
+            (a, b) -> a,
+            LinkedHashMap::new)), columns);
+
+    addColumns(mergedColumns.getTotalProperties().orElse(List.of()).stream()
+        .collect(Collectors.toMap(
+            c -> c.getColumn().getId(),
+            new TotalPropertyDtoMapper(),
+            (a, b) -> a,
+            LinkedHashMap::new)), columns);
+
+    addColumns(mergedColumns.getComputedProperties().orElse(List.of()).stream()
+        .collect(Collectors.toMap(
+            c -> c.getColumn().getId(),
+            new ColumnComputedDtoMapper(),
+            (a, b) -> a,
+            LinkedHashMap::new)), columns);
+
     return columns;
   }
 
-  private Map<String, Kpi> buildKpisMap(EntityDto dto,
-                                        List<UnfoldingKpi> kpiList) {
+  private static void addColumns(Map<String, ? extends Column> sourceMap,
+                                 SequencedMap<String, Column> targetMap) {
+    sourceMap.values().forEach(c -> {
+      if (targetMap.put(c.getId(), c) != null) {
+        throw new IllegalArgumentException("Duplicate column id: " + c.getId() + " in entity");
+      }
+    });
+  }
+
+  private Map<String, Kpi> buildKpisMap(List<UnfoldingKpi> kpiList) {
     Map<String, Kpi> kpis = new HashMap<>();
     for (var unfoldingKpi : kpiList) {
       var kpi = unfoldingKpi.buildKpi();

@@ -1,9 +1,9 @@
 package com.asemicanalytics.sequence.querylanguage;
 
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import com.asemicanalytics.sql.sql.builder.tablelike.SimpleTable;
 import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
+import com.asemicanalytics.sql.sql.builder.tablelike.SimpleTable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

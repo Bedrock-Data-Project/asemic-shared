@@ -18,7 +18,7 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
   @Test
   void testSingleStepInDomain() {
     var sequence = SequenceService.parseSequence(
-        "domain transaction; match login >> battle;", stepColumnSources);
+        "domain transaction; match login >> battle;", stepLogicalTables);
 
     assertEquals(List.of(
             new SingleStep("login", StepRepetition.oneOrMore(), 1),
@@ -33,7 +33,7 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
   @Test
   void testTwoStepsInDomain() {
     var sequence = SequenceService.parseSequence(
-        "domain transaction, login; match battle;", stepColumnSources);
+        "domain transaction, login; match battle;", stepLogicalTables);
 
     assertEquals(List.of(
             new SingleStep("battle", StepRepetition.atLeast(1), 1)),
@@ -47,7 +47,7 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
   @Test
   void testStepFromDomainUsedInMatch() {
     var sequence = SequenceService.parseSequence(
-        "domain transaction; match transaction;", stepColumnSources);
+        "domain transaction; match transaction;", stepLogicalTables);
 
     assertEquals(List.of(
             new SingleStep("transaction", StepRepetition.atLeast(1), 1)),
@@ -62,20 +62,20 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
   void testDuplicateStepsInDomain() {
     assertThrows(IllegalArgumentException.class, () ->
         SequenceService.parseSequence("domain transaction, transaction; match transaction;",
-            stepColumnSources));
+            stepLogicalTables));
   }
 
   @Test
   void testDuplicateStepsInDomainDueToAlias() {
     assertThrows(IllegalArgumentException.class, () ->
         SequenceService.parseSequence("domain login, transaction as login; match transaction;",
-            stepColumnSources));
+            stepLogicalTables));
   }
 
   @Test
   void testAliases() {
     var sequence = SequenceService.parseSequence(
-        "domain transaction, transaction as t; match transaction >> t;", stepColumnSources);
+        "domain transaction, transaction as t; match transaction >> t;", stepLogicalTables);
 
     assertEquals(List.of(
         new SingleStep("transaction", StepRepetition.atLeast(1), 1),
@@ -117,7 +117,7 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
   }, delimiter = '|')
   void testDomainFilters(String filter, String expected) {
     var sequence = SequenceService.parseSequence(
-        "domain transaction where " + filter + "; match transaction;", stepColumnSources);
+        "domain transaction where " + filter + "; match transaction;", stepLogicalTables);
 
     assertEquals(List.of(
             new SingleStep("transaction", StepRepetition.atLeast(1), 1)),

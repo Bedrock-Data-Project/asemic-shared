@@ -11,7 +11,7 @@ import com.asemicanalytics.sql.sql.builder.SelectStatement;
 import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
 import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
-import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
+import com.asemicanalytics.sql.sql.builder.tablelike.SimpleTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,15 +56,12 @@ public class DomainCteBuilder {
       Sequence sequence, DomainStep domainStep,
       DatetimeInterval datetimeInterval, List<String> includeColumns) {
 
-    ColumnSource stepColumnSource = sequence.getStepColumnSource(domainStep.columnSourceName());
-    ActionLogicalTable stepLogicalTable = (ActionLogicalTable) stepColumnSource.getLogicalTable();
+    ActionLogicalTable stepLogicalTable = sequence.getTable(domainStep.actionLogicalTableName());
+    var table = new SimpleTable(stepLogicalTable.getTable());
     var columns = new ExpressionList(
-        stepColumnSource.loadColumn(stepLogicalTable.entityIdColumn().getId(),
-            datetimeInterval).withAlias(USER_ID_COLUMN),
-        stepColumnSource.loadColumn(stepLogicalTable.getTimestampColumn().getId(),
-            datetimeInterval).withAlias(STEP_TS_COLUMN),
-        stepColumnSource.loadColumn(stepLogicalTable.getDateColumn().getId(),
-            datetimeInterval).withAlias(STEP_DATE_COLUMN),
+        table.column(stepLogicalTable.entityIdColumn().getId()).withAlias(USER_ID_COLUMN),
+        table.column(stepLogicalTable.getTimestampColumn().getId()).withAlias(STEP_TS_COLUMN),
+        table.column(stepLogicalTable.getDateColumn().getId()).withAlias(STEP_DATE_COLUMN),
         new Constant(domainStep.name(), DataType.STRING).withAlias(STEP_NAME_COLUMN)
     );
 
@@ -76,10 +73,9 @@ public class DomainCteBuilder {
 
     var statement = new SelectStatement()
         .select(columns)
-        .from(stepColumnSource.table())
+        .from(table)
         .and(BooleanExpression.fromDateInterval(
-            stepColumnSource.loadColumn(stepLogicalTable.getDateColumn().getId(),
-                datetimeInterval), datetimeInterval));
+            table.column(stepLogicalTable.getDateColumn().getId()), datetimeInterval));
     domainStep.filter().ifPresent(statement::and);
     return statement;
   }

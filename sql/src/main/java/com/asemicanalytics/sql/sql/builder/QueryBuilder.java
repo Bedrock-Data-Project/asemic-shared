@@ -5,12 +5,16 @@ import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.TreeMap;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class QueryBuilder implements Token {
 
@@ -55,26 +59,24 @@ public class QueryBuilder implements Token {
   }
 
   private Collection<Cte> topologicalSort() {
-    LinkedHashMap<String, Cte> ordered = new LinkedHashMap<>();
-    LinkedList<Cte> queue = new LinkedList<>(this.mainStatement.getDependentCtes().values());
+    Graph<String, DefaultEdge> g = new DefaultDirectedGraph<>(DefaultEdge.class);
+    for (var cte : ctes.values()) {
+      g.addVertex(cte.name());
+      cte.getDependentCtes().forEach((key, value) -> {
+        g.addVertex(key);
+        g.addEdge(key, cte.name());
+      });
+    }
 
-    while (!queue.isEmpty()) {
-      for (int i = 0; i < queue.size(); i++) {
-        var cte = queue.pop();
-        ordered.put(cte.name(), cte);
-
-        cte.getDependentCtes().forEach((key, value) -> {
-          if (!ordered.containsKey(key)) {
-            queue.add(value);
-          }
-        });
-      }
+    List<Cte> ordered = new LinkedList<>();
+    var topogicalOrder = new TopologicalOrderIterator<>(g);
+    while (topogicalOrder.hasNext()) {
+      ordered.add(ctes.get(topogicalOrder.next()));
     }
 
     // normalize indices
     Map<String, Integer> counts = new HashMap<>();
-    Collection<Cte> reversed = ordered.reversed().values();
-    for (var cte : reversed) {
+    for (var cte : ordered) {
       if (counts.containsKey(cte.tag())) {
         cte.setIndex(counts.get(cte.tag()));
         counts.put(cte.tag(), counts.get(cte.tag()) + 1);
@@ -83,7 +85,7 @@ public class QueryBuilder implements Token {
         cte.setIndex(0);
       }
     }
-    return reversed;
+    return ordered;
   }
 
   public int nextCteIndex() {

@@ -9,9 +9,6 @@ import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.Step;
-import com.asemicanalytics.sql.sql.builder.tablelike.Table;
-import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
-import com.asemicanalytics.sql.sql.columnsource.TableColumnSource;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,14 +16,14 @@ import java.util.Optional;
 import java.util.Set;
 
 public class QueryLanguageTestBase {
-  protected final Map<String, ColumnSource> stepColumnSources = Map.of(
-      "login", columnSource("login"),
-      "battle", columnSource("battle"),
-      "transaction", columnSource("transaction")
+  protected final Map<String, ActionLogicalTable> stepLogicalTables = Map.of(
+      "login", ActionLogicalTable("login"),
+      "battle", ActionLogicalTable("battle"),
+      "transaction", ActionLogicalTable("transaction")
   );
 
-  private ColumnSource columnSource(String stepName) {
-    return new TableColumnSource(new ActionLogicalTable(
+  private ActionLogicalTable ActionLogicalTable(String stepName) {
+    return new ActionLogicalTable(
         stepName, "", Optional.empty(), TableReference.of(stepName),
         new Columns(new LinkedHashMap<>(Map.of(
             "date_",
@@ -36,12 +33,11 @@ public class QueryLanguageTestBase {
             "user_id", Column.ofHidden("user_id", DataType.STRING)
                 .withTag(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)
         ))),
-        Map.of(), Set.of()),
-        new Table(TableReference.of(stepName)));
+        Map.of(), Set.of());
   }
 
   protected void assertSteps(String query, List<Step> expectedSteps) {
     assertEquals(expectedSteps,
-        SequenceService.parseSequence(query, stepColumnSources).getSteps());
+        SequenceService.parseSequence(query, stepLogicalTables).getSteps());
   }
 }

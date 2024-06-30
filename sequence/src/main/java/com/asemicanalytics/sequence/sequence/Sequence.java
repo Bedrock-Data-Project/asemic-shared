@@ -1,6 +1,7 @@
 package com.asemicanalytics.sequence.sequence;
 
-import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
+import com.asemicanalytics.core.logicaltable.LogicalTable;
+import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,16 +16,16 @@ public class Sequence {
   private final Map<String, DomainStep> domain;
   private final Duration timeHorizon;
   private final boolean ignoreIncompleteSequences;
-  private final Map<String, ColumnSource> stepColumnSources;
+  private final Map<String, ActionLogicalTable> stepTables;
 
   public Sequence(List<Step> steps, Map<String, DomainStep> domain,
                   Duration timeHorizon, boolean ignoreIncompleteSequences,
-                  Map<String, ColumnSource> stepColumnSources) {
+                  Map<String, ActionLogicalTable> stepTables) {
     this.steps = steps;
     this.domain = domain;
     this.timeHorizon = timeHorizon;
     this.ignoreIncompleteSequences = ignoreIncompleteSequences;
-    this.stepColumnSources = stepColumnSources;
+    this.stepTables = stepTables;
     validate();
   }
 
@@ -68,8 +69,8 @@ public class Sequence {
     return actions;
   }
 
-  public ColumnSource getStepColumnSource(String stepName) {
-    return stepColumnSources.get(stepName);
+  public ActionLogicalTable getTable(String stepName) {
+    return stepTables.get(stepName);
   }
 
   public boolean isStartStepRepeated() {

@@ -111,7 +111,8 @@ public class EntityLogicalTable extends TemporalLogicalTable {
             Optional.empty(),
             "MAX({" + activityLogicalTable.getDateColumn().getId() + "})",
             Optional.empty(),
-            null
+            null,
+            false
         ),
         new TotalColumn(
             new Column(

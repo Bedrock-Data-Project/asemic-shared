@@ -13,9 +13,6 @@ import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.sequence.SequenceService;
-import com.asemicanalytics.sql.sql.builder.tablelike.Table;
-import com.asemicanalytics.sql.sql.columnsource.ColumnSource;
-import com.asemicanalytics.sql.sql.columnsource.TableColumnSource;
 import com.asemicanalytics.sql.sql.h2.H2QueryExecutor;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -30,10 +27,10 @@ import org.junit.jupiter.api.BeforeEach;
 public class SequenceBaseTest {
   protected final SqlQueryExecutor executor = new H2QueryExecutor(
       DatabaseHelper.USER, DatabaseHelper.PASSWORD, DatabaseHelper.JDBC_URL, 10);
-  protected final Map<String, ColumnSource> STEP_COLUMN_SOURCES = Map.of(
-      "login", columnSource("login"),
-      "battle", columnSource("battle"),
-      "transaction", columnSource("transaction")
+  protected final Map<String, ActionLogicalTable> STEP_COLUMN_SOURCES = Map.of(
+      "login", ActionLogicalTable("login"),
+      "battle", ActionLogicalTable("battle"),
+      "transaction", ActionLogicalTable("transaction")
   );
   protected SequenceService sequenceService = new SequenceService(executor);
 
@@ -43,8 +40,8 @@ public class SequenceBaseTest {
 
   }
 
-  private ColumnSource columnSource(String stepName) {
-    return new TableColumnSource(new ActionLogicalTable(
+  private ActionLogicalTable ActionLogicalTable(String stepName) {
+    return new ActionLogicalTable(
         stepName, "", Optional.empty(), TableReference.of(stepName),
         new Columns(new LinkedHashMap<>(Map.of(
             "date_",
@@ -54,8 +51,7 @@ public class SequenceBaseTest {
             "user_id", Column.ofHidden("user_id", DataType.STRING)
                 .withTag(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)
         ))),
-        Map.of(), Set.of()),
-        new Table(TableReference.of(stepName)));
+        Map.of(), Set.of());
   }
 
   private SqlResult result() throws ExecutionException, InterruptedException {

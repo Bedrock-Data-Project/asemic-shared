@@ -89,8 +89,7 @@ public class EntityMapper
 
     addColumns(mergedColumns.getSlidingWindowProperties().orElse(List.of()).stream()
         .collect(Collectors.toMap(
-            c -> c.getColumn().getId(),
-            new SlidingWindowPropertyDtoMapper(),
+            c -> c.getColumn().getId(), new SlidingWindowPropertyDtoMapper(columns),
             (a, b) -> a,
             LinkedHashMap::new)), columns);
 

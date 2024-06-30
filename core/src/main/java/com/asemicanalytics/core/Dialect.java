@@ -69,5 +69,9 @@ public interface Dialect {
       TableReference table, String select, String partitionColumn, String partitionValue);
 
   String generateNumberArray(String from, String to);
+
+  default String unnestIdentifier(String identifier) {
+    return columnIdentifier(identifier);
+  }
 }
 

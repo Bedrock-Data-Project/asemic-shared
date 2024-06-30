@@ -21,7 +21,7 @@ public class Unnest implements TableLike, Expression {
 
   @Override
   public String renderTableDeclaration(Dialect dialect) {
-    return "UNNEST(" + arrayExpression.render(dialect) + ") AS " + dialect.columnIdentifier(alias);
+    return "UNNEST(" + arrayExpression.render(dialect) + ") AS " + dialect.unnestIdentifier(alias);
   }
 
   @Override

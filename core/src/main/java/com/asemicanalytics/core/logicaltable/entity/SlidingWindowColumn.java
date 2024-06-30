@@ -1,12 +1,11 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import java.time.LocalDate;
 import java.util.Optional;
 
 public class SlidingWindowColumn extends Column {
-  private final String sourceColumnId;
+  private final ActionColumn sourceColumn;
   private final Optional<LocalDate> materializedFrom;
   private final int relativeDaysFrom;
   private final int relativeDaysTo;
@@ -14,14 +13,14 @@ public class SlidingWindowColumn extends Column {
 
   public SlidingWindowColumn(
       Column column,
-      String sourceColumnId,
+      ActionColumn sourceColumn,
       int relativeDaysFrom,
       int relativeDaysTo,
       String windowAggregation,
       Optional<LocalDate> materializedFrom) {
     super(column.getId(), column.getDataType(), column.getLabel(), column.getDescription(),
         column.canFilter(), column.canGroupBy(), column.getTags());
-    this.sourceColumnId = sourceColumnId;
+    this.sourceColumn = sourceColumn;
     this.materializedFrom = materializedFrom;
     this.relativeDaysFrom = relativeDaysFrom;
     this.relativeDaysTo = relativeDaysTo;
@@ -42,5 +41,9 @@ public class SlidingWindowColumn extends Column {
 
   public String getWindowAggregation() {
     return windowAggregation;
+  }
+
+  public ActionColumn getSourceColumn() {
+    return sourceColumn;
   }
 }

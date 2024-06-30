@@ -10,10 +10,6 @@ public interface TableLike extends Token {
     return new TableColumn(this, columnName);
   }
 
-  default Expression column(String columnName, String alias) {
-    return column(columnName).withAlias(alias);
-  }
-
   default String renderTableDeclaration(Dialect dialect) {
     return render(dialect);
   }

@@ -69,7 +69,7 @@ public class QueryLanguageMatchTest extends QueryLanguageTestBase {
   @Test
   void testFirstStepShouldNotBeRepeated() {
     assertThrows(IllegalArgumentException.class, () ->
-        SequenceService.parseSequence("match login >> login;", stepColumnSources)
+        SequenceService.parseSequence("match login >> login;", stepLogicalTables)
     );
   }
 
@@ -77,15 +77,15 @@ public class QueryLanguageMatchTest extends QueryLanguageTestBase {
   void testSecondStepCannotBeRepeatedIfNonLastItemIsRepeatedNonFixed() {
     assertThrows(IllegalArgumentException.class, () ->
         SequenceService.parseSequence("match login >> battle >> battle;",
-            stepColumnSources)
+            stepLogicalTables)
     );
     assertThrows(IllegalArgumentException.class, () ->
         SequenceService.parseSequence("match login >> battle{2,3} >> battle;",
-            stepColumnSources)
+            stepLogicalTables)
     );
     assertThrows(IllegalArgumentException.class, () ->
         SequenceService.parseSequence("match login >> battle{2,} >> battle;",
-            stepColumnSources)
+            stepLogicalTables)
 
     );
   }
@@ -126,12 +126,12 @@ public class QueryLanguageMatchTest extends QueryLanguageTestBase {
   void testGroupStepsCannotContainDuplicates() {
     assertThrows(IllegalArgumentException.class, () ->
         SequenceService.parseSequence("match (login, battle, battle{3,3});",
-            stepColumnSources)
+            stepLogicalTables)
     );
 
     assertThrows(IllegalArgumentException.class, () ->
         SequenceService.parseSequence("match (login, battle, battle);",
-            stepColumnSources)
+            stepLogicalTables)
     );
   }
 }

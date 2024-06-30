@@ -24,7 +24,6 @@ public class BooleanExpression extends TemplatedExpression {
     super("{e}", TemplateDict.noMissing(Map.of("e", expression)));
   }
 
-
   public static BooleanExpression fromExpression(Expression expression, String operator,
                                                  List<String> values, DataType dataType) {
     var constants = new ArrayList<>(values.stream().map(x -> new Constant(x, dataType)).toList());

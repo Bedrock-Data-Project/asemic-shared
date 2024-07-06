@@ -1,6 +1,5 @@
 package com.asemicanalytics.sequence.sequence;
 
-import com.asemicanalytics.core.logicaltable.LogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import java.time.Duration;
 import java.util.ArrayList;

@@ -3,7 +3,6 @@ package com.asemicanalytics.sequence;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.logicaltable.LogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.sequence.querybuilder.DomainCteBuilder;
 import com.asemicanalytics.sequence.querybuilder.SequenceQuery;

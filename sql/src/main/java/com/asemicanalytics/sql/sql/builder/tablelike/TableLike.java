@@ -4,6 +4,7 @@ import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.sql.sql.builder.Token;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
 import com.asemicanalytics.sql.sql.builder.expression.TableColumn;
+import java.util.Optional;
 
 public interface TableLike extends Token {
   default Expression column(String columnName) {
@@ -13,4 +14,9 @@ public interface TableLike extends Token {
   default String renderTableDeclaration(Dialect dialect) {
     return render(dialect);
   }
+
+  /**
+   * Used to resolve rendering order of CTEs.
+   */
+  Optional<Cte> getDependantCte();
 }

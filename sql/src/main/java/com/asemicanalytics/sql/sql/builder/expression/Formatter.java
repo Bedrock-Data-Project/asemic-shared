@@ -31,4 +31,8 @@ public class Formatter {
     return converted;
   }
 
+  public static void validate(String input, TemplateDict dict) {
+    extractKeys(input).forEach(dict::get);
+  }
+
 }

@@ -4,6 +4,7 @@ import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.sql.sql.builder.SelectStatement;
 import java.util.Map;
+import java.util.Optional;
 
 public class Cte implements TableLike {
   private final SelectStatement select;
@@ -51,5 +52,10 @@ public class Cte implements TableLike {
 
   public void setIndex(int i) {
     this.index = i;
+  }
+
+  @Override
+  public Optional<Cte> getDependantCte() {
+    return Optional.of(this);
   }
 }

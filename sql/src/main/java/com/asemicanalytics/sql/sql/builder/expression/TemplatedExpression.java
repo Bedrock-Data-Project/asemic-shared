@@ -9,6 +9,7 @@ public class TemplatedExpression implements Expression {
   public TemplatedExpression(String expression, TemplateDict templateDict) {
     this.expression = expression;
     this.templateDict = templateDict;
+    Formatter.validate(expression, templateDict);
   }
 
   public String getExpression() {

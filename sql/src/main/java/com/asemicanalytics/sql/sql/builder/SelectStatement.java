@@ -233,15 +233,12 @@ public class SelectStatement implements Token {
 
   public Map<String, Cte> getDependentCtes() {
     LinkedHashMap<String, Cte> dependentCtes = new LinkedHashMap<>();
-    if (from != null && from.table() instanceof Cte) {
-      Cte cte = (Cte) from.table();
-      dependentCtes.put(cte.name(), cte);
+
+    if (from != null) {
+      from.table().getDependantCte().ifPresent(cte -> dependentCtes.put(cte.name(), cte));
     }
     joins.forEach(join -> {
-      if (join.table() instanceof Cte) {
-        Cte cte = (Cte) join.table();
-        dependentCtes.put(cte.name(), cte);
-      }
+      join.table().getDependantCte().ifPresent(cte -> dependentCtes.put(cte.name(), cte));
     });
     return dependentCtes;
   }

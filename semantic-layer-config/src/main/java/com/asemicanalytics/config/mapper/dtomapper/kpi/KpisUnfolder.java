@@ -1,7 +1,7 @@
 package com.asemicanalytics.config.mapper.dtomapper.kpi;
 
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
-import com.asemicanalytics.sql.sql.builder.Identifier;
+import com.asemicanalytics.sql.sql.builder.tokens.Identifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

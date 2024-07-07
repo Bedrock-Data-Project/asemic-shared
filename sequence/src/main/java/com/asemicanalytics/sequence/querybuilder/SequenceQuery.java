@@ -1,7 +1,8 @@
 package com.asemicanalytics.sequence.querybuilder;
 
-import com.asemicanalytics.sql.sql.builder.QueryBuilder;
-import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
+import com.asemicanalytics.sql.sql.builder.tokens.QueryBuilder;
+import com.asemicanalytics.sql.sql.builder.tokens.TableLike;
 
-public record SequenceQuery(QueryBuilder queryBuilder, Cte domain, Cte source, Cte steps) {
+public record SequenceQuery(QueryBuilder queryBuilder, TableLike domain, TableLike source,
+                            TableLike steps) {
 }

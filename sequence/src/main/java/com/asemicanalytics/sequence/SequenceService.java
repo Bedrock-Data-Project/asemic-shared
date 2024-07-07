@@ -1,5 +1,7 @@
 package com.asemicanalytics.sequence;
 
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.select;
+
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.TableReference;
@@ -9,8 +11,6 @@ import com.asemicanalytics.sequence.querybuilder.SequenceQuery;
 import com.asemicanalytics.sequence.querybuilder.SqlQueryBuilder;
 import com.asemicanalytics.sequence.querylanguage.QueryLanguageEvaluator;
 import com.asemicanalytics.sequence.sequence.Sequence;
-import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
-import com.asemicanalytics.sql.sql.builder.select.SelectStatement;
 import java.util.List;
 import java.util.Map;
 
@@ -40,13 +40,13 @@ public class SequenceService {
       Map<String, ActionLogicalTable> stepTables, List<String> includeColumns) {
     var query =
         getSequenceQuery(datetimeInterval, sequenceQuery, stepTables, includeColumns);
-    query.queryBuilder().select(new SelectStatement()
+    query.queryBuilder().select(select()
         .selectStar()
         .from(query.steps())
-        .orderBy(new ExpressionList(
+        .orderBy(
             query.steps().column(DomainCteBuilder.USER_ID_COLUMN),
             query.steps().column(DomainCteBuilder.STEP_TS_COLUMN)
-        ))
+        )
     );
     return query.queryBuilder().render(sqlQueryExecutor.getDialect());
   }

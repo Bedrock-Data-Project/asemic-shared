@@ -1,25 +1,26 @@
 package com.asemicanalytics.sequence.querybuilder;
 
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.cte;
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.function;
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.int_;
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.parse;
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.select;
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.window;
+
 import com.asemicanalytics.sequence.sequence.Sequence;
-import com.asemicanalytics.sql.sql.builder.QueryBuilder;
-import com.asemicanalytics.sql.sql.builder.expression.Constant;
-import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
-import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
-import com.asemicanalytics.sql.sql.builder.expression.IfExpression;
-import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
-import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
-import com.asemicanalytics.sql.sql.builder.expression.windowfunction.WindowFunctionExpression;
-import com.asemicanalytics.sql.sql.builder.select.SelectStatement;
-import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
+import com.asemicanalytics.sql.sql.builder.tokens.QueryBuilder;
+import com.asemicanalytics.sql.sql.builder.tokens.QueryFactory;
+import com.asemicanalytics.sql.sql.builder.tokens.TableLike;
+import com.asemicanalytics.sql.sql.builder.tokens.TemplateDict;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SequencesCteBuilder {
   public static final String SEQUENCE_COLUMN = "sequence";
 
-  public static Cte buildCte(Sequence sequence, QueryBuilder queryBuilder, Cte domainCte) {
+  public static TableLike buildCte(Sequence sequence, QueryBuilder queryBuilder,
+                                   TableLike domainCte) {
     if (sequence.isStartStepRepeated()) {
       throw new UnsupportedOperationException();
     } else {
@@ -27,36 +28,33 @@ public class SequencesCteBuilder {
     }
   }
 
-  private static Cte buildIfStartStepNotRepeated(Sequence sequence, QueryBuilder queryBuilder,
-                                                 Cte domainCte) {
-    var stepValues = new ExpressionList(sequence.getSteps().get(0).getStepNames().stream()
-        .map(Constant::ofString)
-        .collect(Collectors.toList()), ", ");
+  private static TableLike buildIfStartStepNotRepeated(Sequence sequence, QueryBuilder queryBuilder,
+                                                       TableLike domainCte) {
 
-    var windowAggregation = new FunctionExpression("SUM", new IfExpression(
-        new TemplatedExpression("{step_column} = {step_value}",
+    var stepValues = sequence.getSteps().get(0).getStepNames().stream()
+        .map(QueryFactory::string_)
+        .findFirst().get();
+
+    var windowAggregation = function("SUM",
+        parse("{step_column} = {step_value}",
             TemplateDict.noMissing(Map.of(
                 "step_column", domainCte.column(DomainCteBuilder.STEP_NAME_COLUMN),
                 "step_value", stepValues
-            ))), Constant.ofInt(1), Constant.ofInt(0)));
+            ))).asCondition().if_(int_(1), int_(0)));
 
-    var columns = domainCte.select().select().columnNames().stream()
+    var columns = domainCte.columnNames().stream()
         .map(domainCte::column)
         .collect(Collectors.toCollection(ArrayList::new));
 
-    columns.add(new WindowFunctionExpression(
-        windowAggregation,
-        new ExpressionList(domainCte.column(DomainCteBuilder.USER_ID_COLUMN)),
-        new ExpressionList(domainCte.column(DomainCteBuilder.STEP_TS_COLUMN)),
-        Optional.empty()
-    ).withAlias(SEQUENCE_COLUMN));
+    columns.add(window(windowAggregation)
+        .partitionBy(domainCte.column(DomainCteBuilder.USER_ID_COLUMN))
+            .orderBy(domainCte.column(DomainCteBuilder.STEP_TS_COLUMN))
+        .withAlias(SEQUENCE_COLUMN));
 
-    Cte sequences = new Cte("sequence_sequences", queryBuilder.nextCteIndex(),
-        new SelectStatement()
-            .select(new ExpressionList(columns))
+    return cte(queryBuilder, "sequence_sequences",
+        select()
+            .select(columns)
             .from(domainCte)
     );
-    queryBuilder.with(sequences);
-    return sequences;
   }
 }

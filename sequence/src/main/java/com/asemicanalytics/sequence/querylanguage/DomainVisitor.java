@@ -1,9 +1,10 @@
 package com.asemicanalytics.sequence.querylanguage;
 
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.table;
+
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.sequence.sequence.DomainStep;
-import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
-import com.asemicanalytics.sql.sql.builder.tablelike.SimpleTable;
+import com.asemicanalytics.sql.sql.builder.tokens.BooleanExpression;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,10 +27,10 @@ class DomainVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
     var result = new VisitorResult(List.of(), Map.of());
     String name = ctx.NAME().getText();
     var filterVisitor =
-        new ExpressionVisitor(new SimpleTable(this.stepLogicalTables.get(name).getTable()));
+        new ExpressionVisitor(table(this.stepLogicalTables.get(name).getTable()));
     Optional<BooleanExpression> filter = ctx.domainStepFilter() == null
         ? Optional.empty()
-        : Optional.of(new BooleanExpression(filterVisitor.visit(ctx.domainStepFilter())));
+        : Optional.of(filterVisitor.visit(ctx.domainStepFilter()).asCondition());
     Optional<String> alias = ctx.domainStepAlias() == null
         ? Optional.empty()
         : Optional.of(new AliasVisitor().visit(ctx.domainStepAlias()));

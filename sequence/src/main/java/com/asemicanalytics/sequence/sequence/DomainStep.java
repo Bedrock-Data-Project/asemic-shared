@@ -1,6 +1,6 @@
 package com.asemicanalytics.sequence.sequence;
 
-import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
+import com.asemicanalytics.sql.sql.builder.tokens.BooleanExpression;
 import java.util.Optional;
 
 public record DomainStep(

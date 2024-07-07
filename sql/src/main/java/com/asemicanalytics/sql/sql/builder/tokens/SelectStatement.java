@@ -59,13 +59,29 @@ public class SelectStatement implements Token {
     return this;
   }
 
-  public Select select() {
-    return select;
+  public void addSelect(Expression expression) {
+    select.expressions().add(expression);
+  }
+
+  public void popSelect() {
+    select.popExpression();
+  }
+
+  public void popOrderBy() {
+    orderBy.expressions().pop();
+  }
+
+  public void popGroupBy() {
+    groupBy.expressions().pop();
   }
 
   public SelectStatement select(Expression... expressions) {
     select = new Select(new ExpressionList(expressions));
     return this;
+  }
+
+  public Select select() {
+    return select;
   }
 
   public SelectStatement select(List<Expression> expressions) {
@@ -129,6 +145,11 @@ public class SelectStatement implements Token {
     return this;
   }
 
+  public SelectStatement groupBy(List<Expression> expressions) {
+    groupBy = new GroupBy(new ExpressionList(expressions));
+    return this;
+  }
+
   public SelectStatement having(BooleanExpression expression) {
     having = new Having(expression);
     return this;
@@ -143,8 +164,8 @@ public class SelectStatement implements Token {
     return this;
   }
 
-  public SelectStatement orderByDesc(ExpressionList expressions) {
-    orderBy = new OrderBy(expressions, true);
+  public SelectStatement orderByDesc(Expression... expressions) {
+    orderBy = new OrderBy(new ExpressionList(expressions), true);
     return this;
   }
 

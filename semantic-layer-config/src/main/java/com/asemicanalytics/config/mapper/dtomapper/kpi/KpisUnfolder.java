@@ -1,7 +1,8 @@
 package com.asemicanalytics.config.mapper.dtomapper.kpi;
 
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.identifier;
+
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
-import com.asemicanalytics.sql.sql.builder.tokens.Identifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,7 +64,7 @@ public class KpisUnfolder {
       if (componentId.isProperty()) {
         String rewrittenId = propertyIdRewritter.rewrite(componentId, kpiComponent);
         formula.addResolvedComponent(componentId.toString(),
-            new Identifier("{" + rewrittenId + "}"));
+            identifier("{" + rewrittenId + "}"));
         formula.addKpiComponent(rewrittenId, kpiComponent);
       }
 
@@ -85,7 +86,7 @@ public class KpisUnfolder {
         var kpiFormula = kpis.get(kpiAndAxis).getFormula(filtersIncludingThis);
         kpiFormula.getKpiComponentMap().forEach(formula::addKpiComponent);
         formula.addResolvedComponent(componentId.toString(),
-            new Identifier("(" + kpiFormula.render() + ")"));
+            identifier("(" + kpiFormula.render() + ")"));
       }
     }
   }

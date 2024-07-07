@@ -1,7 +1,7 @@
 package com.asemicanalytics.config.mapper.dtomapper.kpi;
 
 import com.asemicanalytics.core.kpi.KpiComponent;
-import com.asemicanalytics.sql.sql.builder.expression.Formatter;
+import com.asemicanalytics.sql.sql.builder.tokens.Formatter;
 import com.asemicanalytics.sql.sql.builder.tokens.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.tokens.Token;
 import java.util.Collections;

@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Formatter {
+public class Formatter {
   private static final Pattern PATTERN = Pattern.compile("\\{([^{}]+)}");
 
   public static Set<String> extractKeys(String input) {

@@ -48,7 +48,7 @@ public class SequencesCteBuilder {
 
     columns.add(window(windowAggregation)
         .partitionBy(domainCte.column(DomainCteBuilder.USER_ID_COLUMN))
-            .orderBy(domainCte.column(DomainCteBuilder.STEP_TS_COLUMN))
+        .orderBy(domainCte.column(DomainCteBuilder.STEP_TS_COLUMN))
         .withAlias(SEQUENCE_COLUMN));
 
     return cte(queryBuilder, "sequence_sequences",

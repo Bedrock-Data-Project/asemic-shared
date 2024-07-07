@@ -83,4 +83,8 @@ class ExpressionList implements Token {
   public static ExpressionList inline(Expression... expressions) {
     return new ExpressionList(Arrays.stream(expressions).toList(), ", ");
   }
+
+  public static ExpressionList inline(List<Expression> expressions) {
+    return new ExpressionList(expressions, ", ");
+  }
 }

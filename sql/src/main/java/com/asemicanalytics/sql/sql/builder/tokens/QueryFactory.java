@@ -61,6 +61,10 @@ public class QueryFactory {
     return new CoalesceExpression(expressions);
   }
 
+  public static Expression coalesce(List<Expression> expressions) {
+    return new CoalesceExpression(expressions.toArray(new Expression[0]));
+  }
+
   public static Expression int_(long value) {
     return new Constant(Long.toString(value), DataType.INTEGER);
   }
@@ -79,6 +83,10 @@ public class QueryFactory {
 
   public static Expression null_() {
     return new Constant(null, null);
+  }
+
+  public static Expression constant(String value, DataType dataType) {
+    return new Constant(value, dataType);
   }
 
   public static Expression interval(int days) {

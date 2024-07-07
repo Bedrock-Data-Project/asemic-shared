@@ -22,7 +22,17 @@ public class WindowFunctionExpression implements Expression {
     return this;
   }
 
+  public WindowFunctionExpression partitionBy(List<Expression> partitionBy) {
+    this.partitionBy = ExpressionList.inline(partitionBy);
+    return this;
+  }
+
   public WindowFunctionExpression orderBy(Expression... orderBy) {
+    this.orderBy = ExpressionList.inline(orderBy);
+    return this;
+  }
+
+  public WindowFunctionExpression orderBy(List<Expression> orderBy) {
     this.orderBy = ExpressionList.inline(orderBy);
     return this;
   }

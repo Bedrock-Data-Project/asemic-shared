@@ -5,7 +5,7 @@ import com.asemicanalytics.core.kpi.Kpi;
 import com.asemicanalytics.core.kpi.KpixaxisConfig;
 import com.asemicanalytics.core.kpi.Unit;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
-import com.asemicanalytics.sql.sql.builder.expression.Formatter;
+import com.asemicanalytics.sql.sql.builder.tokens.Formatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

@@ -14,7 +14,6 @@ import com.asemicanalytics.sql.sql.builder.tokens.Cte;
 import com.asemicanalytics.sql.sql.builder.tokens.Expression;
 import com.asemicanalytics.sql.sql.builder.tokens.QueryBuilder;
 import com.asemicanalytics.sql.sql.builder.tokens.SelectStatement;
-import com.asemicanalytics.sql.sql.builder.tokens.TableLike;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

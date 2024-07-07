@@ -69,4 +69,9 @@ public class Cte implements TableLike {
     return select.select().columnNames();
   }
 
+  public void merge(Expression... expressions) {
+    select.select().merge(new Select(new ExpressionList(expressions)));
+  }
+
+
 }

@@ -37,15 +37,6 @@ public class Select implements Token {
   }
 
   List<String> columnNames() {
-    return expressions.expressions().stream().map(e -> {
-      if (e instanceof AliasedExpression) {
-        return ((AliasedExpression) e).alias();
-      }
-      if (e instanceof TableColumn) {
-        return ((TableColumn) e).name();
-      }
-
-      throw new IllegalArgumentException("Unsupported expression type: " + e.getClass().getName());
-    }).toList();
+    return expressions.expressions().stream().map(Expression::columnName).toList();
   }
 }

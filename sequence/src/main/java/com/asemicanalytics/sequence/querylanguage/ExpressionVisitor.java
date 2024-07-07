@@ -3,7 +3,6 @@ package com.asemicanalytics.sequence.querylanguage;
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.function;
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.identifier;
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.in;
-import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.int_;
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.parse;
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.string_;
 

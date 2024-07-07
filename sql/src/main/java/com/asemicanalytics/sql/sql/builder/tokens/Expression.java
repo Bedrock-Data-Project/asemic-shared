@@ -20,7 +20,7 @@ public interface Expression extends Token {
     return render(dialect);
   }
 
-  default AliasedExpression withAlias(String alias) {
+  default Expression withAlias(String alias) {
     return new AliasedExpression(this, alias);
   }
 
@@ -91,4 +91,14 @@ public interface Expression extends Token {
     return new DateAddExpression(this, days);
   }
 
+  default String columnName() {
+    if (this instanceof AliasedExpression) {
+      return ((AliasedExpression) this).alias();
+    }
+    if (this instanceof TableColumn) {
+      return ((TableColumn) this).name();
+    }
+
+    throw new IllegalArgumentException("Unsupported expression type: " + getClass().getName());
+  }
 }

@@ -1,12 +1,14 @@
 package com.asemicanalytics.sql.sql.h2;
 
 import com.asemicanalytics.core.DataType;
+import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.sql.sql.executor.JdbcQueryExecutor;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.List;
 
 
 public class H2QueryExecutor extends JdbcQueryExecutor {
@@ -57,5 +59,18 @@ public class H2QueryExecutor extends JdbcQueryExecutor {
       case "BOOLEAN" -> DataType.BOOLEAN;
       default -> throw new RuntimeException("Unsupported column type: " + columnType);
     };
+  }
+
+  @Override
+  public void executeDdl(String sql) {
+    System.out.println("Executing DDL: " + sql);
+    super.executeDdl(sql);
+  }
+
+  @Override
+  protected SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
+      throws InterruptedException {
+    System.out.println("Executing query: " + sql);
+    return super.executeQuery(sql, dataTypes, dryRun);
   }
 }

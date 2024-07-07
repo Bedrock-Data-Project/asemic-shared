@@ -1,7 +1,6 @@
 package com.asemicanalytics.sql.sql.builder.expression;
 
 import com.asemicanalytics.core.Dialect;
-import com.asemicanalytics.sql.sql.builder.ExpressionList;
 
 public class CoalesceExpression extends FunctionExpression {
 

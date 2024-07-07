@@ -1,6 +1,9 @@
-package com.asemicanalytics.sql.sql.builder;
+package com.asemicanalytics.sql.sql.builder.select;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.Token;
+import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 
 public class OrderBy implements Token {
   private final ExpressionList expressions;
@@ -20,6 +23,11 @@ public class OrderBy implements Token {
 
     return "ORDER BY\n  " + expressions.referenceInGroupByOrderBy(dialect)
         + (desc ? " DESC" : "") + "\n";
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    expressions.swapTable(oldTable, newTable);
   }
 
   public ExpressionList expressions() {

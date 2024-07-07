@@ -1,6 +1,7 @@
 package com.asemicanalytics.sql.sql.builder;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -34,4 +35,6 @@ public interface Token {
   default String contentHash() {
     return hashString(render(contentHashDialect())).substring(0, 4);
   }
+
+  void swapTable(TableLike oldTable, TableLike newTable);
 }

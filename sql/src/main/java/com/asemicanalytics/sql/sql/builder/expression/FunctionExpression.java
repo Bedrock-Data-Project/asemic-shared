@@ -1,7 +1,7 @@
 package com.asemicanalytics.sql.sql.builder.expression;
 
 import com.asemicanalytics.core.Dialect;
-import com.asemicanalytics.sql.sql.builder.ExpressionList;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.List;
 
 public class FunctionExpression implements Expression {
@@ -27,5 +27,10 @@ public class FunctionExpression implements Expression {
   @Override
   public String render(Dialect dialect) {
     return functionName.toUpperCase() + "(" + arguments.render(dialect) + ")";
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    arguments.swapTable(oldTable, newTable);
   }
 }

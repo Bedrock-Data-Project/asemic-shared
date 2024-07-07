@@ -2,6 +2,7 @@ package com.asemicanalytics.sql.sql.builder.expression.windowfunction;
 
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.sql.sql.builder.Token;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 
 public class RangeInterval implements Token {
   private final RangeType rangeType;
@@ -18,5 +19,11 @@ public class RangeInterval implements Token {
   @Override
   public String render(Dialect dialect) {
     return rangeType + " BETWEEN " + from.render(dialect) + " AND " + to.render(dialect);
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    from.swapTable(oldTable, newTable);
+    to.swapTable(oldTable, newTable);
   }
 }

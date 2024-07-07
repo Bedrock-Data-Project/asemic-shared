@@ -1,17 +1,17 @@
 package com.asemicanalytics.sequence.querybuilder;
 
 import com.asemicanalytics.sequence.sequence.Sequence;
-import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.QueryBuilder;
-import com.asemicanalytics.sql.sql.builder.SelectStatement;
 import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
+import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
 import com.asemicanalytics.sql.sql.builder.expression.IfExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
 import com.asemicanalytics.sql.sql.builder.expression.ToUnixTimestamp;
 import com.asemicanalytics.sql.sql.builder.expression.windowfunction.WindowFunctionExpression;
+import com.asemicanalytics.sql.sql.builder.select.SelectStatement;
 import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
 import java.util.ArrayList;
 import java.util.List;

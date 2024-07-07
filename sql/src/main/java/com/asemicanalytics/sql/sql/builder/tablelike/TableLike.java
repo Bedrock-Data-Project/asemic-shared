@@ -1,6 +1,7 @@
 package com.asemicanalytics.sql.sql.builder.tablelike;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.ContentHashDialect;
 import com.asemicanalytics.sql.sql.builder.Token;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
 import com.asemicanalytics.sql.sql.builder.expression.TableColumn;
@@ -19,4 +20,8 @@ public interface TableLike extends Token {
    * Used to resolve rendering order of CTEs.
    */
   Optional<Cte> getDependantCte();
+
+  default boolean equals(TableLike other) {
+    return this.render(new ContentHashDialect()).equals(other.render(new ContentHashDialect()));
+  }
 }

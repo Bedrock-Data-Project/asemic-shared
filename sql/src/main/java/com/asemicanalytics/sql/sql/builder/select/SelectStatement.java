@@ -1,17 +1,20 @@
-package com.asemicanalytics.sql.sql.builder;
+package com.asemicanalytics.sql.sql.builder.select;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.Token;
 import com.asemicanalytics.sql.sql.builder.booleanexpression.BooleanExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
-import com.asemicanalytics.sql.sql.builder.join.Join;
 import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
 import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 
 public class SelectStatement implements Token {
@@ -77,9 +80,6 @@ public class SelectStatement implements Token {
   }
 
   public SelectStatement join(Join join) {
-    if (joins.stream().map(Join::contentHash).anyMatch(join.contentHash()::equals)) {
-      return this;
-    }
     joins.add(join);
     return this;
   }
@@ -126,6 +126,11 @@ public class SelectStatement implements Token {
     return this;
   }
 
+  public SelectStatement groupBy(Expression... expressions) {
+    groupBy = new GroupBy(new ExpressionList(expressions));
+    return this;
+  }
+
   public SelectStatement having(BooleanExpression expression) {
     having = new Having(expression);
     return this;
@@ -151,8 +156,10 @@ public class SelectStatement implements Token {
   }
 
   private String renderJoins(Dialect dialect) {
+    Set<String> uniqueJoinStrings = new LinkedHashSet<>();
+    joins.forEach(j -> uniqueJoinStrings.add(j.render(dialect)));
     var stringJoiner = new StringJoiner("\n");
-    joins.forEach(j -> stringJoiner.add(j.render(dialect)));
+    uniqueJoinStrings.forEach(stringJoiner::add);
     return stringJoiner.toString();
   }
 
@@ -229,6 +236,39 @@ public class SelectStatement implements Token {
       sb.append(unionAll.contentHash());
     }
     return sb.toString();
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    joins.forEach(j -> j.swapTable(oldTable, newTable));
+
+    if (select != null) {
+      select.swapTable(oldTable, newTable);
+    }
+    if (from != null) {
+      from.swapTable(oldTable, newTable);
+    }
+    if (where != null) {
+      where.swapTable(oldTable, newTable);
+    }
+    if (qualify != null) {
+      qualify.swapTable(oldTable, newTable);
+    }
+    if (groupBy != null) {
+      groupBy.swapTable(oldTable, newTable);
+    }
+    if (having != null) {
+      having.swapTable(oldTable, newTable);
+    }
+    if (orderBy != null) {
+      orderBy.swapTable(oldTable, newTable);
+    }
+    if (limit != null) {
+      limit.swapTable(oldTable, newTable);
+    }
+    if (unionAll != null) {
+      unionAll.swapTable(oldTable, newTable);
+    }
   }
 
   public Map<String, Cte> getDependentCtes() {

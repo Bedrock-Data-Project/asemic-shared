@@ -17,7 +17,14 @@ public class SimpleTable implements TableLike {
   }
 
   @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+
+  }
+
+  @Override
   public Optional<Cte> getDependantCte() {
     return Optional.empty();
   }
+
+
 }

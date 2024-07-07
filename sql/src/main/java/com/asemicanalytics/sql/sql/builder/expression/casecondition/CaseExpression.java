@@ -2,6 +2,7 @@ package com.asemicanalytics.sql.sql.builder.expression.casecondition;
 
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.List;
 
 public class CaseExpression implements Expression {
@@ -40,5 +41,14 @@ public class CaseExpression implements Expression {
         switchExpression.render(dialect),
         whenThenExpressions,
         elseExpression);
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    switchExpression.swapTable(oldTable, newTable);
+    whenThens.forEach(whenThen -> whenThen.swapTable(oldTable, newTable));
+    if (elseExpression != null) {
+      elseExpression.swapTable(oldTable, newTable);
+    }
   }
 }

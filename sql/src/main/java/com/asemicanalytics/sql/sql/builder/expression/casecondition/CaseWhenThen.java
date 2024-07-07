@@ -3,6 +3,7 @@ package com.asemicanalytics.sql.sql.builder.expression.casecondition;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.sql.sql.builder.Token;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 
 public class CaseWhenThen implements Token {
 
@@ -18,6 +19,12 @@ public class CaseWhenThen implements Token {
   @Override
   public String render(Dialect dialect) {
     return dialect.caseWhenThen(when.render(dialect), then.render(dialect));
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    when.swapTable(oldTable, newTable);
+    then.swapTable(oldTable, newTable);
   }
 
 }

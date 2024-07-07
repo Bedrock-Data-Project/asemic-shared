@@ -1,9 +1,9 @@
 package com.asemicanalytics.sequence.querylanguage;
 
 import com.asemicanalytics.core.DataType;
-import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.FunctionExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;

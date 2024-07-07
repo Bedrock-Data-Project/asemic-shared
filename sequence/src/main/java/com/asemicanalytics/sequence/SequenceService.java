@@ -9,8 +9,8 @@ import com.asemicanalytics.sequence.querybuilder.SequenceQuery;
 import com.asemicanalytics.sequence.querybuilder.SqlQueryBuilder;
 import com.asemicanalytics.sequence.querylanguage.QueryLanguageEvaluator;
 import com.asemicanalytics.sequence.sequence.Sequence;
-import com.asemicanalytics.sql.sql.builder.ExpressionList;
-import com.asemicanalytics.sql.sql.builder.SelectStatement;
+import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
+import com.asemicanalytics.sql.sql.builder.select.SelectStatement;
 import java.util.List;
 import java.util.Map;
 

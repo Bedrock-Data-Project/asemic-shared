@@ -1,6 +1,7 @@
 package com.asemicanalytics.sql.sql.builder.expression;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 
 public class IfExpression implements Expression {
 
@@ -20,5 +21,12 @@ public class IfExpression implements Expression {
         condition.render(dialect),
         ifTrue.render(dialect),
         ifFalse.render(dialect));
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    condition.swapTable(oldTable, newTable);
+    ifTrue.swapTable(oldTable, newTable);
+    ifFalse.swapTable(oldTable, newTable);
   }
 }

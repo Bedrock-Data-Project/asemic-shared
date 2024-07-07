@@ -1,9 +1,12 @@
-package com.asemicanalytics.sql.sql.builder;
+package com.asemicanalytics.sql.sql.builder.select;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.Token;
 import com.asemicanalytics.sql.sql.builder.expression.AliasedExpression;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.TableColumn;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.List;
 
 public class Select implements Token {
@@ -16,6 +19,11 @@ public class Select implements Token {
   @Override
   public String render(Dialect dialect) {
     return "SELECT\n  " + expressions.renderDefinition(dialect) + "\n";
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    expressions.swapTable(oldTable, newTable);
   }
 
   public void addExpression(Expression expression) {

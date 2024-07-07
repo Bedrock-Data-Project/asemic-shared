@@ -2,6 +2,7 @@ package com.asemicanalytics.sql.sql.builder.expression.windowfunction;
 
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.Optional;
 
 public class ValueRangeInterval implements RangeIntervalToken {
@@ -27,6 +28,11 @@ public class ValueRangeInterval implements RangeIntervalToken {
   @Override
   public String render(Dialect dialect) {
     return value.map(v -> v.render(dialect)).orElse("UNBOUNDED") + " " + bounds.name();
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    value.ifPresent(v -> v.swapTable(oldTable, newTable));
   }
 
 }

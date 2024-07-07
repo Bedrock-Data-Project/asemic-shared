@@ -3,12 +3,13 @@ package com.asemicanalytics.sql.sql.builder.booleanexpression;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.Dialect;
-import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.Constant;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.RegexExpression;
 import com.asemicanalytics.sql.sql.builder.expression.TemplateDict;
 import com.asemicanalytics.sql.sql.builder.expression.TemplatedExpression;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -131,5 +132,13 @@ public class BooleanExpression extends TemplatedExpression {
   public String render(Dialect dialect) {
     var tail = nextNode != null ? nextNode.render(dialect) : "";
     return renderBaseExpression(dialect) + tail;
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    super.swapTable(oldTable, newTable);
+    if (nextNode != null) {
+      nextNode.swapTable(oldTable, newTable);
+    }
   }
 }

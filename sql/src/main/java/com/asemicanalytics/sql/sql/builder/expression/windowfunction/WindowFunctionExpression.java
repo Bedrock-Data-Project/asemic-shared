@@ -1,8 +1,9 @@
 package com.asemicanalytics.sql.sql.builder.expression.windowfunction;
 
 import com.asemicanalytics.core.Dialect;
-import com.asemicanalytics.sql.sql.builder.ExpressionList;
 import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.expression.ExpressionList;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,5 +37,12 @@ public class WindowFunctionExpression implements Expression {
       overTokens.add(rangeInterval.get().render(dialect));
     }
     return function.render(dialect) + " OVER (" + String.join(" ", overTokens) + ")";
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    function.swapTable(oldTable, newTable);
+    partitionBy.swapTable(oldTable, newTable);
+    orderBy.swapTable(oldTable, newTable);
   }
 }

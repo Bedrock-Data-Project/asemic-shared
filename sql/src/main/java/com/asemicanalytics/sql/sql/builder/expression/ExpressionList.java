@@ -1,7 +1,8 @@
-package com.asemicanalytics.sql.sql.builder;
+package com.asemicanalytics.sql.sql.builder.expression;
 
 import com.asemicanalytics.core.Dialect;
-import com.asemicanalytics.sql.sql.builder.expression.Expression;
+import com.asemicanalytics.sql.sql.builder.Token;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +45,11 @@ public class ExpressionList implements Token {
   @Override
   public String render(Dialect dialect) {
     return render(e -> e.render(dialect));
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    expressions.forEach(e -> e.swapTable(oldTable, newTable));
   }
 
   public String renderDefinition(Dialect dialect) {

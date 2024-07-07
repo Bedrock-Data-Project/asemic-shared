@@ -34,4 +34,9 @@ public class Unnest implements TableLike, Expression {
   public String contentHash() {
     return renderTableDeclaration(new ContentHashDialect());
   }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    arrayExpression.swapTable(oldTable, newTable);
+  }
 }

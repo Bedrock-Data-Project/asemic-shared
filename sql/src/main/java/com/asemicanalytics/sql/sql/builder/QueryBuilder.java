@@ -1,33 +1,21 @@
 package com.asemicanalytics.sql.sql.builder;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.optimizer.ConsolidateCtes;
+import com.asemicanalytics.sql.sql.builder.optimizer.SimplifyCteNames;
+import com.asemicanalytics.sql.sql.builder.optimizer.SortCtes;
+import com.asemicanalytics.sql.sql.builder.select.SelectStatement;
 import com.asemicanalytics.sql.sql.builder.tablelike.Cte;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.LinkedHashMap;
 import java.util.StringJoiner;
-import java.util.TreeMap;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class QueryBuilder implements Token {
 
-  private final TreeMap<String, Cte> ctes = new TreeMap<>();
+  private final LinkedHashMap<String, Cte> ctes = new LinkedHashMap<>();
   private SelectStatement mainStatement;
   private int cteIndex = 1;
-
-  public Optional<Cte> getCompatibleCte(Cte cte) {
-    String hash = cte.contentHash();
-    return ctes.values().stream()
-        .filter(c -> c.tag().equals(cte.tag()) && c.contentHash().equals(hash))
-        .findFirst();
-  }
 
   public QueryBuilder select(SelectStatement mainStatement) {
     this.mainStatement = mainStatement;
@@ -41,11 +29,16 @@ public class QueryBuilder implements Token {
 
   @Override
   public String render(Dialect dialect) {
+    new SortCtes().optimize(ctes, mainStatement);
+    new ConsolidateCtes().optimize(ctes, mainStatement);
+    new SimplifyCteNames().optimize(ctes, mainStatement);
+
+
     var sb = new StringBuilder();
     if (!ctes.isEmpty()) {
       sb.append("WITH ");
       var joiner = new StringJoiner(",\n");
-      topologicalSort().forEach(cte -> joiner.add(cte.renderDefinition(dialect)));
+      ctes.values().forEach(cte -> joiner.add(cte.renderDefinition(dialect)));
       sb.append(joiner);
       sb.append("\n");
     }
@@ -58,34 +51,10 @@ public class QueryBuilder implements Token {
     return joiner.toString();
   }
 
-  private Collection<Cte> topologicalSort() {
-    Graph<String, DefaultEdge> g = new DefaultDirectedGraph<>(DefaultEdge.class);
-    for (var cte : ctes.values()) {
-      g.addVertex(cte.name());
-      cte.getDependentCtes().forEach((key, value) -> {
-        g.addVertex(key);
-        g.addEdge(key, cte.name());
-      });
-    }
-
-    List<Cte> ordered = new LinkedList<>();
-    var topogicalOrder = new TopologicalOrderIterator<>(g);
-    while (topogicalOrder.hasNext()) {
-      ordered.add(ctes.get(topogicalOrder.next()));
-    }
-
-    // normalize indices
-    Map<String, Integer> counts = new HashMap<>();
-    for (var cte : ordered) {
-      if (counts.containsKey(cte.tag())) {
-        cte.setIndex(counts.get(cte.tag()));
-        counts.put(cte.tag(), counts.get(cte.tag()) + 1);
-      } else {
-        counts.put(cte.tag(), 1);
-        cte.setIndex(0);
-      }
-    }
-    return ordered;
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    mainStatement.swapTable(oldTable, newTable);
+    ctes.values().forEach(cte -> cte.swapTable(oldTable, newTable));
   }
 
   public int nextCteIndex() {

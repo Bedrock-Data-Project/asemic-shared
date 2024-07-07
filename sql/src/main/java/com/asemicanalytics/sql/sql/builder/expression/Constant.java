@@ -2,6 +2,7 @@ package com.asemicanalytics.sql.sql.builder.expression;
 
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 import java.time.LocalDate;
 
 public class Constant implements Expression {
@@ -42,5 +43,10 @@ public class Constant implements Expression {
       return value;
     }
     return dialect.constant(value, dataType);
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+
   }
 }

@@ -2,7 +2,7 @@ package com.asemicanalytics.sql.sql.builder.tablelike;
 
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.sql.sql.builder.SelectStatement;
+import com.asemicanalytics.sql.sql.builder.select.SelectStatement;
 import java.util.Map;
 import java.util.Optional;
 
@@ -42,6 +42,11 @@ public class Cte implements TableLike {
     return select.contentHash();
   }
 
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    select.swapTable(oldTable, newTable);
+  }
+
   public Map<String, Cte> getDependentCtes() {
     return select.getDependentCtes();
   }
@@ -58,4 +63,5 @@ public class Cte implements TableLike {
   public Optional<Cte> getDependantCte() {
     return Optional.of(this);
   }
+
 }

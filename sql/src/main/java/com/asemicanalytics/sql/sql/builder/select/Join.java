@@ -1,4 +1,4 @@
-package com.asemicanalytics.sql.sql.builder.join;
+package com.asemicanalytics.sql.sql.builder.select;
 
 
 import com.asemicanalytics.core.Dialect;
@@ -9,7 +9,7 @@ import com.asemicanalytics.sql.sql.builder.tablelike.TableLike;
 public class Join implements Token {
 
   private final JoinType joinType;
-  private final TableLike table;
+  private TableLike table;
   private BooleanExpression joinExpression;
 
   public Join(JoinType joinType, TableLike table) {
@@ -47,5 +47,16 @@ public class Join implements Token {
       return join + " ON " + joinExpression.render(dialect);
     }
     return join;
+  }
+
+  @Override
+  public void swapTable(TableLike oldTable, TableLike newTable) {
+    if (table.equals(oldTable)) {
+      table = newTable;
+
+      if (joinExpression != null) {
+        joinExpression.swapTable(oldTable, newTable);
+      }
+    }
   }
 }

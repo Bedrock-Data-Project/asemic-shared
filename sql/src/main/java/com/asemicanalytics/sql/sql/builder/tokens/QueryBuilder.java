@@ -1,7 +1,6 @@
 package com.asemicanalytics.sql.sql.builder.tokens;
 
 import com.asemicanalytics.core.Dialect;
-import com.asemicanalytics.sql.sql.builder.optimizer.ConsolidateCtes;
 import com.asemicanalytics.sql.sql.builder.optimizer.SimplifyCteNames;
 import com.asemicanalytics.sql.sql.builder.optimizer.SortCtes;
 import java.util.Arrays;
@@ -10,7 +9,7 @@ import java.util.StringJoiner;
 
 public class QueryBuilder implements Token {
 
-  private final LinkedHashMap<String, Cte> ctes = new LinkedHashMap<>();
+  final LinkedHashMap<String, Cte> ctes = new LinkedHashMap<>();
   private SelectStatement mainStatement;
   private int cteIndex = 1;
 
@@ -27,7 +26,6 @@ public class QueryBuilder implements Token {
   @Override
   public String render(Dialect dialect) {
     new SortCtes().optimize(ctes, mainStatement);
-    new ConsolidateCtes().optimize(ctes, mainStatement);
     new SimplifyCteNames().optimize(ctes, mainStatement);
 
 

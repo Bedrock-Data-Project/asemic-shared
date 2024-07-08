@@ -23,6 +23,7 @@ public class SelectStatement implements Token {
   private OrderBy orderBy = new OrderBy(ExpressionList.empty());
   private Limit limit;
   private SelectStatement unionAll;
+  private boolean ignoreJoinsInContentHash = false;
 
   public TableLike table() {
     return from.table();
@@ -235,7 +236,9 @@ public class SelectStatement implements Token {
     if (from != null) {
       sb.append(from.contentHash());
     }
-    sb.append(renderJoins(contentHashDialect()));
+    if (!ignoreJoinsInContentHash) {
+      sb.append(renderJoins(contentHashDialect()));
+    }
     if (where != null) {
       sb.append(where.contentHash());
     }
@@ -299,6 +302,14 @@ public class SelectStatement implements Token {
     joins.forEach(join -> {
       join.table().getDependantCte().ifPresent(cte -> dependentCtes.put(cte.name(), cte));
     });
+
+    if (unionAll != null) {
+      dependentCtes.putAll(unionAll.getDependentCtes());
+    }
     return dependentCtes;
+  }
+
+  public void setIgnoreJoinsInContentHash(boolean ignoreJoinsInContentHash) {
+    this.ignoreJoinsInContentHash = ignoreJoinsInContentHash;
   }
 }

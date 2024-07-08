@@ -22,24 +22,24 @@ class QueryBuilderTest {
   void shouldConsolidateCtes_whenTwoCtesAreSame() {
     QueryBuilder queryBuilder = new QueryBuilder();
     var cte1 = cte(queryBuilder, "cte", select()
-        .select(int_(1))
+        .select(int_(1).withAlias("a"))
         .from(table(TableReference.of("table"))));
     var cte2 = cte(queryBuilder, "cte", select()
-        .select(int_(1))
+        .select(int_(1).withAlias("a"))
         .from(table(TableReference.of("table"))));
 
     queryBuilder.select(select()
-        .select(int_(1))
+        .select(int_(1).withAlias("a"))
         .from(cte1));
 
     var expectedSql = """
         WITH cte AS (
         SELECT
-          1
+          1 AS a
         FROM table
         )
         SELECT
-          1
+          1 AS a 
         FROM cte""";
     assertEquals(expectedSql, queryBuilder.render(new ContentHashDialect()));
   }

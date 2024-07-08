@@ -13,6 +13,15 @@ public class QueryFactory {
 
   public static Cte cte(QueryBuilder queryBuilder, String name, SelectStatement select) {
     var cte = new Cte(name, queryBuilder.nextCteIndex(), select);
+    var contentHash = cte.contentHash();
+
+    for (var existingCte : queryBuilder.ctes.values()) {
+      if (existingCte.contentHash().equals(contentHash)
+          && existingCte.select().select().merge(cte.select().select())) {
+        return existingCte;
+      }
+    }
+
     queryBuilder.with(cte);
     return cte;
   }

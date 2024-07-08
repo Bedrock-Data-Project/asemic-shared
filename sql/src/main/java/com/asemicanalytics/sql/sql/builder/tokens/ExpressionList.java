@@ -58,14 +58,27 @@ class ExpressionList implements Token {
     this.expressions.remove(0);
   }
 
-  public void merge(ExpressionList toMerge) {
-    var current = expressions.stream()
-        .map(Expression::contentHash)
-        .collect(Collectors.toSet());
+  public boolean merge(ExpressionList toMerge) {
+    // TODO
+    var hashByColumnId = expressions.stream()
+        .collect(Collectors.toMap(
+            Expression::columnName,
+            Expression::contentHash));
+
+    for (var expression : toMerge.expressions) {
+      if (hashByColumnId.containsKey(expression.columnName())) {
+        if (!hashByColumnId.get(expression.columnName()).equals(expression.contentHash())) {
+          // column with same name but different definition, cannot merge
+          return false;
+        }
+      }
+    }
 
     toMerge.expressions.stream()
-        .filter(e -> !current.contains(e.contentHash()))
+        .filter(e -> !hashByColumnId.containsKey(e.columnName()))
         .forEach(expressions::add);
+
+    return true;
   }
 
   public List<Expression> expressions() {

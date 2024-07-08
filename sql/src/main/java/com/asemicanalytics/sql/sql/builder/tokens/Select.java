@@ -28,8 +28,8 @@ public class Select implements Token {
     expressions.pop();
   }
 
-  public void merge(Select select) {
-    expressions.merge(select.expressions);
+  public boolean merge(Select select) {
+    return expressions.merge(select.expressions);
   }
 
   public List<Expression> expressions() {

@@ -47,19 +47,19 @@ class DomainTest extends SequenceBaseTest {
         TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofSeconds(1), "transaction", 0, 0, 2, 1, 0, false),
-        new ResultRow(1, Duration.ofSeconds(2), "transaction", 0, 0, 2, 2, 0, false),
-        new ResultRow(1, Duration.ofSeconds(3), "login", 1, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(4), "battle", 1, 2, 1, 1, 2, true),
-        new ResultRow(1, Duration.ofSeconds(5), "transaction", 1, 3, 2, 1, 0, false),
-        new ResultRow(1, Duration.ofSeconds(6), "transaction", 1, 3, 2, 2, 0, false),
-        new ResultRow(1, Duration.ofSeconds(7), "login", 2, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(8), "battle", 2, 2, 1, 1, 2, true),
-        new ResultRow(1, Duration.ofSeconds(9), "transaction", 2, 3, 2, 1, 0, false),
-        new ResultRow(1, Duration.ofSeconds(10), "transaction", 2, 3, 2, 2, 0, false),
+        new ResultRow(1, Duration.ofSeconds(1), "transaction", 0, 0, 2, 1, null, false),
+        new ResultRow(1, Duration.ofSeconds(2), "transaction", 0, 0, 2, 2, null, false),
+        new ResultRow(1, Duration.ofSeconds(3), "login", 1, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(4), "battle", 1, 2, 1, 1, 2L, true),
+        new ResultRow(1, Duration.ofSeconds(5), "transaction", 1, 3, 2, 1, null, false),
+        new ResultRow(1, Duration.ofSeconds(6), "transaction", 1, 3, 2, 2, null, false),
+        new ResultRow(1, Duration.ofSeconds(7), "login", 2, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(8), "battle", 2, 2, 1, 1, 2L, true),
+        new ResultRow(1, Duration.ofSeconds(9), "transaction", 2, 3, 2, 1, null, false),
+        new ResultRow(1, Duration.ofSeconds(10), "transaction", 2, 3, 2, 2, null, false),
 
-        new ResultRow(2, Duration.ofSeconds(1), "transaction", 0, 0, 2, 1, 0, false),
-        new ResultRow(2, Duration.ofSeconds(2), "transaction", 0, 0, 2, 2, 0, false)
+        new ResultRow(2, Duration.ofSeconds(1), "transaction", 0, 0, 2, 1, null, false),
+        new ResultRow(2, Duration.ofSeconds(2), "transaction", 0, 0, 2, 2, null, false)
     ));
   }
 
@@ -84,10 +84,10 @@ class DomainTest extends SequenceBaseTest {
         TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
-        new ResultRow(2, Duration.ofSeconds(5), "transaction", 1, 1, 1, 1, 1, true),
-        new ResultRow(3, Duration.ofSeconds(6), "transaction", 1, 1, 1, 1, 1, true),
-        new ResultRow(4, Duration.ofSeconds(9), "transaction", 1, 1, 1, 1, 1, true),
-        new ResultRow(5, Duration.ofSeconds(10), "transaction", 1, 1, 1, 1, 1, true)
+        new ResultRow(2, Duration.ofSeconds(5), "transaction", 1, 1, 1, 1, 1L, true),
+        new ResultRow(3, Duration.ofSeconds(6), "transaction", 1, 1, 1, 1, 1L, true),
+        new ResultRow(4, Duration.ofSeconds(9), "transaction", 1, 1, 1, 1, 1L, true),
+        new ResultRow(5, Duration.ofSeconds(10), "transaction", 1, 1, 1, 1, 1L, true)
     ));
   }
 }

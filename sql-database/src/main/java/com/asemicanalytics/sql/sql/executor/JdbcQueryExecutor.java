@@ -39,6 +39,10 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
 
   private Object parseObject(ResultSet resultSet, DataType xaxisType, int columnIndex)
       throws SQLException {
+    if (resultSet.getObject(columnIndex) == null) {
+      return null;
+    }
+
     return switch (xaxisType) {
       case DATE -> LocalDate.parse(resultSet.getString(columnIndex))
           .atStartOfDay(ZoneId.of("UTC"));

@@ -14,6 +14,8 @@ public interface TableLike extends Token {
     return render(dialect);
   }
 
+  String tableName();
+
   /**
    * Used to resolve rendering order of CTEs.
    */

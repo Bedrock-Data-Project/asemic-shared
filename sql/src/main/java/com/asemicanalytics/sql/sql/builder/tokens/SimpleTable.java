@@ -23,6 +23,11 @@ class SimpleTable implements TableLike {
   }
 
   @Override
+  public String tableName() {
+    return tableReference.tableName();
+  }
+
+  @Override
   public Optional<Cte> getDependantCte() {
     return Optional.empty();
   }

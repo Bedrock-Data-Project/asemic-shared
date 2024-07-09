@@ -33,9 +33,9 @@ class SequenceOfOneTest extends SequenceBaseTest {
         TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofHours(2).plusSeconds(1), "login", 1, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofHours(2).plusSeconds(7), "login", 2, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofDays(2).plusHours(2).plusSeconds(8), "login", 3, 1, 1, 1, 1,
+        new ResultRow(1, Duration.ofHours(2).plusSeconds(1), "login", 1, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofHours(2).plusSeconds(7), "login", 2, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofDays(2).plusHours(2).plusSeconds(8), "login", 3, 1, 1, 1, 1L,
             true)
     ));
   }

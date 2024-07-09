@@ -40,14 +40,14 @@ class SequencesOfThreeTest extends SequenceBaseTest {
         TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(2), "battle", 1, 2, 2, 1, 2, true),
-        new ResultRow(1, Duration.ofSeconds(3), "battle", 1, 2, 2, 2, 2, true),
-        new ResultRow(1, Duration.ofSeconds(4), "transaction", 1, 3, 1, 1, 3, true),
-        new ResultRow(1, Duration.ofSeconds(5), "battle", 1, 4, 1, 1, 4, true),
+        new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(2), "battle", 1, 2, 2, 1, 2L, true),
+        new ResultRow(1, Duration.ofSeconds(3), "battle", 1, 2, 2, 2, 2L, true),
+        new ResultRow(1, Duration.ofSeconds(4), "transaction", 1, 3, 1, 1, 3L, true),
+        new ResultRow(1, Duration.ofSeconds(5), "battle", 1, 4, 1, 1, 4L, true),
 
-        new ResultRow(2, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1, true),
-        new ResultRow(2, Duration.ofSeconds(2), "transaction", 1, 2, 1, 1, 0, false)
+        new ResultRow(2, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1L, true),
+        new ResultRow(2, Duration.ofSeconds(2), "transaction", 1, 2, 1, 1, null, false)
     ));
   }
 }

@@ -34,10 +34,10 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(2), "battle", 1, 2, 1, 1, 2, true),
-        new ResultRow(1, Duration.ofSeconds(11), "login", 2, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(12), "battle", 2, 2, 1, 1, 2, true)
+        new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(2), "battle", 1, 2, 1, 1, 2L, true),
+        new ResultRow(1, Duration.ofSeconds(11), "login", 2, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(12), "battle", 2, 2, 1, 1, 2L, true)
     ));
   }
 
@@ -64,14 +64,14 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(2), "battle", 1, 2, 3, 1, 2, true),
-        new ResultRow(1, Duration.ofSeconds(3), "battle", 1, 2, 3, 2, 2, true),
-        new ResultRow(1, Duration.ofSeconds(4), "battle", 1, 2, 3, 3, 2, true),
+        new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(2), "battle", 1, 2, 3, 1, 2L, true),
+        new ResultRow(1, Duration.ofSeconds(3), "battle", 1, 2, 3, 2, 2L, true),
+        new ResultRow(1, Duration.ofSeconds(4), "battle", 1, 2, 3, 3, 2L, true),
 
-        new ResultRow(1, Duration.ofSeconds(11), "login", 2, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(12), "battle", 2, 2, 2, 1, 2, true),
-        new ResultRow(1, Duration.ofSeconds(13), "battle", 2, 2, 2, 2, 2, true)
+        new ResultRow(1, Duration.ofSeconds(11), "login", 2, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(12), "battle", 2, 2, 2, 1, 2L, true),
+        new ResultRow(1, Duration.ofSeconds(13), "battle", 2, 2, 2, 2, 2L, true)
     ));
   }
 
@@ -95,9 +95,9 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(11), "login", 2, 1, 1, 1, 1, true),
-        new ResultRow(2, Duration.ofSeconds(11), "login", 1, 1, 1, 1, 1, true)
+        new ResultRow(1, Duration.ofSeconds(1), "login", 1, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(11), "login", 2, 1, 1, 1, 1L, true),
+        new ResultRow(2, Duration.ofSeconds(11), "login", 1, 1, 1, 1, 1L, true)
     ));
   }
 
@@ -120,10 +120,10 @@ class SequenceOfTwoTest extends SequenceBaseTest {
         TableReference.of("sequence_output"), List.of());
 
     assertResult(List.of(
-        new ResultRow(1, Duration.ofSeconds(1), "battle", 0, 0, 2, 1, 0, false),
-        new ResultRow(1, Duration.ofSeconds(2), "battle", 0, 0, 2, 2, 0, false),
-        new ResultRow(1, Duration.ofSeconds(3), "login", 1, 1, 1, 1, 1, true),
-        new ResultRow(1, Duration.ofSeconds(5), "battle", 1, 2, 1, 1, 2, true)
+        new ResultRow(1, Duration.ofSeconds(1), "battle", 0, 0, 2, 1, null, false),
+        new ResultRow(1, Duration.ofSeconds(2), "battle", 0, 0, 2, 2, null, false),
+        new ResultRow(1, Duration.ofSeconds(3), "login", 1, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(5), "battle", 1, 2, 1, 1, 2L, true)
     ));
   }
 

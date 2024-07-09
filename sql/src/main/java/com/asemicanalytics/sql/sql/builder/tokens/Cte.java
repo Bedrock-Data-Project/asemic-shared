@@ -60,6 +60,11 @@ public class Cte implements TableLike {
   }
 
   @Override
+  public String tableName() {
+    return tag;
+  }
+
+  @Override
   public Optional<Cte> getDependantCte() {
     return Optional.of(this);
   }

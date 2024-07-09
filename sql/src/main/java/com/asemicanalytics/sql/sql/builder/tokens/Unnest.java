@@ -26,6 +26,11 @@ class Unnest implements TableLike, Expression {
   }
 
   @Override
+  public String tableName() {
+    return alias;
+  }
+
+  @Override
   public Optional<Cte> getDependantCte() {
     return Optional.empty();
   }

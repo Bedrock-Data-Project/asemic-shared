@@ -125,7 +125,7 @@ public class EntityLogicalTable extends TemporalLogicalTable {
                 Set.of()
             ),
             DAU_DATE,
-            "COALESCE({__current}, {__total})"
+            "last_value"
         )
     );
 

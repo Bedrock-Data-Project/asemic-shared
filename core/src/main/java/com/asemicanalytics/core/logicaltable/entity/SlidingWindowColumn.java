@@ -46,4 +46,8 @@ public class SlidingWindowColumn extends Column {
   public ActionColumn getSourceColumn() {
     return sourceColumn;
   }
+
+  public int getWindowSize() {
+    return relativeDaysTo - relativeDaysFrom + 1;
+  }
 }

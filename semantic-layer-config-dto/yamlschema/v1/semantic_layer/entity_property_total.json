@@ -18,8 +18,6 @@
       "type": "string",
       "enum": [
         "sum",
-        "min",
-        "max",
         "last_value",
         "first_value"
       ]

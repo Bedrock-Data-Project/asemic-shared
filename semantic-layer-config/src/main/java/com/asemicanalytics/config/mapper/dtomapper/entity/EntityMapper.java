@@ -64,7 +64,7 @@ public class EntityMapper
 
         // TODO should be able to configure this
         List.of(1, 90),
-        List.of(1, 2, 3, 4, 5, 6, 7, 14, 30, 60, 90, 180, 360),
+        List.of(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360),
 
         kpis);
   }

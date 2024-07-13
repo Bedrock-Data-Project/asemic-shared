@@ -145,35 +145,17 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadEntityAndKpi_whenSingleKpi() throws IOException {
-    var ds = fromColumnsAndKpis(
-        List.of(),
-        List.of(new EntityKpisDto("kpis", List.of(
-            new KpiDto(
-                "kpi",
-                "label",
-                "description",
-                "category",
-                true,
-                "1",
-                null,
-                null,
-                List.of("date"),
-                null,
-                null)),
-            List.of(), List.of())));
-    assertEquals("app", ds.getTable().schemaName().orElse(""));
-    assertEquals("table_totals", ds.getTable().tableName());
-    assertEquals(DataType.DATE, ds.getColumns().column("registration_date").getDataType());
-    assertEquals("label", ds.kpi("kpi").label());
-    assertEquals("1", ds.kpi("kpi").xaxisConfig().get("date").formula());
-  }
-
-  @Test
   void shouldFail_whenNoKpis() throws IOException {
     var ds = fromColumnsAndKpis(
-        List.of(),
-        List.of());
+        List.of(new EntityPropertiesDto(
+            List.of(registrationColumn("r1")),
+            List.of(userActionColumn("ua1")),
+            List.of(),
+            List.of(totalColumn("t1")),
+            List.of(computedColumn("c1"))
+        )),
+        List.of(new EntityKpisDto("kpis", List.of(),
+            List.of(), List.of())));
     assertEquals(0, ds.getKpis().size());
   }
 

@@ -15,7 +15,6 @@ public class KpisDtoMergeMapper
     this.datecolumn = dateColumn;
   }
 
-
   private String render(String source, int cohortDay) {
     return source.replace("{}", cohortDay + "");
   }

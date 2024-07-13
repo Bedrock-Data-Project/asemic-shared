@@ -2,6 +2,7 @@ package com.asemicanalytics.config.mapper.dtomapper.entity;
 
 import com.asemicanalytics.config.mapper.dtomapper.column.ColumnComputedDtoMapper;
 import com.asemicanalytics.config.mapper.dtomapper.kpi.KpisDtoMergeMapper;
+import com.asemicanalytics.config.mapper.dtomapper.kpi.KpisIndexFilterAppender;
 import com.asemicanalytics.config.mapper.dtomapper.kpi.KpisUnfolder;
 import com.asemicanalytics.config.mapper.dtomapper.kpi.UnfoldingKpi;
 import com.asemicanalytics.config.parser.EntityDto;
@@ -46,26 +47,34 @@ public class EntityMapper
             + ActivityLogicalTable.TAG + " found"));
 
     EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
-    SequencedMap<String, Column> columns =
+    SequencedMap<String, Column> columnMap =
         buildColumnsMap(dto, mergedColumns);
+    var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns(columnMap)),
+        firstAppearanceActionLogicalTable, activityLogicalTable);
+
+    // TODO should be able to configure this
+    int activeDays = 90;
+    List<Integer> cohortDays =
+        List.of(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360);
+
 
     var mergedKpis = new KpisDtoMergeMapper(
         firstAppearanceActionLogicalTable.getDateColumnId()
     ).apply(dto.kpis());
-    var unfoldedKpis = new KpisUnfolder(mergedKpis, columns.keySet()).unfold();
+    var unfoldedKpis = new KpisUnfolder(mergedKpis, columns.getColumns().keySet()).unfold();
 
     var kpis = buildKpisMap(unfoldedKpis);
 
+
+    new KpisIndexFilterAppender(activeDays, cohortDays, columns.getColumns()).append(kpis);
+
     return new EntityLogicalTable(
         dto.config().getBaseTablePrefix().replace("{app_id}", appId),
-        !columns.isEmpty() ? Optional.of(new Columns(columns)) : Optional.empty(),
+        Optional.of(columns),
         firstAppearanceActionLogicalTable,
         activityLogicalTable,
-
-        // TODO should be able to configure this
-        List.of(1, 90),
-        List.of(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360),
-
+        activeDays,
+        cohortDays,
         kpis);
   }
 

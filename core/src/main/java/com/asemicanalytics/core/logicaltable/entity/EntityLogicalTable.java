@@ -7,6 +7,7 @@ import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.column.ComputedColumn;
 import com.asemicanalytics.core.kpi.Kpi;
+import com.asemicanalytics.core.logicaltable.MaterializedIndexTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
@@ -16,10 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class EntityLogicalTable extends TemporalLogicalTable {
   public static final String FIRST_APPEARANCE_DATE_COLUMN = "registration_date";
   public static final String COHORT_DAY_COLUMN = "cohort_day";
+  public static final String DAYS_SINCE_LAST_ACTIVE = "days_since_last_active";
   public static final String COHORT_SIZE_COLUMN = "cohort_size";
   public static final String DAU_DATE = "_dau_date";
   public static final String LAST_LOGIN_DATE_COLUMN = "last_login_date";
@@ -29,31 +32,73 @@ public class EntityLogicalTable extends TemporalLogicalTable {
   private final String baseTablePrefix;
   private final TableReference baseTable;
 
-  private final List<Integer> activityTablesDays;
+  private final int activityTableDays;
   private final List<Integer> cohortTableDays;
 
   public EntityLogicalTable(String baseTable,
                             Optional<Columns> columns,
                             FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
                             ActivityLogicalTable activityLogicalTable,
-                            List<Integer> activityTablesDays,
+                            int activityTableDays,
                             List<Integer> cohortTableDays,
                             Map<String, Kpi> kpis) {
     super("user_wide", "Entity", Optional.empty(),
-        TableReference.parse(
-            actionTable(baseTable, activityTablesDays.stream().min(Integer::compare).get())),
+        TableReference.parse(baseTable).withTableSuffix("_totals"),
         withBaseColumns(columns, firstAppearanceActionLogicalTable, activityLogicalTable), kpis,
         TimeGrains.day,
-        Set.of());
+        Set.of(),
+        withMaterializedIndexTables(TableReference.parse(baseTable), activityTableDays,
+            cohortTableDays));
     this.baseTablePrefix = baseTable;
     this.baseTable = TableReference.parse(baseTable);
     this.firstAppearanceActionLogicalTable = firstAppearanceActionLogicalTable;
     this.activityLogicalTable = activityLogicalTable;
-    this.activityTablesDays = activityTablesDays;
+    this.activityTableDays = activityTableDays;
     this.cohortTableDays = cohortTableDays;
   }
 
-  private static Columns withBaseColumns(
+  public static String dailyIndexFilter() {
+    return "{days_since_last_active} = 0";
+  }
+
+  public static String activeIndexFilter(int activityTableDays) {
+    return "{days_since_last_active} <= " + activityTableDays;
+  }
+
+  public static String cohortIndexFilter(List<Integer> cohortTableDays) {
+    return "{cohort_day} IN ("
+        + cohortTableDays.stream()
+        .map(Object::toString)
+        .collect(Collectors.joining(", ")) + ")";
+  }
+
+  private static List<MaterializedIndexTable> withMaterializedIndexTables(
+      TableReference baseTable,
+      int activityTableDays,
+      List<Integer> cohortTableDays) {
+
+    return List.of(
+        new MaterializedIndexTable(
+            baseTable.withTableSuffix("_daily"),
+            dailyIndexFilter(),
+            1
+        ),
+
+        new MaterializedIndexTable(
+            baseTable.withTableSuffix("_active"),
+            activeIndexFilter(activityTableDays),
+            2
+        ),
+
+        new MaterializedIndexTable(
+            baseTable.withTableSuffix("_cohort"),
+            cohortIndexFilter(cohortTableDays),
+            3
+        )
+    );
+  }
+
+  public static Columns withBaseColumns(
       Optional<Columns> columns,
       FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
       ActivityLogicalTable activityLogicalTable) {
@@ -126,6 +171,20 @@ public class EntityLogicalTable extends TemporalLogicalTable {
             ),
             DAU_DATE,
             "last_value"
+        ),
+        new ComputedColumn(
+            new Column(
+                DAYS_SINCE_LAST_ACTIVE,
+                DataType.INTEGER,
+                "Inactive Days",
+                Optional.empty(),
+                true,
+                false,
+                Set.of()
+            ),
+            "{EPOCH_DAYS("
+                + firstAppearanceActionLogicalTable.getDateColumnId() + ")} - {EPOCH_DAYS("
+                + LAST_LOGIN_DATE_COLUMN + ")}"
         )
     );
 
@@ -137,36 +196,12 @@ public class EntityLogicalTable extends TemporalLogicalTable {
     return new Columns(mergedColumns);
   }
 
-  public static String cohortTable(String baseTablePrefix) {
-    return baseTablePrefix + "_cohort";
-  }
-
-  public TableReference cohortTable() {
-    return new TableReference(baseTable.schemaName(), cohortTable(baseTable.tableName()));
-  }
-
-  public static String totalsTable(String baseTablePrefix) {
-    return baseTablePrefix + "_total";
-  }
-
-  public TableReference totalsTable() {
-    return new TableReference(baseTable.schemaName(), totalsTable(baseTable.tableName()));
-  }
-
-  public static String actionTable(String baseTablePrefix, int days) {
-    return baseTablePrefix + "_" + days + "d";
-  }
-
   public Column entityIdColumn() {
     return columns.column(this.firstAppearanceActionLogicalTable.entityIdColumn().getId());
   }
 
   public Column getFirstAppearanceDateColumn() {
     return columns.column(FIRST_APPEARANCE_DATE_COLUMN);
-  }
-
-  public TableReference getBaseTable() {
-    return baseTable;
   }
 
   @Override
@@ -180,14 +215,6 @@ public class EntityLogicalTable extends TemporalLogicalTable {
 
   public ActionLogicalTable getActivityLogicalTable() {
     return activityLogicalTable;
-  }
-
-  public List<Integer> getActivityTablesDays() {
-    return activityTablesDays;
-  }
-
-  public List<Integer> getCohortTableDays() {
-    return cohortTableDays;
   }
 
   public String getBaseTablePrefix() {

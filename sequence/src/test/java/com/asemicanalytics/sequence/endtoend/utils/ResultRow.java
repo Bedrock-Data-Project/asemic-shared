@@ -4,7 +4,6 @@ import com.asemicanalytics.core.SqlResultRow;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.List;
 
 public record ResultRow(
     long userId, Duration timestamp, String action, long sequence, long subsequence,

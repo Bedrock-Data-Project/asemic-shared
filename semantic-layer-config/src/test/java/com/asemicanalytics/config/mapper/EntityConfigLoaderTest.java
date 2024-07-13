@@ -22,6 +22,7 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpis
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyFirstAppearanceDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyTotalDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import java.io.IOException;
@@ -72,6 +73,19 @@ class EntityConfigLoaderTest {
         null,
         null),
         "registration", "l", "d", "c", true
+    );
+  }
+
+  private EntityPropertySlidingWindowDto slidingWindowColumn(String id, String sourceProperty) {
+    return new EntityPropertySlidingWindowDto(new ColumnDto(
+        id,
+        ColumnDto.DataType.DATE,
+        null,
+        null,
+        null,
+        null,
+        null),
+        sourceProperty, EntityPropertySlidingWindowDto.Function.AVG, -5, 0
     );
   }
 
@@ -149,7 +163,7 @@ class EntityConfigLoaderTest {
                 null)),
             List.of(), List.of())));
     assertEquals("app", ds.getTable().schemaName().orElse(""));
-    assertEquals("table_1d", ds.getTable().tableName());
+    assertEquals("table_totals", ds.getTable().tableName());
     assertEquals(DataType.DATE, ds.getColumns().column("registration_date").getDataType());
     assertEquals("label", ds.kpi("kpi").label());
     assertEquals("1", ds.kpi("kpi").xaxisConfig().get("date").formula());
@@ -233,11 +247,11 @@ class EntityConfigLoaderTest {
         ),
         List.of());
 
-    assertEquals(15, ds.getColumns().getColumns().size());
+    assertEquals(16, ds.getColumns().getColumns().size());
     assertEquals(Set.of(
             "r1", "r2", "ua1", "ua2", "t1", "t2", "c1", "c2",
             "registration_date", "date_", "unique_id", "last_login_date", "_dau_date", "cohort_day",
-            "cohort_size"),
+            "days_since_last_active", "cohort_size"),
         ds.getColumns().getColumns().keySet());
   }
 
@@ -273,12 +287,250 @@ class EntityConfigLoaderTest {
         "r1_1",
         new KpiComponent("{r1}", new TreeSet<>()),
         "ua1_0",
-        new KpiComponent("{ua1}", new TreeSet<>()),
+        new KpiComponent("{ua1}", new TreeSet<>(Set.of("{days_since_last_active} = 0"))),
         "t1_3",
         new KpiComponent("{t1}", new TreeSet<>()),
         "c1_2",
         new KpiComponent("{c1}", new TreeSet<>())
     ), ds.kpi("kpi").xaxisConfig().get("date").components());
+  }
+
+  @Test
+  void shouldLoadKpi_whenItReferencesPropertyInFilter() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(
+                registrationColumn("r1"),
+                registrationColumn("r2")
+            ),
+            List.of(),
+            List.of(),
+            List.of(),
+            List.of()
+        )),
+        List.of(new EntityKpisDto("kpis", List.of(
+            new KpiDto(
+                "kpi",
+                "label",
+                "description",
+                "category",
+                true,
+                "SUM({property.r1})",
+                "{property.r1} = {property.r2}",
+                null,
+                List.of("date"),
+                null,
+                null)),
+            List.of(), List.of())));
+    assertEquals(1, ds.kpi("kpi").xaxisConfig().size());
+    assertEquals(
+        "SUM({r1_0})"
+        , ds.kpi("kpi").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r1_0",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("{r1} = {r2}")))
+    ), ds.kpi("kpi").xaxisConfig().get("date").components());
+  }
+
+  @Test
+  void shouldLoadKpi_whenColumnIsSlidingWindow() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(
+            ),
+            List.of(userActionColumn("ua1")),
+            List.of(slidingWindowColumn("sw1", "ua1")),
+            List.of(),
+            List.of()
+        )),
+        List.of(new EntityKpisDto("kpis", List.of(
+            new KpiDto(
+                "kpi1",
+                "label",
+                "description",
+                "category",
+                true,
+                "{kpi.kpi2}",
+                "{property.ua1} = 1",
+                null,
+                List.of("date"),
+                null,
+                null),
+            new KpiDto(
+                "kpi2",
+                "label",
+                "description",
+                "category",
+                true,
+                "SUM({property.sw1})",
+                "{property.sw1} = 1",
+                null,
+                List.of("date"),
+                null,
+                null)),
+            List.of(), List.of())));
+    assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
+    assertEquals(
+        "(SUM({sw1_0}))"
+        , ds.kpi("kpi1").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "sw1_0",
+        new KpiComponent("{sw1}",
+            new TreeSet<>(Set.of("{sw1} = 1", "{ua1} = 1", "{days_since_last_active} <= 90")))
+    ), ds.kpi("kpi1").xaxisConfig().get("date").components());
+
+    assertEquals(
+        "SUM({sw1_1})"
+        , ds.kpi("kpi2").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "sw1_1",
+        new KpiComponent("{sw1}",
+            new TreeSet<>(Set.of("{sw1} = 1", "{days_since_last_active} <= 90")))
+    ), ds.kpi("kpi2").xaxisConfig().get("date").components());
+  }
+
+  @Test
+  void shouldLoadKpi_whenCohortKpi() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(
+                registrationColumn("r1")
+            ),
+            List.of(),
+            List.of(),
+            List.of(),
+            List.of()
+        )),
+        List.of(new EntityKpisDto("kpis", List.of(
+            new KpiDto(
+                "kpi1",
+                "label",
+                "description",
+                "category",
+                true,
+                "{property.r1}",
+                null,
+                null,
+                List.of("cohort_day"),
+                null,
+                null)),
+            List.of(), List.of())));
+    assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
+    assertEquals(
+        "{r1_0}"
+        , ds.kpi("kpi1").xaxisConfig().get("cohort_day").formula());
+    assertEquals(Map.of(
+        "r1_0",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("{cohort_day} IN " +
+            "(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+    ), ds.kpi("kpi1").xaxisConfig().get("cohort_day").components());
+  }
+
+  @Test
+  void shouldLoadKpi_whenDailyCohortedKpi() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(
+                registrationColumn("r1")
+            ),
+            List.of(),
+            List.of(),
+            List.of(),
+            List.of()
+        )),
+        List.of(new EntityKpisDto("kpis", List.of(
+            new KpiDto(
+                "kpi1",
+                "label",
+                "description",
+                "category",
+                true,
+                "{property.r1}",
+                "{property.cohort_day} = 1",
+                null,
+                List.of("date"),
+                null,
+                null),
+            new KpiDto(
+                "kpi2",
+                "label",
+                "description",
+                "category",
+                true,
+                "{property.r1}",
+                "{property.cohort_day} = 91",
+                null,
+                List.of("date"),
+                null,
+                null),
+            new KpiDto(
+                "kpi3",
+                "label",
+                "description",
+                "category",
+                true,
+                "{property.r1}",
+                "{property.cohort_day} > 3",
+                null,
+                List.of("date"),
+                null,
+                null)),
+            List.of(), List.of())));
+    assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
+    assertEquals(
+        "{r1_0}"
+        , ds.kpi("kpi1").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r1_0",
+        new KpiComponent("{r1}",
+            new TreeSet<>(Set.of("{cohort_day} = 1", "{days_since_last_active} <= 90")))
+    ), ds.kpi("kpi1").xaxisConfig().get("date").components());
+
+    assertEquals(1, ds.kpi("kpi2").xaxisConfig().size());
+    assertEquals(
+        "{r1_1}"
+        , ds.kpi("kpi2").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r1_1",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("{cohort_day} = 91",
+            "{cohort_day} IN (0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+    ), ds.kpi("kpi2").xaxisConfig().get("date").components());
+
+    assertEquals(1, ds.kpi("kpi3").xaxisConfig().size());
+    assertEquals(
+        "{r1_2}"
+        , ds.kpi("kpi3").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "r1_2",
+        new KpiComponent("{r1}", new TreeSet<>(Set.of("{cohort_day} > 3")))
+    ), ds.kpi("kpi3").xaxisConfig().get("date").components());
+  }
+
+  @Test
+  void shouldFail_whenItReferencesNonExistingPropertyInFilter() throws IOException {
+    assertThrows(IllegalArgumentException.class, () ->
+        fromColumnsAndKpis(
+            List.of(new EntityPropertiesDto(
+                List.of(registrationColumn("r1")),
+                List.of(userActionColumn("ua1")),
+                List.of(),
+                List.of(totalColumn("t1")),
+                List.of(computedColumn("c1"))
+            )),
+            List.of(new EntityKpisDto("kpis", List.of(
+                new KpiDto(
+                    "kpi",
+                    "label",
+                    "description",
+                    "category",
+                    true,
+                    "SUM({property.r1})",
+                    "{property.r2}",
+                    null,
+                    List.of("date"),
+                    null,
+                    null)),
+                List.of(), List.of()))));
   }
 
   @Test

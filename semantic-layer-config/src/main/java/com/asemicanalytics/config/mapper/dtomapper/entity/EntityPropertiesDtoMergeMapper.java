@@ -14,6 +14,8 @@ public class EntityPropertiesDtoMergeMapper implements
         .ifPresent(cols -> cols.addAll(toMerge.getFirstAppearanceProperties().orElse(List.of())));
     columns.getActionProperties()
         .ifPresent(cols -> cols.addAll(toMerge.getActionProperties().orElse(List.of())));
+    columns.getSlidingWindowProperties()
+        .ifPresent(cols -> cols.addAll(toMerge.getSlidingWindowProperties().orElse(List.of())));
     columns.getTotalProperties()
         .ifPresent(cols -> cols.addAll(toMerge.getTotalProperties().orElse(List.of())));
     columns.getComputedProperties()

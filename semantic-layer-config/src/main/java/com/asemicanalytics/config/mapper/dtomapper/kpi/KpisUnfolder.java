@@ -38,8 +38,6 @@ public class KpisUnfolder {
 
   public List<UnfoldingKpi> unfold() {
     propertyIdRewritter.reset();
-
-    // TODO PARTITION BY COMPONENTS AND CHECK CYCLES
     for (UnfoldingKpi unfoldingKpi : kpis.values()) {
       unfoldKpi(unfoldingKpi, FilterPath.empty(), Set.of());
     }

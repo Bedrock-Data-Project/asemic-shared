@@ -5,8 +5,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class ComponentId {
-  private static final String PROPERTY_PREFIX = "property";
-  private static final String KPI_PREFIX = "kpi";
+  public static final String PROPERTY_PREFIX = "property";
+  public static final String KPI_PREFIX = "kpi";
 
   private final String type;
   private final String id;

@@ -1,6 +1,7 @@
 package com.asemicanalytics.core.kpi;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class KpiComponent {
@@ -13,9 +14,20 @@ public class KpiComponent {
   }
 
   public Optional<String> where() {
-    return filters.isEmpty()
-        ? Optional.empty()
-        : Optional.of(String.join(" AND ", filters));
+    return where(Set.of());
+  }
+
+  public Optional<String> where(Set<String> filtersToSkip) {
+    if (filters.isEmpty()) {
+      return Optional.empty();
+    }
+
+    var currentFilters = new TreeSet<>(filters);
+    filtersToSkip.forEach(currentFilters::remove);
+    if (currentFilters.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(String.join(" AND ", currentFilters));
   }
 
   public String select() {

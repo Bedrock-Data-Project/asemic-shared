@@ -16,7 +16,6 @@ public class KpisUnfolder {
   }
 
   private final Map<KpiIdAndXaxis, UnfoldingKpi> kpis = new HashMap<>();
-  private final Set<String> propertyIds;
   private final PropertyIdRewritter propertyIdRewritter = new PropertyIdRewritter();
 
 
@@ -33,7 +32,6 @@ public class KpisUnfolder {
         }
       }
     }
-    this.propertyIds = propertyIds;
   }
 
   public List<UnfoldingKpi> unfold() {
@@ -80,12 +78,13 @@ public class KpisUnfolder {
 
         var newParents = new HashSet<>(parents);
         newParents.add(unfoldingKpi.getKpiId());
-        unfoldKpi(kpis.get(kpiAndAxis), filtersIncludingThis, newParents);
-        var kpiFormula = kpis.get(kpiAndAxis).getFormula(filtersIncludingThis);
+        unfoldKpi(kpi, filtersIncludingThis, newParents);
+        var kpiFormula = kpi.getFormula(filtersIncludingThis);
         kpiFormula.getKpiComponentMap().forEach(formula::addKpiComponent);
         formula.addResolvedComponent(componentId.toString(),
             identifier("(" + kpiFormula.render() + ")"));
       }
     }
+    formula.render();
   }
 }

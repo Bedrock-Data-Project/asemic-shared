@@ -24,7 +24,7 @@ public class EntityLogicalTable extends TemporalLogicalTable {
   public static final String COHORT_DAY_COLUMN = "cohort_day";
   public static final String DAYS_SINCE_LAST_ACTIVE = "days_since_last_active";
   public static final String COHORT_SIZE_COLUMN = "cohort_size";
-  public static final String DAU_DATE = "_dau_date";
+  public static final String DAU_DATE = "dau_date";
   public static final String LAST_LOGIN_DATE_COLUMN = "last_login_date";
 
   private final FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable;

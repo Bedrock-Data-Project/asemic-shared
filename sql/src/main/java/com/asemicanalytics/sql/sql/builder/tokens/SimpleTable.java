@@ -37,5 +37,4 @@ class SimpleTable implements TableLike {
     throw new UnsupportedOperationException();
   }
 
-
 }

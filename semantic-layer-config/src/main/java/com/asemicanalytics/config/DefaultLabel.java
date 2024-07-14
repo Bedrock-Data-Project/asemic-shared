@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class DefaultLabel {
   public static String of(Optional<String> label, String id) {
-    return label.orElse(capitalize(id.replace("_", " ")));
+    return label.orElse(capitalize(id.replace("_", " ").trim()));
   }
 
   private static String capitalize(String str) {

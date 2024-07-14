@@ -46,17 +46,16 @@ public class EntityMapper
         .orElseThrow(() -> new IllegalArgumentException("No action logical table tagged with "
             + ActivityLogicalTable.TAG + " found"));
 
-    EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
-    SequencedMap<String, Column> columnMap =
-        buildColumnsMap(dto, mergedColumns);
-    var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns(columnMap)),
-        firstAppearanceActionLogicalTable, activityLogicalTable);
-
     // TODO should be able to configure this
     int activeDays = 90;
     List<Integer> cohortDays =
         List.of(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360);
 
+    EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
+    SequencedMap<String, Column> columnMap =
+        buildColumnsMap(dto, mergedColumns, activeDays);
+    var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns(columnMap)),
+        firstAppearanceActionLogicalTable, activityLogicalTable);
 
     var mergedKpis = new KpisDtoMergeMapper(
         firstAppearanceActionLogicalTable.getDateColumnId()
@@ -79,7 +78,8 @@ public class EntityMapper
   }
 
   private static SequencedMap<String, Column> buildColumnsMap(EntityDto dto,
-                                                              EntityPropertiesDto mergedColumns) {
+                                                              EntityPropertiesDto mergedColumns,
+                                                              int activeDays) {
 
     SequencedMap<String, Column> columns = new LinkedHashMap<>();
     addColumns(mergedColumns.getFirstAppearanceProperties().orElse(List.of()).stream()
@@ -98,7 +98,7 @@ public class EntityMapper
 
     addColumns(mergedColumns.getSlidingWindowProperties().orElse(List.of()).stream()
         .collect(Collectors.toMap(
-            c -> c.getColumn().getId(), new SlidingWindowPropertyDtoMapper(columns),
+            c -> c.getColumn().getId(), new SlidingWindowPropertyDtoMapper(columns, activeDays),
             (a, b) -> a,
             LinkedHashMap::new)), columns);
 

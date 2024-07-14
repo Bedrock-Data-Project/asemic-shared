@@ -232,7 +232,7 @@ class EntityConfigLoaderTest {
     assertEquals(16, ds.getColumns().getColumns().size());
     assertEquals(Set.of(
             "r1", "r2", "ua1", "ua2", "t1", "t2", "c1", "c2",
-            "registration_date", "date_", "unique_id", "last_login_date", "_dau_date", "cohort_day",
+            "registration_date", "date_", "unique_id", "last_login_date", "dau_date", "cohort_day",
             "days_since_last_active", "cohort_size"),
         ds.getColumns().getColumns().keySet());
   }
@@ -275,6 +275,117 @@ class EntityConfigLoaderTest {
         "c1_2",
         new KpiComponent("{c1}", new TreeSet<>())
     ), ds.kpi("kpi").xaxisConfig().get("date").components());
+  }
+
+  @Test
+  void shouldLoadBothAxisKpi_whenItDependsOnProperties() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(),
+            List.of(userActionColumn("ua1")),
+            List.of(),
+            List.of(),
+            List.of()
+        )),
+        List.of(new EntityKpisDto("kpis", List.of(
+            new KpiDto(
+                "kpi",
+                "label",
+                "description",
+                "category",
+                true,
+                "SUM({property.ua1})",
+                null,
+                null,
+                List.of("date", "cohort_day"),
+                null,
+                null)),
+            List.of(), List.of())));
+    assertEquals(2, ds.kpi("kpi").xaxisConfig().size());
+    assertEquals(
+        "SUM({ua1_0})"
+        , ds.kpi("kpi").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "ua1_0",
+        new KpiComponent("{ua1}", new TreeSet<>(Set.of("{days_since_last_active} = 0")))
+    ), ds.kpi("kpi").xaxisConfig().get("date").components());
+
+    assertEquals(
+        "SUM({ua1_0})"
+        , ds.kpi("kpi").xaxisConfig().get("cohort_day").formula());
+    assertEquals(Map.of(
+        "ua1_0",
+        new KpiComponent("{ua1}", new TreeSet<>(Set.of("{cohort_day} IN (0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+    ), ds.kpi("kpi").xaxisConfig().get("cohort_day").components());
+  }
+
+  @Test
+  void shouldLoadBothAxisKpi_whenItDependsOnKpiBothAxis() throws IOException {
+    var ds = fromColumnsAndKpis(
+        List.of(new EntityPropertiesDto(
+            List.of(),
+            List.of(userActionColumn("ua1")),
+            List.of(),
+            List.of(),
+            List.of()
+        )),
+        List.of(new EntityKpisDto("kpis", List.of(
+            new KpiDto(
+                "kpi1",
+                "label",
+                "description",
+                "category",
+                true,
+                "{kpi.kpi2}",
+                null,
+                null,
+                List.of("date", "cohort_day"),
+                null,
+                null),
+            new KpiDto(
+                "kpi2",
+                "label",
+                "description",
+                "category",
+                true,
+                "SUM({property.ua1})",
+                null,
+                null,
+                List.of("date", "cohort_day"),
+                null,
+                null)),
+            List.of(), List.of())));
+    assertEquals(2, ds.kpi("kpi1").xaxisConfig().size());
+    assertEquals(
+        "(SUM({ua1_0}))"
+        , ds.kpi("kpi1").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "ua1_0",
+        new KpiComponent("{ua1}", new TreeSet<>(Set.of("{days_since_last_active} = 0")))
+    ), ds.kpi("kpi1").xaxisConfig().get("date").components());
+    assertEquals(
+        "(SUM({ua1_0}))"
+        , ds.kpi("kpi1").xaxisConfig().get("cohort_day").formula());
+    assertEquals(Map.of(
+        "ua1_0",
+        new KpiComponent("{ua1}", new TreeSet<>(Set.of("{cohort_day} IN (0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+    ), ds.kpi("kpi1").xaxisConfig().get("cohort_day").components());
+
+    assertEquals(2, ds.kpi("kpi2").xaxisConfig().size());
+    assertEquals(
+        "SUM({ua1_0})"
+        , ds.kpi("kpi2").xaxisConfig().get("date").formula());
+    assertEquals(Map.of(
+        "ua1_0",
+        new KpiComponent("{ua1}", new TreeSet<>(Set.of("{days_since_last_active} = 0")))
+    ), ds.kpi("kpi2").xaxisConfig().get("date").components());
+    assertEquals(
+        "SUM({ua1_0})"
+        , ds.kpi("kpi2").xaxisConfig().get("cohort_day").formula());
+    assertEquals(Map.of(
+        "ua1_0",
+        new KpiComponent("{ua1}", new TreeSet<>(Set.of("{cohort_day} IN (0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+    ), ds.kpi("kpi2").xaxisConfig().get("cohort_day").components());
   }
 
   @Test

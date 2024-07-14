@@ -14,10 +14,11 @@ public class SlidingWindowPropertyDtoMapper implements
     Function<EntityPropertySlidingWindowDto, SlidingWindowColumn> {
 
   private final Map<String, Column> columns;
+  private final int activeDays;
 
-
-  public SlidingWindowPropertyDtoMapper(Map<String, Column> columns) {
+  public SlidingWindowPropertyDtoMapper(Map<String, Column> columns, int activeDays) {
     this.columns = columns;
+    this.activeDays = activeDays;
   }
 
   @Override
@@ -47,6 +48,13 @@ public class SlidingWindowPropertyDtoMapper implements
     if (dto.getRelativeDaysFrom() > dto.getRelativeDaysTo()) {
       throw new IllegalArgumentException(
           "relative days from must be less than or equal to relative days to"
+              + " in entity for column: "
+              + dto.getColumn().getId());
+    }
+
+    if (dto.getRelativeDaysTo() < -activeDays) {
+      throw new IllegalArgumentException(
+          "window cannot go in the past more than active days"
               + " in entity for column: "
               + dto.getColumn().getId());
     }

@@ -19,7 +19,9 @@
       "enum": [
         "sum",
         "last_value",
-        "first_value"
+        "first_value",
+        "min",
+        "max"
       ]
     }
   },

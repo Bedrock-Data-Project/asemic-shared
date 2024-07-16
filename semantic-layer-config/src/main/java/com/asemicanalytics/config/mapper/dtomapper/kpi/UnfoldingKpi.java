@@ -87,10 +87,12 @@ public class UnfoldingKpi {
     Map<String, KpixaxisConfig> xaxisConfig = new HashMap<>();
     xaxisConfig.put(
         xaxis,
-        new KpixaxisConfig(
-            formula.render(),
-            kpiDto.getTotalFunction().get().name(),
-            unfoldFilters(formula.getKpiComponentMap())));
+        new KpiComponentsSplitter().split(
+            new KpixaxisConfig(
+                formula.render(),
+                kpiDto.getTotalFunction().get().name(),
+                unfoldFilters(formula.getKpiComponentMap()))));
+
     return new Kpi(
         kpiDto.getId(),
         xaxisConfig,

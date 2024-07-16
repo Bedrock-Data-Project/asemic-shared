@@ -80,7 +80,7 @@ public class BigQueryDialect implements Dialect {
 
   @Override
   public String epochDays(String date) {
-    return "UNIX_DATE(" + date + ")";
+    return "DATE_DIFF(%s, DATE '1970-01-01', DAY)".formatted(date);
   }
 
   @Override

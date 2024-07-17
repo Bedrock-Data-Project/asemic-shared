@@ -50,8 +50,8 @@ public class KpisDtoMergeMapper
               cohortedKpi.getDescription().orElse(null),
               cohortedKpi.getCategory().or(dto::getCategory).orElse(null),
               cohortedKpi.getRecommeded().orElse(null),
-              cohortedKpi.getSelect(),
-              cohortedKpi.getWhere().orElse(null),
+              render(cohortedKpi.getSelect(), cohortDay),
+              cohortedKpi.getWhere().map(w -> render(w, cohortDay)).orElse(null),
               cohortedKpi.getUnit().orElse(null),
               List.of(datecolumn),
               KpiDto.TotalFunction.fromValue(

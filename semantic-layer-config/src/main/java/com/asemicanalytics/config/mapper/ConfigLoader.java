@@ -6,6 +6,7 @@ import com.asemicanalytics.config.mapper.dtomapper.ActionDtoMapper;
 import com.asemicanalytics.config.mapper.dtomapper.entity.EntityMapper;
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.entity.MaterializedColumnRepository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

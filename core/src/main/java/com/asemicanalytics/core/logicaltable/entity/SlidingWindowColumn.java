@@ -6,7 +6,6 @@ import java.util.Optional;
 
 public class SlidingWindowColumn extends Column {
   private final ActionColumn sourceColumn;
-  private final Optional<LocalDate> materializedFrom;
   private final int relativeDaysFrom;
   private final int relativeDaysTo;
   private final String windowAggregation;
@@ -16,19 +15,17 @@ public class SlidingWindowColumn extends Column {
       ActionColumn sourceColumn,
       int relativeDaysFrom,
       int relativeDaysTo,
-      String windowAggregation,
-      Optional<LocalDate> materializedFrom) {
+      String windowAggregation) {
     super(column.getId(), column.getDataType(), column.getLabel(), column.getDescription(),
         column.canFilter(), column.canGroupBy(), column.getTags());
     this.sourceColumn = sourceColumn;
-    this.materializedFrom = materializedFrom;
     this.relativeDaysFrom = relativeDaysFrom;
     this.relativeDaysTo = relativeDaysTo;
     this.windowAggregation = windowAggregation;
   }
 
-  public Optional<LocalDate> getMaterializedFrom() {
-    return materializedFrom;
+  public Optional<LocalDate> getMaterializedFrom(MaterializedColumnRepository materializedFrom) {
+    return materializedFrom.materializedFrom(getId());
   }
 
   public int getRelativeDaysFrom() {

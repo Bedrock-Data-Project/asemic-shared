@@ -4,9 +4,7 @@ import com.asemicanalytics.config.mapper.dtomapper.column.ColumnDtoMapper;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.ActionColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
-import java.time.LocalDate;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class ActionPropertyDtoMapper implements
@@ -32,7 +30,7 @@ public class ActionPropertyDtoMapper implements
     return new ActionColumn(new ColumnDtoMapper().apply(dto.getColumn()),
         logicalTable,
         dto.getWhere(), dto.getSelect(),
-        Optional.of(LocalDate.MIN), dto.getMissingValue(),
+        dto.getMissingValue(),
         dto.getCanMaterialize().orElse(true));
   }
 }

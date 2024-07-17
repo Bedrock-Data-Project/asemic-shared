@@ -9,7 +9,6 @@ public class ActionColumn extends Column {
   private final ActionLogicalTable actionLogicalTable;
   private final Optional<String> where;
   private final String aggregationTableExpression;
-  private final Optional<LocalDate> materializedFrom;
   private final String missingValue;
   private final boolean canMaterialize;
 
@@ -18,7 +17,6 @@ public class ActionColumn extends Column {
       ActionLogicalTable actionLogicalTable,
       Optional<String> where,
       String aggregationTableExpression,
-      Optional<LocalDate> materializedFrom,
       String missingValue,
       boolean canMaterialize) {
     super(column.getId(), column.getDataType(), column.getLabel(), column.getDescription(),
@@ -26,7 +24,6 @@ public class ActionColumn extends Column {
     this.actionLogicalTable = actionLogicalTable;
     this.where = where;
     this.aggregationTableExpression = aggregationTableExpression;
-    this.materializedFrom = materializedFrom;
     this.missingValue = missingValue;
     this.canMaterialize = canMaterialize;
   }
@@ -36,10 +33,9 @@ public class ActionColumn extends Column {
       ActionLogicalTable actionLogicalTable,
       Optional<String> where,
       String aggregationTableExpression,
-      Optional<LocalDate> materializedFrom,
       String missingValue
   ) {
-    this(column, actionLogicalTable, where, aggregationTableExpression, materializedFrom,
+    this(column, actionLogicalTable, where, aggregationTableExpression,
         missingValue, true);
   }
 
@@ -55,8 +51,8 @@ public class ActionColumn extends Column {
     return aggregationTableExpression;
   }
 
-  public Optional<LocalDate> getMaterializedFrom() {
-    return materializedFrom;
+  public Optional<LocalDate> getMaterializedFrom(MaterializedColumnRepository materializedFrom) {
+    return materializedFrom.materializedFrom(getId());
   }
 
   public boolean canMaterialize() {

@@ -3,6 +3,7 @@ package com.asemicanalytics.config.mapper.dtomapper.entity;
 import com.asemicanalytics.config.mapper.dtomapper.column.ColumnDtoMapper;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.entity.ActionColumn;
+import com.asemicanalytics.core.logicaltable.entity.MaterializedColumnRepository;
 import com.asemicanalytics.core.logicaltable.entity.SlidingWindowColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 import java.time.LocalDate;
@@ -62,7 +63,6 @@ public class SlidingWindowPropertyDtoMapper implements
     return new SlidingWindowColumn(new ColumnDtoMapper().apply(dto.getColumn()),
         (ActionColumn) columns.get(dto.getSourceProperty()),
         dto.getRelativeDaysFrom(), dto.getRelativeDaysTo(),
-        dto.getFunction().value(),
-        Optional.of(LocalDate.MIN));
+        dto.getFunction().value());
   }
 }

@@ -15,6 +15,7 @@ import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
+import com.asemicanalytics.core.logicaltable.entity.MaterializedColumnFromDate;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnComputedDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
@@ -251,7 +252,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadProperties_whenNoDuplicatesInDifferentGroups() {
+  void shouldLoadProperties_whenNoDuplicatesInDifferentGroups() throws IOException {
     var ds = fromColumnsAndKpis(List.of(
             new EntityPropertiesDto(
                 List.of(registrationColumn("r1")),
@@ -280,7 +281,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadKpi_whenItDependsOnProperties() {
+  void shouldLoadKpi_whenItDependsOnProperties() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(registrationColumn("r1")),
@@ -305,7 +306,7 @@ class EntityConfigLoaderTest {
             List.of(), List.of())));
     assertEquals(1, ds.kpi("kpi").xaxisConfig().size());
     assertEquals(
-        "{component0}+{component1}+{component2}+{component3}"
+        "{component0} + {component1} + {component2} + {component3}"
         , ds.kpi("kpi").xaxisConfig().get("date").formula());
     assertEquals(Map.of(
         "component0",
@@ -320,7 +321,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadBothAxisKpi_whenItDependsOnProperties() {
+  void shouldLoadBothAxisKpi_whenItDependsOnProperties() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(),
@@ -363,7 +364,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadBothAxisKpi_whenItDependsOnKpiBothAxis() {
+  void shouldLoadBothAxisKpi_whenItDependsOnKpiBothAxis() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(),
@@ -435,7 +436,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadKpi_whenItReferencesPropertyInFilter() {
+  void shouldLoadKpi_whenItReferencesPropertyInFilter() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(
@@ -472,7 +473,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadKpi_whenColumnIsSlidingWindow() {
+  void shouldLoadKpi_whenColumnIsSlidingWindow() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(
@@ -529,7 +530,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadKpi_whenCohortKpi() {
+  void shouldLoadKpi_whenCohortKpi() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(
@@ -566,7 +567,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadKpi_whenDailyCohortedKpi() {
+  void shouldLoadKpi_whenDailyCohortedKpi() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(
@@ -700,7 +701,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadKpi_whenItDependsOnAnotherKpis() {
+  void shouldLoadKpi_whenItDependsOnAnotherKpis() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(registrationColumn("r1"), registrationColumn("r2"), registrationColumn("r3")),
@@ -753,7 +754,7 @@ class EntityConfigLoaderTest {
         ));
     assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
     assertEquals(
-        "({component1})+({component1})+({component2}+{component3})-{component0}"
+        "({component1}) + ({component1}) + ({component2} + {component3}) - {component0}"
         , ds.kpi("kpi1").xaxisConfig().get("date").formula());
     assertEquals(Map.of(
         "component0",
@@ -774,7 +775,7 @@ class EntityConfigLoaderTest {
     ), ds.kpi("kpi2").xaxisConfig().get("date").components());
 
     assertEquals(1, ds.kpi("kpi3").xaxisConfig().size());
-    assertEquals("{component0}+{component1}", ds.kpi("kpi3").xaxisConfig().get("date").formula());
+    assertEquals("{component0} + {component1}", ds.kpi("kpi3").xaxisConfig().get("date").formula());
     assertEquals(Map.of(
         "component0",
         new KpiComponent("MIN({r2})", new TreeSet<>()),
@@ -784,7 +785,7 @@ class EntityConfigLoaderTest {
   }
 
   @Test
-  void shouldLoadKpi_whenItDependsOnAnotherKpisWithFilters() {
+  void shouldLoadKpi_whenItDependsOnAnotherKpisWithFilters() throws IOException {
     var ds = fromColumnsAndKpis(
         List.of(new EntityPropertiesDto(
             List.of(registrationColumn("r1"), registrationColumn("r2"), registrationColumn("r3")),
@@ -836,7 +837,7 @@ class EntityConfigLoaderTest {
 
     assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
     assertEquals(
-        "({component1}+({component2})+({component2}))+{component0}"
+        "({component1} + ({component2}) + ({component2})) + {component0}"
         , ds.kpi("kpi1").xaxisConfig().get("date").formula());
     assertEquals(Map.of(
         "component2",
@@ -849,7 +850,7 @@ class EntityConfigLoaderTest {
 
     assertEquals(1, ds.kpi("kpi2").xaxisConfig().size());
     assertEquals(
-        "{component0}+({component1})+({component1})"
+        "{component0} + ({component1}) + ({component1})"
         , ds.kpi("kpi2").xaxisConfig().get("date").formula());
     assertEquals(Map.of(
         "component1",

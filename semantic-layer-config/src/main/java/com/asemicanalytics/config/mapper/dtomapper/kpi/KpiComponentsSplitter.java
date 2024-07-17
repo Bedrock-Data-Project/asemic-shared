@@ -100,7 +100,7 @@ public class KpiComponentsSplitter {
     Map<KpiComponent, String> newComponentsReverseIndex = new HashMap<>();
 
     String normalizedFormula = kpixaxisConfig.formula()
-        .replace(" ", "");
+        .replaceAll("\\(\\s+", "(");
     validateParentheses(normalizedFormula);
 
     if (getAggregationFunctionIndex(normalizedFormula).isEmpty()) {

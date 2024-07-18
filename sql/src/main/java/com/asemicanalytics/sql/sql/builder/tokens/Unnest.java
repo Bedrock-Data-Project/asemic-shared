@@ -16,6 +16,11 @@ class Unnest implements TableLike, Expression {
   }
 
   @Override
+  public Expression column(String columnName) {
+    return new UnnestColumn(this, columnName);
+  }
+
+  @Override
   public String render(Dialect dialect) {
     return dialect.tableIdentifier(TableReference.of(alias));
   }

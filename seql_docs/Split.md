@@ -25,8 +25,7 @@ with `sequence_2`.
 ##### Split By One Single Occurence
 
 ```sql
-split
-by Login{1}
+split by Login{1}
 ```
 
 Example, split on every Login.
@@ -45,8 +44,7 @@ s BKNLBKNLBKNLLBKLB
 SQL:
 
 ```sql
-sequences
-AS (
+sequences AS (
   select
     *,
     sum(if(action = 'Login', 1, 0)) over w as sequence
@@ -62,13 +60,13 @@ same timestamp.
 ##### Split By N Single Occurence
 
 ```sql
-split
-by [2]Login{1}
+split by [2]Login{1}
 or
 split by Login{1}=2
 or
 ...
 ```
+
 
 Similar to previous, but we want every sequence to have events from two sessions.
 
@@ -85,8 +83,7 @@ s BKNLBKNLBKNLLBKLB
 SQL
 
 ```sql
-sequences_prep
-AS (
+sequences_prep AS (
   select
     *,
     generate_array(greatest(1, sum(if(action = 'Login', 1, 0)) over w - 2), sum(if(action = 'Login', 1, 0)) over w) as sequences
@@ -105,8 +102,7 @@ sequences AS (
 ##### Split By One Repeated Event
 
 ```sql
-split
-by Login
+split by Login
 ```
 
 Let's treat consequtive repeated events as a singular entity.
@@ -123,8 +119,7 @@ s BKNLBKNLBKNLLBKLB
 SQL
 
 ```sql
-sequences_prep
-AS (
+sequences_prep AS (
   select  
     *,
     if(action = 'Login', 1, 0) * if(lag(action) over w = 'Login', 0, 1) as sequence_start -- ovde NULL zeza ako je Login prvi event
@@ -143,8 +138,7 @@ sequences AS (
 ##### Split By N Repeated Event
 
 ```sql
-split
-by [2]Login
+split by [2]Login
 or
 split by Login=2
 or
@@ -165,8 +159,7 @@ s BKNLBKNLBKNLLBKLB
 SQL
 
 ```sql
-sequences_prep
-AS (
+sequences_prep AS (
   select  
     *,
     if(action = 'Login', 1, 0) * if(lag(action) over w = 'Login', 0, 1) as sequence_start -- ovde NULL zeza ako je Login prvi event
@@ -189,13 +182,13 @@ sequences AS (
 ),
 ```
 
+
 ##### Split By pattern
 
 It's simple to extend this to examples like:
 
 ```sql
-split
-by Login >> AnotherAction // splits on Login followed by AnotherAction
+split by Login >> AnotherAction // splits on Login followed by AnotherAction
 
 split by [] >> [] >> Login  // splits not on Login, but two "places" before
 

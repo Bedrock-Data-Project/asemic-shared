@@ -9,9 +9,7 @@ The representative is a pattern like:
 ```sql
 match Action1 >> Action2 >> Action3 >> Action4
 ```
-
 or
-
 ```sql
 match Action1{1} >> Action1 >> Action2 >> Action2
 ```
@@ -19,8 +17,7 @@ match Action1{1} >> Action1 >> Action2 >> Action2
 Just check the order of events.
 
 ```sql
-step1_2_3_4
-AS (
+step1_2_3_4 AS (
   select
     *,
     case subsequence
@@ -50,10 +47,8 @@ match Action1 >> Action2 >> [Action3] >> Action4
 ```
 
 SQL
-
 ```sql
-step1_2
-AS (
+step1_2 AS (
   select
     *,
     case subsequence
@@ -110,12 +105,10 @@ step_else as (
 ### Non-consequtive steps
 
 ```sql
-Action1
->> Action2 >> * >> Action3 >> Action4
+Action1 >> Action2 >> * >> Action3 >> Action4
 ```
 
 SQL
-
 ```sql
 // find where contition is satisfied
 step3_4_prep AS (
@@ -132,7 +125,7 @@ step3_4_prep2 AS (
   select
     * except(next_subsequence, next_repetition),
     min(if(condition_satisfied and subsequence >= next_subsequence, subsequence, null)) as next_subsequence,
-    1 as repetition
+    1 as next_repetition
   from step3_4_prep
   window w as (partition by user_id, sequence order by subsequence)
 )
@@ -145,19 +138,66 @@ step3_4_prep2 AS (
 ```sql
 match Action1 >> * >> [Action2] >> Action3 >> * >> Action4
 ```
-
 TODO: needs to be more precise
 Transform this into following steps:
-
 1. match Action1
 2. `split by` [] >> Action3 so each split goes until the end of original sequence
 3. `match` the remaining part of the pattern ([Action2] >> Action3 >> * >> Action4). If needed, split again like this
 4. `merge` for every `split by`
 
 ### Leading optional steps
-
 ```sql
-match [] >> [] >> Action1 >> Action2
+match ? >> ? >> Action1 >> Action2
 ```
 
-???
+```
+split by ? >> ? >> Action1
+match ? >> ? >> Action1 >> Action2
+```
+
+```
+match [Action1] >> [Action2] >> Action3 >> Action4
+```
+
+```
+split by [Action1] >> [Action2] >> Action3
+
+split by ? >> ? >> Action3
+match [Action1] >> [Action2] >> Action3 >> Action4
+```
+
+
+```sql
+match * >> Action1 >> Action2
+```
+
+
+------------
+```sql
+match [Action1] << [Action2] << Action3 >> Action4
+```
+
+```sql
+match * >> Action1 >> Action2 // PREFIX >> STEP1 >> STEP2
+
+```
+
+```sql
+match *((Action1) | (Action1 >> Action2) | ()) >> Action3 >> Action4 // PREFIX >> Step1 >> Step2 ; but PREFIX can be only one of the specified options
+
+
+match * >> Action3 >> Action4  // PREFIX >> Step1 >> Step2
+
+
+match * >> Action3 >> Action4
+filter Action1 >> end or Action1 >> Action2 >> end or PREFIX.length = 0
+SEQ
+```
+
+L >> B >> A >> C
+
+_L_ABC
+ 1 234
+_L_324
+_LB_AC
+ 12 

@@ -102,7 +102,9 @@ Done:
 	- Color Legend with Highlights - Big numbers showing last value or total
 - Easy comparison line
 
-TODO: insert line chart and table images
+<img src="assets/table.png" height = 400px>
+
+Table, with freeform drill-down by dimension hierarchy
 
 ###### Segments
 
@@ -122,8 +124,30 @@ Done:
 	- Highlight - grays out all the other group by segments
 	- Global Sort + Top/Bottom N - 
 
+<video height="400px" controls="false" autoplay="autoplay" loop muted>
+  <source src="assets/ImpactOnChange.mov">
+</video> 
 
-TODO: Insert Drill Down and Performed Event images - side by side
+Drill down by country and sort by the impact each country had on overall KPI change.
+
+<img src="assets/Dashboard.jpg" height = 400px> 
+Overview of a dashboard
+
+
+<video height="400px" controls="false" autoplay="autoplay" loop muted>
+  <source src="assets/PerformedEvent.mov">
+</video> 
+
+Performed Event filter.
+
+###### Date Picker
+
+Flexible Date Picker allows:
+- Choosing a fixed period or sliding window period
+- Picking derivates of the Date dimension: (a whole) week, month, year
+
+<img src="assets/date.png" height = 400px> 
+<img src="assets/date2.png" height = 400px>
 
 
 ### Roadmap

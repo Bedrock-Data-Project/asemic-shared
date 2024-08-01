@@ -3,11 +3,23 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "base_table_prefix"
+    "base_table_prefix",
+    "cohorted_daily_kpis_days",
+    "active_days"
   ],
   "properties": {
     "base_table_prefix": {
       "type": "string"
+    },
+    "cohorted_daily_kpis_days": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 1
+    },
+    "active_days": {
+      "type": "integer"
     }
   },
   "additionalProperties": false

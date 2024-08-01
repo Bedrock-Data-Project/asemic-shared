@@ -23,16 +23,9 @@
       "type": "string"
     },
     "columns": {
-      "type": "array",
-      "items": {
-        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json",
-        "minItems": 1
-      }
-    },
-    "computed_columns": {
-      "type": "array",
-      "items": {
-        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column_computed.json"
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/action_column.json"
       }
     },
     "enrichments": {

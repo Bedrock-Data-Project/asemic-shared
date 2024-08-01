@@ -3,29 +3,34 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "column",
-    "action_logical_table",
+    "source_action",
     "select",
-    "missing_value"
+    "aggregate_function"
   ],
   "properties": {
-    "column": {
-      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
-    },
-    "action_logical_table": {
+    "source_action": {
       "type": "string"
     },
     "select": {
       "type": "string"
     },
+    "aggregate_function": {
+      "type": "string",
+      "enum": [
+        "sum",
+        "avg",
+        "min",
+        "max",
+        "first_value",
+        "last_value",
+        "none"
+      ]
+    },
     "where": {
       "type": "string"
     },
-    "missing_value": {
+    "default_value": {
       "type": "string"
-    },
-    "can_materialize": {
-      "type": "boolean"
     }
   },
   "additionalProperties": false

@@ -2,12 +2,12 @@ package com.asemicanalytics.config.mapper.dtomapper.kpi;
 
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.identifier;
 
-import com.asemicanalytics.config.DefaultLabel;
 import com.asemicanalytics.core.kpi.Kpi;
 import com.asemicanalytics.core.kpi.KpiComponent;
 import com.asemicanalytics.core.kpi.KpixaxisConfig;
 import com.asemicanalytics.core.kpi.Unit;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XaxisOverrideDto;
 import com.asemicanalytics.sql.sql.builder.tokens.Formatter;
 import com.asemicanalytics.sql.sql.builder.tokens.TemplateDict;
 import java.util.HashMap;
@@ -18,16 +18,22 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class UnfoldingKpi {
+  private final String kpiId;
   private final KpiDto kpiDto;
   private final String xaxis;
+  private final XaxisOverrideDto xaxisOverrideDto;
   private final Set<ComponentId> componentIds;
   private final Map<FilterPath, Formula> formulasByFilter = new HashMap<>();
   private final Set<String> propertyIds;
 
 
-  public UnfoldingKpi(KpiDto kpiDto, String xaxis, Set<String> propertyIds, Set<String> kpisIds) {
+  public UnfoldingKpi(String kpiId, KpiDto kpiDto,
+                      String xaxis, XaxisOverrideDto xaxisOverrideDto,
+                      Set<String> propertyIds, Set<String> kpisIds) {
+    this.kpiId = kpiId;
     this.kpiDto = kpiDto;
     this.xaxis = xaxis;
+    this.xaxisOverrideDto = xaxisOverrideDto;
     this.componentIds = Formatter.extractKeys(kpiDto.getSelect()).stream()
         .map(c -> new ComponentId(c, propertyIds, kpisIds))
         .collect(Collectors.toSet());
@@ -90,23 +96,20 @@ public class UnfoldingKpi {
         new KpiComponentsSplitter().split(
             new KpixaxisConfig(
                 formula.render(),
-                kpiDto.getTotalFunction().get().name(),
+                xaxisOverrideDto.getTotalFunction().orElse(kpiDto.getTotalFunction().get()).name(),
                 unfoldFilters(formula.getKpiComponentMap()))));
 
     return new Kpi(
-        kpiDto.getId(),
+        kpiId,
         xaxisConfig,
-        DefaultLabel.of(kpiDto.getLabel(), kpiDto.getId()),
-        kpiDto.getCategory(),
-        kpiDto.getRecommended().orElse(false),
+        kpiDto.getLabel().get(),
         kpiDto.getDescription(),
-        kpiDto.getUnit().map(unitDto -> new Unit(unitDto.getSymbol(), unitDto.getIsPrefix())),
-        kpiDto.getHidden().orElse(false)
+        kpiDto.getUnit().map(unitDto -> new Unit(unitDto.getSymbol(), unitDto.getIsPrefix()))
     );
   }
 
   public String getKpiId() {
-    return kpiDto.getId();
+    return kpiId;
   }
 
   public Set<ComponentId> getComponentIds() {

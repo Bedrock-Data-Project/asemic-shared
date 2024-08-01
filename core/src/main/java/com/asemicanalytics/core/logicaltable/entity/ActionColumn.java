@@ -5,38 +5,41 @@ import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class ActionColumn extends Column {
+public class ActionColumn extends EntityProperty {
   private final ActionLogicalTable actionLogicalTable;
   private final Optional<String> where;
-  private final String aggregationTableExpression;
-  private final String missingValue;
-  private final boolean canMaterialize;
+  private final String select;
+  private final AggregateFunction aggregationFunction;
+  private final String defaultValue;
 
-  public ActionColumn(
-      Column column,
-      ActionLogicalTable actionLogicalTable,
-      Optional<String> where,
-      String aggregationTableExpression,
-      String missingValue,
-      boolean canMaterialize) {
-    super(column.getId(), column.getDataType(), column.getLabel(), column.getDescription(),
-        column.canFilter(), column.canGroupBy(), column.getTags());
-    this.actionLogicalTable = actionLogicalTable;
-    this.where = where;
-    this.aggregationTableExpression = aggregationTableExpression;
-    this.missingValue = missingValue;
-    this.canMaterialize = canMaterialize;
+  @Override
+  public EntityPropertyType getType() {
+    return EntityPropertyType.ACTION;
+  }
+
+  public enum AggregateFunction {
+    SUM,
+    AVG,
+    MIN,
+    MAX,
+    FIRST_VALUE,
+    LAST_VALUE,
+    NONE
   }
 
   public ActionColumn(
       Column column,
       ActionLogicalTable actionLogicalTable,
       Optional<String> where,
-      String aggregationTableExpression,
-      String missingValue
-  ) {
-    this(column, actionLogicalTable, where, aggregationTableExpression,
-        missingValue, true);
+      String select,
+      AggregateFunction aggregationFunction,
+      String defaultValue) {
+    super(column);
+    this.actionLogicalTable = actionLogicalTable;
+    this.where = where;
+    this.select = select;
+    this.aggregationFunction = aggregationFunction;
+    this.defaultValue = defaultValue;
   }
 
   public ActionLogicalTable getActionLogicalTable() {
@@ -47,19 +50,19 @@ public class ActionColumn extends Column {
     return where;
   }
 
-  public String getAggregationTableExpression() {
-    return aggregationTableExpression;
+  public String getSelect() {
+    return select;
   }
 
   public Optional<LocalDate> getMaterializedFrom(MaterializedColumnRepository materializedFrom) {
     return materializedFrom.materializedFrom(getId());
   }
 
-  public boolean canMaterialize() {
-    return canMaterialize;
+  public AggregateFunction getAggregationFunction() {
+    return aggregationFunction;
   }
 
-  public String getMissingValue() {
-    return missingValue;
+  public String getDefaultValue() {
+    return defaultValue;
   }
 }

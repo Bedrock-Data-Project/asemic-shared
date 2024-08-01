@@ -26,6 +26,8 @@ public interface Dialect {
 
   String epochDays(String date);
 
+  String dateDiff(String from, String to);
+
   String createTableIfNotExists(
       TableReference tableReference, List<Column> columns, Optional<Column> dateColumn);
 

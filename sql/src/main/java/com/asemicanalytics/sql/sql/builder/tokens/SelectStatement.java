@@ -242,6 +242,9 @@ public class SelectStatement implements Token {
     if (where != null) {
       sb.append(where.contentHash());
     }
+    if (qualify != null) {
+      sb.append(qualify.contentHash());
+    }
     if (groupBy != null) {
       sb.append(groupBy.contentHash());
     }

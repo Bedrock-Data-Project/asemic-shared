@@ -10,11 +10,13 @@ public class WindowFunctionExpression implements Expression {
   private final Expression function;
   private ExpressionList partitionBy = new ExpressionList();
   private ExpressionList orderBy = new ExpressionList();
+  private boolean desc;
   private Optional<RangeInterval> rangeInterval = Optional.empty();
 
   WindowFunctionExpression(
       Expression function) {
     this.function = function;
+    this.desc = false;
   }
 
   public WindowFunctionExpression partitionBy(Expression... partitionBy) {
@@ -37,6 +39,18 @@ public class WindowFunctionExpression implements Expression {
     return this;
   }
 
+  public WindowFunctionExpression orderByDesc(Expression... orderBy) {
+    this.orderBy = ExpressionList.inline(orderBy);
+    this.desc = true;
+    return this;
+  }
+
+  public WindowFunctionExpression orderByDesc(List<Expression> orderBy) {
+    this.orderBy = ExpressionList.inline(orderBy);
+    this.desc = true;
+    return this;
+  }
+
   public WindowFunctionExpression rangeInterval(RangeInterval rangeInterval) {
     this.rangeInterval = Optional.of(rangeInterval);
     return this;
@@ -49,7 +63,7 @@ public class WindowFunctionExpression implements Expression {
       overTokens.add("PARTITION BY " + this.partitionBy.render(dialect));
     }
     if (!orderBy.isEmpty()) {
-      overTokens.add("ORDER BY " + this.orderBy.render(dialect));
+      overTokens.add("ORDER BY " + this.orderBy.render(dialect) + (desc ? " DESC" : ""));
     }
     rangeInterval.ifPresent(interval -> overTokens.add(interval.render(dialect)));
     return function.render(dialect) + " OVER (" + String.join(" ", overTokens) + ")";

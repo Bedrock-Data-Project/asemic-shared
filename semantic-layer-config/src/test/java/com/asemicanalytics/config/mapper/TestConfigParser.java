@@ -3,28 +3,26 @@ package com.asemicanalytics.config.mapper;
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.config.parser.EntityDto;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import com.asemicanalytics.core.logicaltable.entity.MaterializedColumnRepository;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.CustomDailyLogicalTableDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.StaticLogicalTableDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TestConfigParser implements ConfigParser {
 
-  private final Map<String, StaticLogicalTableDto> staticLogicalTables;
   private final Map<String, ActionLogicalTableDto> actionLogicalTables;
-  private final Map<String, CustomDailyLogicalTableDto> customDailyLogicalTables;
-  private final Optional<EntityDto> entityDto;
+  private final List<EntityPropertiesDto> columnsDtos;
+  private final List<EntityKpisDto> kpisDtos;
 
-  public TestConfigParser(Map<String, StaticLogicalTableDto> staticLogicalTables,
-                          Map<String, ActionLogicalTableDto> actionLogicalTables,
-                          Map<String, CustomDailyLogicalTableDto> customDailyLogicalTables,
-                          Optional<EntityDto> entityDto) {
-    this.staticLogicalTables = staticLogicalTables;
+  public TestConfigParser(Map<String, ActionLogicalTableDto> actionLogicalTables,
+                          List<EntityPropertiesDto> columnsDtos,
+                          List<EntityKpisDto> kpisDtos) {
     this.actionLogicalTables = actionLogicalTables;
-    this.customDailyLogicalTables = customDailyLogicalTables;
-    this.entityDto = entityDto;
+    this.columnsDtos = columnsDtos;
+    this.kpisDtos = kpisDtos;
   }
 
   @Override
@@ -33,23 +31,18 @@ public class TestConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, StaticLogicalTableDto> parseStaticLogicalTables(String appId) {
-    return staticLogicalTables;
-  }
-
-  @Override
   public Map<String, ActionLogicalTableDto> parseActionLogicalTables(String appId) {
     return actionLogicalTables;
   }
 
   @Override
-  public Map<String, CustomDailyLogicalTableDto> parseCustomDailyLogicalTables(String appId) {
-    return customDailyLogicalTables;
-  }
-
-  @Override
-  public Optional<EntityDto> parseEntityLogicalTable(
+  public EntityDto parseEntityLogicalTable(
       String appId, Map<String, ActionLogicalTable> userActionLogicalTables) {
-    return entityDto;
+    return new EntityDto(
+        new EntityConfigDto("{app_id}.table", List.of(1, 2), 90),
+        columnsDtos,
+        kpisDtos, userActionLogicalTables.entrySet().stream()
+        .collect(
+            Collectors.toMap(Map.Entry::getKey, e -> userActionLogicalTables.get(e.getKey()))));
   }
 }

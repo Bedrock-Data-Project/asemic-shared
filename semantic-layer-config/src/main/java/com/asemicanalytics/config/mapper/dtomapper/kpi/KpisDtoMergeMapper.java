@@ -1,75 +1,72 @@
 package com.asemicanalytics.config.mapper.dtomapper.kpi;
 
+import com.asemicanalytics.config.DefaultLabel;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiCohortedDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public class KpisDtoMergeMapper
-    implements Function<List<EntityKpisDto>, List<KpiDto>> {
-  private final String datecolumn;
+    implements Function<List<EntityKpisDto>, Map<String, KpiDto>> {
+  private final List<Integer> cohortDays;
 
-  public KpisDtoMergeMapper(String dateColumn) {
-    this.datecolumn = dateColumn;
+  public KpisDtoMergeMapper(List<Integer> cohortDays) {
+    this.cohortDays = cohortDays;
   }
 
-  private String render(String source, int cohortDay) {
-    return source.replace("{}", cohortDay + "");
+  private String render(String source, String templateValue) {
+    return source.replace("{}", templateValue);
   }
 
-  private List<KpiDto> extractKpis(EntityKpisDto dto) {
-    List<KpiDto> allKpis = new ArrayList<>();
+  private Map<String, KpiDto> extractKpis(EntityKpisDto dto) {
+    Map<String, KpiDto> allKpis = new HashMap<>();
 
-    dto.getKpis().orElse(List.of()).forEach(kpi ->
-        allKpis.add(new KpiDto(
-            kpi.getId(),
-            kpi.getLabel().orElse(null),
-            kpi.getDescription().orElse(null),
-            kpi.getCategory().or(dto::getCategory).orElse(null),
-            kpi.getRecommended().orElse(null),
-            kpi.getSelect(),
-            kpi.getWhere().orElse(null),
-            kpi.getUnit().orElse(null),
-            kpi.getxAxis(),
-            kpi.getTotalFunction().orElse(KpiDto.TotalFunction.SUM),
-            kpi.getHidden().orElse(false)
-        )));
+    for (var kpi : dto.getKpis().getAdditionalProperties().entrySet()) {
+      List<String> template = kpi.getValue().getTemplate().map(t -> {
+        if (t instanceof String) {
+          if (t.toString().equals("cohort_day")) {
+            return cohortDays.stream().map(Object::toString).toList();
+          } else {
+            throw new IllegalArgumentException("Invalid template value: " + t);
+          }
+        }
 
-    dto.getCohortedDailyKpis().orElse(List.of()).forEach(cohortedKpi -> {
-      List<Integer> cohortedDays = cohortedKpi.getCohortedDays().orElse(List.of());
-      if (cohortedDays.isEmpty()) {
-        cohortedDays = dto.getCohortedDailyKpisDays().orElse(List.of());
-      }
+        if (t instanceof List) {
+          return (List<String>) t;
+        }
 
-      cohortedDays.forEach(cohortDay ->
-          allKpis.add(new KpiDto(
-              render(cohortedKpi.getId(), cohortDay),
-              cohortedKpi.getLabel().map(l -> render(l, cohortDay)).orElse(null),
-              cohortedKpi.getDescription().orElse(null),
-              cohortedKpi.getCategory().or(dto::getCategory).orElse(null),
-              cohortedKpi.getRecommeded().orElse(null),
-              render(cohortedKpi.getSelect(), cohortDay),
-              cohortedKpi.getWhere().map(w -> render(w, cohortDay)).orElse(null),
-              cohortedKpi.getUnit().orElse(null),
-              List.of(datecolumn),
-              KpiDto.TotalFunction.fromValue(
-                  cohortedKpi
-                      .getTotalFunction()
-                      .orElse(KpiCohortedDto.TotalFunction.SUM)
-                      .value()),
-              cohortedKpi.getHidden().orElse(false)
-          )));
-    });
+        throw new IllegalArgumentException("Invalid template value: " + t);
+      }).orElse(List.of(""));
 
+      template.forEach(t -> {
+        String id = render(kpi.getKey(), t);
+        allKpis.put(id, new KpiDto(
+            render(DefaultLabel.of(kpi.getValue().getLabel(), kpi.getKey()), t),
+            kpi.getValue().getDescription().map(v -> render(v, t)).orElse(null),
+            kpi.getValue().getSelect(),
+            kpi.getValue().getWhere().map(v -> render(v, t)).orElse(null),
+            kpi.getValue().getUnit().orElse(null),
+            kpi.getValue().getTotalFunction().orElse(KpiDto.TotalFunction.SUM),
+            kpi.getValue().getxAxis(),
+            null
+        ));
+      });
+    }
     return allKpis;
   }
 
   @Override
-  public List<KpiDto> apply(List<EntityKpisDto> kpisDto) {
-    List<KpiDto> allKpisDto = new ArrayList<>();
-    kpisDto.forEach(kpiDto -> allKpisDto.addAll(extractKpis(kpiDto)));
+  public Map<String, KpiDto> apply(List<EntityKpisDto> kpisDto) {
+    Map<String, KpiDto> allKpisDto = new HashMap<>();
+    for (var kpis : kpisDto) {
+      for (var entry : extractKpis(kpis).entrySet()) {
+        if (allKpisDto.put(entry.getKey(), entry.getValue()) != null) {
+          throw new IllegalArgumentException("Duplicate kpi id: " + entry.getKey() + " in entity");
+        }
+      }
+    }
     return allKpisDto;
   }
 }

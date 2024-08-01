@@ -1,50 +1,55 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
+import com.asemicanalytics.core.RelativeDaysInterval;
 import com.asemicanalytics.core.column.Column;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class SlidingWindowColumn extends Column {
-  private final ActionColumn sourceColumn;
-  private final int relativeDaysFrom;
-  private final int relativeDaysTo;
-  private final String windowAggregation;
+public class SlidingWindowColumn extends EntityProperty {
+  private final EntityProperty sourceColumn;
+  private final RelativeDaysInterval relativeDaysInterval;
+  private final WindowAggregationFunction windowAggregationFunction;
+
+  @Override
+  public EntityPropertyType getType() {
+    return EntityPropertyType.SLIDING_WINDOW;
+  }
+
+  public enum WindowAggregationFunction {
+    SUM,
+    AVG,
+    MIN,
+    MAX,
+  }
 
   public SlidingWindowColumn(
       Column column,
-      ActionColumn sourceColumn,
-      int relativeDaysFrom,
-      int relativeDaysTo,
-      String windowAggregation) {
-    super(column.getId(), column.getDataType(), column.getLabel(), column.getDescription(),
-        column.canFilter(), column.canGroupBy(), column.getTags());
+      EntityProperty sourceColumn,
+      RelativeDaysInterval relativeDaysInterval,
+      WindowAggregationFunction windowAggregationFunction) {
+    super(column);
+
+    if (relativeDaysInterval.from() == 0) {
+      throw new IllegalArgumentException("Sliding window cannot start at 0");
+    }
     this.sourceColumn = sourceColumn;
-    this.relativeDaysFrom = relativeDaysFrom;
-    this.relativeDaysTo = relativeDaysTo;
-    this.windowAggregation = windowAggregation;
+    this.relativeDaysInterval = relativeDaysInterval;
+    this.windowAggregationFunction = windowAggregationFunction;
   }
 
   public Optional<LocalDate> getMaterializedFrom(MaterializedColumnRepository materializedFrom) {
     return materializedFrom.materializedFrom(getId());
   }
 
-  public int getRelativeDaysFrom() {
-    return relativeDaysFrom;
+  public RelativeDaysInterval getRelativeDaysInterval() {
+    return relativeDaysInterval;
   }
 
-  public int getRelativeDaysTo() {
-    return relativeDaysTo;
+  public WindowAggregationFunction getWindowAggregationFunction() {
+    return windowAggregationFunction;
   }
 
-  public String getWindowAggregation() {
-    return windowAggregation;
-  }
-
-  public ActionColumn getSourceColumn() {
+  public EntityProperty getSourceColumn() {
     return sourceColumn;
-  }
-
-  public int getWindowSize() {
-    return relativeDaysTo - relativeDaysFrom + 1;
   }
 }

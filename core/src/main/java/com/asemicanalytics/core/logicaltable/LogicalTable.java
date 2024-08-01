@@ -1,6 +1,7 @@
 package com.asemicanalytics.core.logicaltable;
 
 import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -8,14 +9,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class LogicalTable {
+public class LogicalTable<T extends Column> {
 
   protected final String id;
   protected final String label;
   protected final Optional<String> description;
 
   protected final TableReference table;
-  protected final Columns columns;
+  protected final Columns<T> columns;
   protected final Set<String> tags;
   protected final List<MaterializedIndexTable> materializedIndexTables;
 
@@ -23,7 +24,7 @@ public class LogicalTable {
 
   public LogicalTable(String id, String label, Optional<String> description,
                       TableReference table,
-                      Columns columns, Set<String> tags,
+                      Columns<T> columns, Set<String> tags,
                       List<MaterializedIndexTable> materializedIndexTables) {
     this.id = id;
     this.label = label;
@@ -58,7 +59,7 @@ public class LogicalTable {
     return table;
   }
 
-  public Columns getColumns() {
+  public Columns<T> getColumns() {
     return columns;
   }
 
@@ -74,20 +75,20 @@ public class LogicalTable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    LogicalTable casted = (LogicalTable) o;
+    LogicalTable<?> casted = (LogicalTable<?>) o;
     return id.equals(casted.id);
   }
 
   public void addEnrichment(Enrichment enrichment) {
     if (enrichments.stream()
-        .filter(e -> e.targetLogicalTable().getId().equals(enrichment.targetLogicalTable().getId()))
-        .findAny().isPresent()) {
+        .anyMatch(e -> e.targetLogicalTable().getId().equals(
+            enrichment.targetLogicalTable().getId()))) {
       throw new IllegalArgumentException("Enrichment from logical table already present!");
     }
     enrichments.add(enrichment);
   }
 
-  public Optional<Enrichment> enrichment(LogicalTable targetLogicalTable) {
+  public Optional<Enrichment> enrichment(LogicalTable<?> targetLogicalTable) {
     return enrichments.stream()
         .filter(e -> e.targetLogicalTable().getId().equals(targetLogicalTable.getId()))
         .findFirst();

@@ -3,25 +3,52 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "id",
     "select",
     "x_axis"
   ],
-  "properties": {
-    "id": {
-      "type": "string"
+  "definitions": {
+    "total_function": {
+      "type": "string",
+      "enum": [
+        "sum",
+        "avg",
+        "count",
+        "min",
+        "max"
+      ]
     },
+    "xaxis_override": {
+      "type": "object",
+      "properties": {
+        "total_function": {
+          "$ref": "#/definitions/total_function"
+        }
+      },
+      "additionalProperties": false
+    },
+    "unit": {
+      "type": "object",
+      "required": [
+        "symbol",
+        "is_prefix"
+      ],
+      "properties": {
+        "symbol": {
+          "type": "string"
+        },
+        "is_prefix": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
     "label": {
       "type": "string"
     },
     "description": {
       "type": "string"
-    },
-    "category": {
-      "type": "string"
-    },
-    "recommended": {
-      "type": "boolean"
     },
     "select": {
       "type": "string"
@@ -30,27 +57,32 @@
       "type": "string"
     },
     "unit": {
-      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/unit.json"
-    },
-    "x_axis": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "minItems": 1
+      "$ref": "#/definitions/unit"
     },
     "total_function": {
-      "type": "string",
-      "enum": [
-        "sum",
-        "avg",
-        "min",
-        "max",
-        "count"
-      ]
+      "$ref": "#/definitions/total_function"
     },
-    "hidden": {
-      "type": "boolean"
+    "x_axis": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/xaxis_override"
+      }
+    },
+    "template": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "cohort_day"
+          ]
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
     }
   },
   "additionalProperties": false

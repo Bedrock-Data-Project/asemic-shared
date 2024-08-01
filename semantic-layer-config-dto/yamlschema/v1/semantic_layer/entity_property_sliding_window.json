@@ -1,22 +1,18 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_sliding_window.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "column",
-    "source_property",
-    "function",
+    "source_action_property",
+    "sliding_window_function",
     "relative_days_from",
     "relative_days_to"
   ],
   "properties": {
-    "column": {
-      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
-    },
-    "source_property": {
+    "source_action_property": {
       "type": "string"
     },
-    "function": {
+    "sliding_window_function": {
       "type": "string",
       "enum": [
         "sum",

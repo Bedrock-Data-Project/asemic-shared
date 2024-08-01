@@ -1,0 +1,30 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_lifetime.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "merge_function"
+  ],
+  "properties": {
+    "source_property": {
+      "type": "string"
+    },
+    "source_computed_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_computed.json"
+    },
+    "source_action_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json"
+    },
+    "merge_function": {
+      "type": "string",
+      "enum": [
+        "sum",
+        "last_value",
+        "first_value",
+        "min",
+        "max"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

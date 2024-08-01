@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class TemporalLogicalTable extends LogicalTable {
+public class TemporalLogicalTable<T extends Column> extends LogicalTable<T> {
 
   public static final String DATE_COLUMN_TAG = "date_column";
   protected final TimeGrain minTimeGrain;
@@ -20,7 +20,7 @@ public class TemporalLogicalTable extends LogicalTable {
 
   public TemporalLogicalTable(String id, String label, Optional<String> description,
                               TableReference table,
-                              Columns columns,
+                              Columns<T> columns,
                               Map<String, Kpi> kpis, TimeGrain minTimeGrain, Set<String> tags,
                               List<MaterializedIndexTable> materializedIndexTables) {
     super(id, label, description, table, columns, tags, materializedIndexTables);
@@ -31,7 +31,7 @@ public class TemporalLogicalTable extends LogicalTable {
 
   public TemporalLogicalTable(String id, String label, Optional<String> description,
                               TableReference table,
-                              Columns columns,
+                              Columns<T> columns,
                               Map<String, Kpi> kpis, TimeGrain minTimeGrain, Set<String> tags) {
     this(id, label, description, table, columns, kpis, minTimeGrain, tags, List.of());
   }

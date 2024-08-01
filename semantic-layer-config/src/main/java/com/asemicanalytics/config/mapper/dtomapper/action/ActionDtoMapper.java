@@ -1,9 +1,8 @@
-package com.asemicanalytics.config.mapper.dtomapper;
+package com.asemicanalytics.config.mapper.dtomapper.action;
 
 import com.asemicanalytics.config.DefaultLabel;
 import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
-import com.asemicanalytics.config.mapper.dtomapper.column.ColumnComputedDtoMapper;
-import com.asemicanalytics.config.mapper.dtomapper.column.ColumnDtoMapper;
+import com.asemicanalytics.config.mapper.dtomapper.EnrichmentDtoMapper;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
@@ -38,18 +37,11 @@ public class ActionDtoMapper
         new EnrichmentDtoMapper(id).apply(e))));
 
     SequencedMap<String, Column> columns = new LinkedHashMap<>();
-    dto.getColumns().stream().map(new ColumnDtoMapper())
-        .forEach(c -> columns.put(c.getId(), c));
-    dto.getComputedColumns().ifPresent(cols ->
-        cols.stream()
-            .map(new ColumnComputedDtoMapper())
-            .forEach(c -> {
-              if (columns.put(c.getId(), c) != null) {
-                throw new IllegalArgumentException(
-                    "Duplicate column id: " + c.getId() + " in logicalTable: " + id);
-              }
-            }));
-
+    for (var entry : dto.getColumns().getAdditionalProperties().entrySet()) {
+      var id = entry.getKey();
+      var column = entry.getValue();
+      columns.put(id, new ActionColumnDtoMapper(id).apply(column));
+    }
     var tags = dto.getTags().map(Set::copyOf).orElse(Set.of());
 
     if (tags.contains(FirstAppearanceActionLogicalTable.TAG)) {

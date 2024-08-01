@@ -1,48 +1,41 @@
 package com.asemicanalytics.config.mapper.dtomapper.kpi;
 
-import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.column.ComputedColumn;
 import com.asemicanalytics.core.kpi.Kpi;
-import com.asemicanalytics.core.kpi.KpiComponent;
-import com.asemicanalytics.core.logicaltable.entity.ActionColumn;
+import com.asemicanalytics.core.logicaltable.entity.ComputedColumn;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
-import com.asemicanalytics.core.logicaltable.entity.FirstAppearanceColumn;
-import com.asemicanalytics.core.logicaltable.entity.SlidingWindowColumn;
-import com.asemicanalytics.core.logicaltable.entity.TotalColumn;
+import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.sql.sql.builder.tokens.Formatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class KpisIndexFilterAppender {
+public class EntityIndexFilterAppender {
   private final int activeDays;
   private final List<Integer> cohortDays;
-  private final Map<String, Column> columns;
+  private final Map<String, EntityProperty> columns;
 
-  public KpisIndexFilterAppender(int activeDays, List<Integer> cohortDays,
-                                 Map<String, Column> columns) {
+  public EntityIndexFilterAppender(int activeDays, List<Integer> cohortDays,
+                                   Map<String, EntityProperty> columns) {
     this.activeDays = activeDays;
     this.cohortDays = cohortDays;
     this.columns = columns;
   }
 
-  private void appendFilter(KpiComponent component, String formula) {
+  public Set<String> getFilters(String formula) {
     var properties = Formatter.extractKeys(formula);
+    var allFilters = new TreeSet<String>();
     for (var propertyId : properties) {
       var column = columns.get(propertyId);
-      if (column instanceof ComputedColumn computedColumn) {
-        appendFilter(component, computedColumn.getFormula());
-      } else if (column instanceof ActionColumn) {
-        component.filters().add(EntityLogicalTable.dailyIndexFilter());
-      } else if (column instanceof SlidingWindowColumn) {
-        component.filters().add(EntityLogicalTable.activeIndexFilter(activeDays));
-      } else if (column instanceof FirstAppearanceColumn) {
-        // totals table
-      } else if (column instanceof TotalColumn) {
-        // totals table
-      } else {
-        throw new IllegalArgumentException("Unknown column type: " + column);
-      }
+      Set<String> filters = switch (column.getType()) {
+        case COMPUTED -> getFilters(((ComputedColumn) column).getFormula());
+        case FIRST_APPEARANCE, LIFETIME -> Set.of();
+        case ACTION -> Set.of(EntityLogicalTable.dailyIndexFilter());
+        case SLIDING_WINDOW -> Set.of(EntityLogicalTable.activeIndexFilter(activeDays));
+      };
+      allFilters.addAll(filters);
     }
+    return allFilters;
   }
 
   public void append(Map<String, Kpi> kpis) {
@@ -62,7 +55,7 @@ public class KpisIndexFilterAppender {
                 component.filters().add(EntityLogicalTable.cohortIndexFilter(cohortDays));
               }
             } else {
-              appendFilter(component, component.select());
+              component.filters().addAll(getFilters(component.select()));
             }
           }
         }

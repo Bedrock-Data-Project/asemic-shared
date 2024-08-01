@@ -84,6 +84,11 @@ public class BigQueryDialect implements Dialect {
   }
 
   @Override
+  public String dateDiff(String from, String to) {
+    return "DATE_DIFF(" + from + ", " + to + ", DAY)";
+  }
+
+  @Override
   public String createTableIfNotExists(TableReference tableReference, List<Column> columns,
                                        Optional<Column> dateColumn) {
 

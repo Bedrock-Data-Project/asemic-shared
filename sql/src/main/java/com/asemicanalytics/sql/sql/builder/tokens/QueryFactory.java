@@ -106,6 +106,10 @@ public class QueryFactory {
     return new EpochDays(days);
   }
 
+  public static Expression dateDiff(Expression from, Expression to) {
+    return new DateDiffExpression(from, to);
+  }
+
   public static Expression function(String functionName, Expression... expressions) {
     return new FunctionExpression(functionName, expressions);
   }

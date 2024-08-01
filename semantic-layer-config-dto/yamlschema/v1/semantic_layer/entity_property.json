@@ -1,0 +1,41 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_properties.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "data_type"
+  ],
+  "properties": {
+    "label": {
+      "type": "string"
+    },
+    "data_type": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/data_type.json"
+    },
+    "description": {
+      "type": "string"
+    },
+    "can_filter": {
+      "type": "boolean"
+    },
+    "can_group_by": {
+      "type": "boolean"
+    },
+    "action_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json"
+    },
+    "sliding_window_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_sliding_window.json"
+    },
+    "lifetime_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_lifetime.json"
+    },
+    "first_appearance_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_first_appearance.json"
+    },
+    "computed_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_computed.json"
+    }
+  },
+  "additionalProperties": false
+}

@@ -85,6 +85,11 @@ public class SnowflakeDialect implements Dialect {
   }
 
   @Override
+  public String dateDiff(String from, String to) {
+    return "DATEDIFF(" + from + ", " + to + ")";
+  }
+
+  @Override
   public String createTableIfNotExists(TableReference tableReference, List<Column> columns,
                                        Optional<Column> dateColumn) {
     throw new UnsupportedOperationException("Not implemented");

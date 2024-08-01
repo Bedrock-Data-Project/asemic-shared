@@ -6,7 +6,7 @@
 
     <groupId>com.asemicanalytics</groupId>
     <artifactId>asemic-shared</artifactId>
-    <version>1.14</version>
+    <version>1.15</version>
     <packaging>pom</packaging>
     <name>Asemic Shared</name>
     <description>Collection for utilities that power up asemic query engine</description>
@@ -93,6 +93,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.central</groupId>

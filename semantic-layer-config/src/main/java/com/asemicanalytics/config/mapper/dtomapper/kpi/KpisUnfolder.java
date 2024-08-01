@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class KpisUnfolder {
   private record KpiIdAndXaxis(String kpiId, String xaxis) {
@@ -19,16 +18,18 @@ public class KpisUnfolder {
   private final PropertyIdRewritter propertyIdRewritter = new PropertyIdRewritter();
 
 
-  public KpisUnfolder(List<KpiDto> kpis, Set<String> propertyIds) {
-    Set<String> kpiIds = kpis.stream().map(KpiDto::getId).collect(Collectors.toSet());
-    for (KpiDto kpi : kpis) {
-      for (String xaxis : kpi.getxAxis()) {
+  public KpisUnfolder(Map<String, KpiDto> kpis, Set<String> propertyIds) {
+    for (var kpiEntry : kpis.entrySet()) {
+      var kpi = kpiEntry.getValue();
+      for (var xaxisEntry : kpi.getxAxis().getAdditionalProperties().entrySet()) {
         var previous = this.kpis.put(
-            new KpiIdAndXaxis(kpi.getId(), xaxis),
-            new UnfoldingKpi(kpi, xaxis, propertyIds, kpiIds));
+            new KpiIdAndXaxis(kpiEntry.getKey(), xaxisEntry.getKey()),
+            new UnfoldingKpi(kpiEntry.getKey(), kpi,
+                xaxisEntry.getKey(), xaxisEntry.getValue(),
+                propertyIds, kpis.keySet()));
         if (previous != null) {
           throw new IllegalArgumentException(
-              "Duplicate kpiId and xaxis: " + kpi.getId() + " " + xaxis);
+              "Duplicate kpiId and xaxis: " + kpiEntry.getKey() + " " + xaxisEntry.getKey());
         }
       }
     }

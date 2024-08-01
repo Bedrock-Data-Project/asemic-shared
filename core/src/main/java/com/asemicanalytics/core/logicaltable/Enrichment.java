@@ -3,7 +3,7 @@ package com.asemicanalytics.core.logicaltable;
 import java.util.List;
 
 public record Enrichment(
-    LogicalTable targetLogicalTable,
+    LogicalTable<?> targetLogicalTable,
     List<EnrichmentColumnPair> enrichmentColumnPairs
 ) {
   public Enrichment {

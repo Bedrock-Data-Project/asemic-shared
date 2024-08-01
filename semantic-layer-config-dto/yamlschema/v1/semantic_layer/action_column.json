@@ -1,30 +1,13 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/action_column.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "id",
     "data_type"
   ],
   "properties": {
-    "id": {
-      "type": "string"
-    },
     "data_type": {
-      "enum": [
-        "NUMBER",
-        "INTEGER",
-        "STRING",
-        "DATE",
-        "DATETIME",
-        "BOOLEAN"
-      ]
-    },
-    "can_filter": {
-      "type": "boolean"
-    },
-    "can_group_by": {
-      "type": "boolean"
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/data_type.json"
     },
     "label": {
       "type": "string"

@@ -1,0 +1,13 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/data_type.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "string",
+  "enum": [
+    "NUMBER",
+    "INTEGER",
+    "STRING",
+    "DATE",
+    "DATETIME",
+    "BOOLEAN"
+  ]
+}

@@ -15,17 +15,23 @@ import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
-import com.asemicanalytics.core.logicaltable.entity.MaterializedColumnFromDate;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnComputedDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnsDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyComputedDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyFirstAppearanceDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyLifetimeDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyTotalDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpisDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.PropertiesDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XAxisDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XaxisOverrideDto;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,126 +45,155 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class EntityConfigLoaderTest {
 
-  private EntityPropertyFirstAppearanceDto registrationColumn(String id) {
-    return new EntityPropertyFirstAppearanceDto(new ColumnDto(
-        id,
-        ColumnDto.DataType.DATE,
+  private EntityPropertyDto registrationColumn() {
+    return new EntityPropertyDto(
+        null,
+        ActionColumnDto.DataType.DATE,
         null,
         null,
         null,
         null,
+        null,
+        null,
+        new EntityPropertyFirstAppearanceDto("source"),
+        null);
+  }
+
+  private EntityPropertyDto lifetimeColumn() {
+    return new EntityPropertyDto(
+        null,
+        ActionColumnDto.DataType.DATE,
+        null,
+        null,
+        null,
+        null,
+        null,
+        new EntityPropertyLifetimeDto("t", null, null, EntityPropertyLifetimeDto.MergeFunction.SUM),
+        null,
+        null);
+
+  }
+
+  private EntityPropertyDto actionColumn() {
+    return new EntityPropertyDto(
+        null,
+        ActionColumnDto.DataType.DATE,
+        null,
+        null,
+        null,
+        new EntityPropertyActionDto(
+            "registration",
+            "{l}",
+            EntityPropertyActionDto.AggregateFunction.SUM,
+            "{l}",
+            null
+        ),
+        null,
+        null,
+        null,
+        null);
+  }
+
+  private EntityPropertyDto slidingWindowColumn(String sourceProperty) {
+    return new EntityPropertyDto(
+        null,
+        ActionColumnDto.DataType.DATE,
+        null,
+        null,
+        null,
+        null,
+        new EntityPropertySlidingWindowDto(
+            sourceProperty,
+            EntityPropertySlidingWindowDto.SlidingWindowFunction.AVG,
+            -5,
+            0
+        ),
+        null,
+        null,
+        null);
+  }
+
+  private EntityPropertyDto computedColumn() {
+    return new EntityPropertyDto(
+        null,
+        ActionColumnDto.DataType.DATE,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        new EntityPropertyComputedDto("source"));
+  }
+
+  private KpiDto kpi(String select, Optional<String> where, List<String> xaxis) {
+    var xaxisDto = new XAxisDto();
+    xaxis.forEach(x -> xaxisDto.setAdditionalProperty(x, new XaxisOverrideDto(null)));
+
+    return new KpiDto(
+        "label",
+        "description",
+        select,
+        where.orElse(null),
+        null,
+        null,
+        xaxisDto,
         null
-    ),
-        "source"
-    );
-  }
-
-  private EntityPropertyTotalDto totalColumn(String id) {
-    return new EntityPropertyTotalDto(new ColumnDto(
-        id,
-        ColumnDto.DataType.DATE,
-        null,
-        null,
-        null,
-        null,
-        null),
-        "t", EntityPropertyTotalDto.Function.SUM
-    );
-  }
-
-  private EntityPropertyActionDto userActionColumn(String id) {
-    return new EntityPropertyActionDto(new ColumnDto(
-        id,
-        ColumnDto.DataType.DATE,
-        null,
-        null,
-        null,
-        null,
-        null),
-        "registration", "l", "d", "c", true
-    );
-  }
-
-  private EntityPropertySlidingWindowDto slidingWindowColumn(String id, String sourceProperty) {
-    return new EntityPropertySlidingWindowDto(new ColumnDto(
-        id,
-        ColumnDto.DataType.DATE,
-        null,
-        null,
-        null,
-        null,
-        null),
-        sourceProperty, EntityPropertySlidingWindowDto.Function.AVG, -5, 0
-    );
-  }
-
-  private ColumnComputedDto computedColumn(String id) {
-    return new ColumnComputedDto(new ColumnDto(
-        id,
-        ColumnDto.DataType.STRING,
-        null,
-        null,
-        null,
-        null,
-        null),
-        "source"
     );
   }
 
   private EntityLogicalTable fromColumnsAndKpis(List<EntityPropertiesDto> columnsDtos,
                                                 List<EntityKpisDto> kpisDtos) throws IOException {
 
-    var firstAppearanceActionLogicalTable = new FirstAppearanceActionLogicalTable(
-        "registration", "", Optional.empty(),
-        TableReference.parse("app.registration"),
-        new Columns(new LinkedHashMap<>(Map.of(
-            "date_",
-            Column.ofHidden("date_", DataType.DATE).withTag(TemporalLogicalTable.DATE_COLUMN_TAG),
-            "event_timestamp", Column.ofHidden("event_timestamp", DataType.DATETIME).withTag(
-                EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG),
-            "unique_id", Column.ofHidden("unique_id", DataType.STRING)
-                .withTag(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)
-        ))),
-        Map.of(), Set.of(FirstAppearanceActionLogicalTable.TAG));
-    var activityLogicalTable = new ActivityLogicalTable(
-        "activity", "", Optional.empty(),
-        TableReference.parse("app.activity"),
-        new Columns(new LinkedHashMap<>(Map.of(
-            "date_",
-            Column.ofHidden("date_", DataType.DATE).withTag(TemporalLogicalTable.DATE_COLUMN_TAG),
-            "event_timestamp", Column.ofHidden("event_timestamp", DataType.DATETIME).withTag(
-                EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG),
-            "unique_id", Column.ofHidden("unique_id", DataType.STRING)
-                .withTag(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)
-        ))),
-        Map.of(), Set.of(ActivityLogicalTable.TAG));
+    var firstAppearanceActionLogicalTable = new ActionLogicalTableDto(
+        "app.registration", List.of(FirstAppearanceActionLogicalTable.TAG),
+        null, null,
+        new ColumnsDto() {{
+          setAdditionalProperty("date_",
+              new ActionColumnDto(ActionColumnDto.DataType.DATE, null, null,
+                  List.of(TemporalLogicalTable.DATE_COLUMN_TAG)));
+          setAdditionalProperty("event_timestamp",
+              new ActionColumnDto(ActionColumnDto.DataType.DATETIME, null, null,
+                  List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG)));
+            setAdditionalProperty("unique_id",
+                new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
+                    List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
+        }}, List.of());
+
+    var activityLogicalTable = new ActionLogicalTableDto(
+        "app.activity", List.of(ActivityLogicalTable.TAG),
+        null, null,
+        new ColumnsDto() {{
+          setAdditionalProperty("date_",
+              new ActionColumnDto(ActionColumnDto.DataType.DATE, null, null,
+                  List.of(TemporalLogicalTable.DATE_COLUMN_TAG)));
+          setAdditionalProperty("event_timestamp",
+              new ActionColumnDto(ActionColumnDto.DataType.DATETIME, null, null,
+                  List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG)));
+            setAdditionalProperty("unique_id",
+                new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
+                    List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
+        }}, List.of());
 
     var configLoader = new ConfigLoader(new TestConfigParser(
-        Map.of(),
-        Map.of(),
-        Map.of(),
-        Optional.of(new EntityDto(
-            new EntityConfigDto("{app_id}.table"),
-            columnsDtos,
-            kpisDtos,
-            Map.of("registration", firstAppearanceActionLogicalTable, "activity",
-                activityLogicalTable)))));
+        Map.of("registration", firstAppearanceActionLogicalTable, "activity", activityLogicalTable),
+        columnsDtos, kpisDtos));
 
-    return configLoader.parse("app").getEntityLogicalTable().get();
+    return configLoader.parse("app").getEntityLogicalTable();
   }
 
   @Test
   void shouldFail_whenNoKpis() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(registrationColumn("r1")),
-            List.of(userActionColumn("ua1")),
-            List.of(),
-            List.of(totalColumn("t1")),
-            List.of(computedColumn("c1"))
-        )),
-        List.of(new EntityKpisDto("kpis", List.of(),
-            List.of(), List.of())));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(new KpisDto())));
     assertEquals(0, ds.getKpis().size());
   }
 
@@ -172,138 +207,84 @@ class EntityConfigLoaderTest {
       "matching but invalid bracket order, SUM({property.r1}))(",
   })
   void shouldFail_whenAggregationIsMalformed(String testType, String formula) {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("r2", registrationColumn());
+    propertiesDto.setAdditionalProperty("r3", registrationColumn());
+
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi", kpi(formula, Optional.empty(), List.of("date")));
     assertThrows(IllegalArgumentException.class, () ->
             fromColumnsAndKpis(
-                List.of(new EntityPropertiesDto(
-                    List.of(
-                        registrationColumn("r1"),
-                        registrationColumn("r2"),
-                        registrationColumn("r3")),
-                    List.of(),
-                    List.of(),
-                    List.of(),
-                    List.of()
-                )),
-                List.of(new EntityKpisDto("kpis", List.of(
-                    new KpiDto(
-                        "kpi",
-                        "label",
-                        "description",
-                        "category",
-                        true,
-                        formula,
-                        null,
-                        null,
-                        List.of("date"),
-                        null,
-                        null)),
-                    List.of(), List.of()))),
+                List.of(new EntityPropertiesDto(propertiesDto)),
+                List.of(new EntityKpisDto(kpisDto))),
         testType
     );
   }
 
   @Test
-  void shouldFail_whenDuplicatePropertiesOfSameTypeInSameGroup() {
-    assertThrows(IllegalArgumentException.class, () -> {
-      fromColumnsAndKpis(List.of(
-              new EntityPropertiesDto(List.of(
-                  registrationColumn("c1"),
-                  registrationColumn("c1")
-              ),
-                  List.of(),
-                  List.of(),
-                  List.of(),
-                  List.of()
-              )),
-          List.of());
-    });
-  }
-
-  @Test
-  void shouldFail_whenDuplicatePropertiesOfDifferentTypeInSameGroup() {
-    assertThrows(IllegalArgumentException.class, () ->
-        fromColumnsAndKpis(List.of(
-                new EntityPropertiesDto(
-                    List.of(registrationColumn("c1")),
-                    List.of(),
-                    List.of(),
-                    List.of(),
-                    List.of(computedColumn("c1")))),
-            List.of()));
-  }
-
-  @Test
   void shouldFail_whenDuplicatePropertiesOfDifferentTypeInDifferentGroups() {
+    var propertiesDto1 = new PropertiesDto();
+    propertiesDto1.setAdditionalProperty("r1", registrationColumn());
+
+    var propertiesDto2 = new PropertiesDto();
+    propertiesDto2.setAdditionalProperty("r1", computedColumn());
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(List.of(
-                new EntityPropertiesDto(
-                    List.of(registrationColumn("c1")),
-                    List.of(),
-                    List.of(),
-                    List.of(),
-                    List.of()),
-                new EntityPropertiesDto(
-                    List.of(),
-                    List.of(),
-                    List.of(),
-                    List.of(),
-                    List.of(computedColumn("c1")))),
+                new EntityPropertiesDto(propertiesDto1),
+                new EntityPropertiesDto(propertiesDto2)),
             List.of()));
   }
 
   @Test
   void shouldLoadProperties_whenNoDuplicatesInDifferentGroups() throws IOException {
-    var ds = fromColumnsAndKpis(List.of(
-            new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(), // TODO
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            ),
+    var propertiesDto1 = new PropertiesDto();
+    propertiesDto1.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto1.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto1.setAdditionalProperty("sl1", slidingWindowColumn("ua1"));
+    propertiesDto1.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto1.setAdditionalProperty("c1", computedColumn());
 
-            new EntityPropertiesDto(
-                List.of(registrationColumn("r2")),
-                List.of(userActionColumn("ua2")),
-                List.of(), // TODO
-                List.of(totalColumn("t2")),
-                List.of(computedColumn("c2"))
-            )
+    var propertiesDto2 = new PropertiesDto();
+    propertiesDto2.setAdditionalProperty("r2", registrationColumn());
+    propertiesDto2.setAdditionalProperty("ua2", actionColumn());
+    propertiesDto2.setAdditionalProperty("sl2", slidingWindowColumn("ua2"));
+    propertiesDto2.setAdditionalProperty("t2", lifetimeColumn());
+    propertiesDto2.setAdditionalProperty("c2", computedColumn());
+
+    var ds = fromColumnsAndKpis(List.of(
+            new EntityPropertiesDto(propertiesDto1),
+            new EntityPropertiesDto(propertiesDto2)
         ),
         List.of());
 
-    assertEquals(16, ds.getColumns().getColumns().size());
+    assertEquals(17, ds.getColumns().getColumns().size());
     assertEquals(Set.of(
-            "r1", "r2", "ua1", "ua2", "t1", "t2", "c1", "c2",
-            "registration_date", "date_", "unique_id", "last_login_date", "dau_date", "cohort_day",
+            "r1", "r2", "ua1", "ua2", "t1", "t2", "c1", "c2", "sl1", "sl2",
+            "first_appearance_date", "date_", "unique_id", "last_login_date", "cohort_day",
             "days_since_last_active", "cohort_size"),
         ds.getColumns().getColumns().keySet());
   }
 
   @Test
   void shouldLoadKpi_whenItDependsOnProperties() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("sl1", slidingWindowColumn("ua1"));
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({property.r1}) + SUM({property.ua1}) + SUM({property.t1}) + SUM({property.c1})",
+            Optional.empty(), List.of("date")));
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(registrationColumn("r1")),
-            List.of(userActionColumn("ua1")),
-            List.of(),
-            List.of(totalColumn("t1")),
-            List.of(computedColumn("c1"))
-        )),
-        List.of(new EntityKpisDto("kpis", List.of(
-            new KpiDto(
-                "kpi",
-                "label",
-                "description",
-                "category",
-                true,
-                "SUM({property.r1}) + SUM({property.ua1}) + SUM({property.t1}) + SUM({property.c1})",
-                null,
-                null,
-                List.of("date"),
-                null,
-                null)),
-            List.of(), List.of())));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
     assertEquals(1, ds.kpi("kpi").xaxisConfig().size());
     assertEquals(
         "{component0} + {component1} + {component2} + {component3}"
@@ -322,28 +303,17 @@ class EntityConfigLoaderTest {
 
   @Test
   void shouldLoadBothAxisKpi_whenItDependsOnProperties() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({property.ua1})",
+            Optional.empty(), List.of("date", "cohort_day")));
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(),
-            List.of(userActionColumn("ua1")),
-            List.of(),
-            List.of(),
-            List.of()
-        )),
-        List.of(new EntityKpisDto("kpis", List.of(
-            new KpiDto(
-                "kpi",
-                "label",
-                "description",
-                "category",
-                true,
-                "SUM({property.ua1})",
-                null,
-                null,
-                List.of("date", "cohort_day"),
-                null,
-                null)),
-            List.of(), List.of())));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
     assertEquals(2, ds.kpi("kpi").xaxisConfig().size());
     assertEquals(
         "{component0}"
@@ -359,46 +329,26 @@ class EntityConfigLoaderTest {
     assertEquals(Map.of(
         "component0",
         new KpiComponent("SUM({ua1})", new TreeSet<>(Set.of(
-            "{cohort_day} IN (0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+            "{cohort_day} IN (1, 2)")))
     ), ds.kpi("kpi").xaxisConfig().get("cohort_day").components());
   }
 
   @Test
   void shouldLoadBothAxisKpi_whenItDependsOnKpiBothAxis() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi1",
+        kpi("{kpi.kpi2}",
+            Optional.empty(), List.of("date", "cohort_day")));
+    kpisDto.setAdditionalProperty("kpi2",
+        kpi("SUM({property.ua1})",
+            Optional.empty(), List.of("date", "cohort_day")));
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(),
-            List.of(userActionColumn("ua1")),
-            List.of(),
-            List.of(),
-            List.of()
-        )),
-        List.of(new EntityKpisDto("kpis", List.of(
-            new KpiDto(
-                "kpi1",
-                "label",
-                "description",
-                "category",
-                true,
-                "{kpi.kpi2}",
-                null,
-                null,
-                List.of("date", "cohort_day"),
-                null,
-                null),
-            new KpiDto(
-                "kpi2",
-                "label",
-                "description",
-                "category",
-                true,
-                "SUM({property.ua1})",
-                null,
-                null,
-                List.of("date", "cohort_day"),
-                null,
-                null)),
-            List.of(), List.of())));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
     assertEquals(2, ds.kpi("kpi1").xaxisConfig().size());
     assertEquals(
         "{component0}"
@@ -414,7 +364,7 @@ class EntityConfigLoaderTest {
     assertEquals(Map.of(
         "component0",
         new KpiComponent("SUM({ua1})", new TreeSet<>(Set.of(
-            "{cohort_day} IN (0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+            "{cohort_day} IN (1, 2)")))
     ), ds.kpi("kpi1").xaxisConfig().get("cohort_day").components());
 
     assertEquals(2, ds.kpi("kpi2").xaxisConfig().size());
@@ -431,37 +381,24 @@ class EntityConfigLoaderTest {
     assertEquals(Map.of(
         "component0",
         new KpiComponent("SUM({ua1})", new TreeSet<>(Set.of(
-            "{cohort_day} IN (0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+            "{cohort_day} IN (1, 2)")))
     ), ds.kpi("kpi2").xaxisConfig().get("cohort_day").components());
   }
 
   @Test
   void shouldLoadKpi_whenItReferencesPropertyInFilter() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("r2", actionColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({property.r1})",
+            Optional.of("{property.r1} = {property.r2}"), List.of("date")));
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(
-                registrationColumn("r1"),
-                registrationColumn("r2")
-            ),
-            List.of(),
-            List.of(),
-            List.of(),
-            List.of()
-        )),
-        List.of(new EntityKpisDto("kpis", List.of(
-            new KpiDto(
-                "kpi",
-                "label",
-                "description",
-                "category",
-                true,
-                "SUM({property.r1})",
-                "{property.r1} = {property.r2}",
-                null,
-                List.of("date"),
-                null,
-                null)),
-            List.of(), List.of())));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
     assertEquals(1, ds.kpi("kpi").xaxisConfig().size());
     assertEquals(
         "{component0}"
@@ -474,41 +411,21 @@ class EntityConfigLoaderTest {
 
   @Test
   void shouldLoadKpi_whenColumnIsSlidingWindow() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("sw1", slidingWindowColumn("ua1"));
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi1",
+        kpi("{kpi.kpi2}",
+            Optional.of("{property.ua1} = 1"), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi2",
+        kpi("SUM({property.sw1})",
+            Optional.of("{property.sw1} = 1"), List.of("date")));
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(
-            ),
-            List.of(userActionColumn("ua1")),
-            List.of(slidingWindowColumn("sw1", "ua1")),
-            List.of(),
-            List.of()
-        )),
-        List.of(new EntityKpisDto("kpis", List.of(
-            new KpiDto(
-                "kpi1",
-                "label",
-                "description",
-                "category",
-                true,
-                "{kpi.kpi2}",
-                "{property.ua1} = 1",
-                null,
-                List.of("date"),
-                null,
-                null),
-            new KpiDto(
-                "kpi2",
-                "label",
-                "description",
-                "category",
-                true,
-                "SUM({property.sw1})",
-                "{property.sw1} = 1",
-                null,
-                List.of("date"),
-                null,
-                null)),
-            List.of(), List.of())));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
     assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
     assertEquals(
         "{component0}"
@@ -531,30 +448,16 @@ class EntityConfigLoaderTest {
 
   @Test
   void shouldLoadKpi_whenCohortKpi() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi1",
+        kpi("AVG({property.r1})",
+            Optional.empty(), List.of("cohort_day")));
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(
-                registrationColumn("r1")
-            ),
-            List.of(),
-            List.of(),
-            List.of(),
-            List.of()
-        )),
-        List.of(new EntityKpisDto("kpis", List.of(
-            new KpiDto(
-                "kpi1",
-                "label",
-                "description",
-                "category",
-                true,
-                "AVG({property.r1})",
-                null,
-                null,
-                List.of("cohort_day"),
-                null,
-                null)),
-            List.of(), List.of())));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
     assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
     assertEquals(
         "{component0}"
@@ -562,60 +465,29 @@ class EntityConfigLoaderTest {
     assertEquals(Map.of(
         "component0",
         new KpiComponent("AVG({r1})", new TreeSet<>(Set.of("{cohort_day} IN " +
-            "(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+            "(1, 2)")))
     ), ds.kpi("kpi1").xaxisConfig().get("cohort_day").components());
   }
 
   @Test
   void shouldLoadKpi_whenDailyCohortedKpi() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi1",
+        kpi("SUM({property.r1})",
+            Optional.of("{property.cohort_day} = 1"), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi2",
+        kpi("SUM({property.r1})",
+            Optional.of("{property.cohort_day} = 91"), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi3",
+        kpi("SUM({property.r1})",
+            Optional.of("{property.cohort_day} > 3"), List.of("date")));
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(
-                registrationColumn("r1")
-            ),
-            List.of(),
-            List.of(),
-            List.of(),
-            List.of()
-        )),
-        List.of(new EntityKpisDto("kpis", List.of(
-            new KpiDto(
-                "kpi1",
-                "label",
-                "description",
-                "category",
-                true,
-                "SUM({property.r1})",
-                "{property.cohort_day} = 1",
-                null,
-                List.of("date"),
-                null,
-                null),
-            new KpiDto(
-                "kpi2",
-                "label",
-                "description",
-                "category",
-                true,
-                "SUM({property.r1})",
-                "{property.cohort_day} = 91",
-                null,
-                List.of("date"),
-                null,
-                null),
-            new KpiDto(
-                "kpi3",
-                "label",
-                "description",
-                "category",
-                true,
-                "SUM({property.r1})",
-                "{property.cohort_day} > 3",
-                null,
-                List.of("date"),
-                null,
-                null)),
-            List.of(), List.of())));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
     assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
     assertEquals(
         "{component0}"
@@ -633,7 +505,7 @@ class EntityConfigLoaderTest {
     assertEquals(Map.of(
         "component0",
         new KpiComponent("SUM({r1})", new TreeSet<>(Set.of("{cohort_day} = 91",
-            "{cohort_day} IN (0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360)")))
+            "{cohort_day} IN (1, 2)")))
     ), ds.kpi("kpi2").xaxisConfig().get("date").components());
 
     assertEquals(1, ds.kpi("kpi3").xaxisConfig().size());
@@ -648,110 +520,64 @@ class EntityConfigLoaderTest {
 
   @Test
   void shouldFail_whenItReferencesNonExistingPropertyInFilter() {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({property.r1})",
+            Optional.of("{property.r2}"), List.of("date")));
+
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(
-            List.of(new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(),
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            )),
-            List.of(new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({property.r1})",
-                    "{property.r2}",
-                    null,
-                    List.of("date"),
-                    null,
-                    null)),
-                List.of(), List.of()))));
+            List.of(new EntityPropertiesDto(propertiesDto)),
+            List.of(new EntityKpisDto(kpisDto))));
   }
 
   @Test
   void shouldFail_whenItDependsNonExistingProperty() {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({property.r10})",
+            Optional.empty(), List.of("date")));
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(
-            List.of(new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(),
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            )),
-            List.of(new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({property.r10})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)),
-                List.of(), List.of()))));
+            List.of(new EntityPropertiesDto(propertiesDto)),
+            List.of(new EntityKpisDto(kpisDto))));
   }
 
   @Test
   void shouldLoadKpi_whenItDependsOnAnotherKpis() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("r2", registrationColumn());
+    propertiesDto.setAdditionalProperty("r3", registrationColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi1",
+        kpi("{kpi.kpi2} + {kpi.kpi2} + {kpi.kpi3} - SUM({property.r3})",
+            Optional.empty(), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi2",
+        kpi("AVG({property.r2})",
+            Optional.empty(), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi3",
+        kpi("MIN({property.r2}) + MAX({property.r3})",
+            Optional.empty(), List.of("date")));
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(registrationColumn("r1"), registrationColumn("r2"), registrationColumn("r3")),
-            List.of(),
-            List.of(),
-            List.of(),
-            List.of()
-        )),
-        List.of(
-            new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi1",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "{kpi.kpi2} + {kpi.kpi2} + {kpi.kpi3} - SUM({property.r3})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null),
-                new KpiDto(
-                    "kpi2",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "AVG({property.r2})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)
-            ), List.of(), List.of()),
-            new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi3",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "MIN({property.r2}) + MAX({property.r3})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)
-            ), List.of(), List.of())
-        ));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
     assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
     assertEquals(
         "({component1}) + ({component1}) + ({component2} + {component3}) - {component0}"
@@ -786,54 +612,25 @@ class EntityConfigLoaderTest {
 
   @Test
   void shouldLoadKpi_whenItDependsOnAnotherKpisWithFilters() throws IOException {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("r2", registrationColumn());
+    propertiesDto.setAdditionalProperty("r3", registrationColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi1",
+        kpi("{kpi.kpi2} + SUM({property.r1})",
+            Optional.of("F1"), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi2",
+        kpi("AVG({property.r1}) + {kpi.kpi3} + {kpi.kpi3}",
+            Optional.of("F2"), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi3",
+        kpi("MAX({property.r1})",
+            Optional.of("F3"), List.of("date")));
+
     var ds = fromColumnsAndKpis(
-        List.of(new EntityPropertiesDto(
-            List.of(registrationColumn("r1"), registrationColumn("r2"), registrationColumn("r3")),
-            List.of(),
-            List.of(),
-            List.of(),
-            List.of()
-        )),
-        List.of(
-            new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi1",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "{kpi.kpi2} + SUM({property.r1})",
-                    "F1",
-                    null,
-                    List.of("date"),
-                    null,
-                    null),
-                new KpiDto(
-                    "kpi2",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "AVG({property.r1}) + {kpi.kpi3} + {kpi.kpi3}",
-                    "F2",
-                    null,
-                    List.of("date"),
-                    null,
-                    null),
-                new KpiDto(
-                    "kpi3",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "MAX({property.r1})",
-                    "F3",
-                    null,
-                    List.of("date"),
-                    null,
-                    null)
-            ), List.of(), List.of())
-        ));
+        List.of(new EntityPropertiesDto(propertiesDto)),
+        List.of(new EntityKpisDto(kpisDto)));
 
     assertEquals(1, ds.kpi("kpi1").xaxisConfig().size());
     assertEquals(
@@ -872,200 +669,125 @@ class EntityConfigLoaderTest {
 
   @Test
   void shouldFail_whenKpiLoopOf1() {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({kpi.kpi})",
+            Optional.empty(), List.of("date")));
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(
-            List.of(new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(),
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            )),
-            List.of(new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({kpi.kpi})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)),
-                List.of(), List.of()))));
+            List.of(new EntityPropertiesDto(propertiesDto)),
+            List.of(new EntityKpisDto(kpisDto))));
   }
 
   @Test
   void shouldFail_whenItDependsOnNonExistingKpi() {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({kpi.kpiNonExisting})",
+            Optional.empty(), List.of("date")));
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(
-            List.of(new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(),
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            )),
-            List.of(new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({kpi.kpiNonExisting})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)),
-                List.of(), List.of()))));
+            List.of(new EntityPropertiesDto(propertiesDto)),
+            List.of(new EntityKpisDto(kpisDto))));
   }
 
   @Test
   void shouldFail_whenItDependsOnInvalidPrefix() {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({invalid.kpiNonExisting})",
+            Optional.empty(), List.of("date")));
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(
-            List.of(new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(),
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            )),
-            List.of(new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({invalid.kpiNonExisting})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)),
-                List.of(), List.of()))));
+            List.of(new EntityPropertiesDto(propertiesDto)),
+            List.of(new EntityKpisDto(kpisDto))));
   }
 
   @Test
   void shouldFail_whenItDependsOnNoPrefix() {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi",
+        kpi("SUM({kpiNonExisting})",
+            Optional.empty(), List.of("date")));
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(
-            List.of(new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(),
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            )),
-            List.of(new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({kpiNonExisting})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)),
-                List.of(), List.of()))));
+            List.of(new EntityPropertiesDto(propertiesDto)),
+            List.of(new EntityKpisDto(kpisDto))));
   }
 
   @Test
   void shouldFail_whenKpiLoopOf2() {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi1",
+        kpi("SUM({kpi.kpi2})",
+            Optional.empty(), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi2",
+        kpi("SUM({kpi.kpi1})",
+            Optional.empty(), List.of("date")));
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(
-            List.of(new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(),
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            )),
-            List.of(new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi1",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({kpi.kpi2})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null),
-                new KpiDto(
-                    "kpi2",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({kpi.kpi1})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)),
-                List.of(), List.of()))));
+            List.of(new EntityPropertiesDto(propertiesDto)),
+            List.of(new EntityKpisDto(kpisDto))));
   }
 
   @Test
   void shouldFail_whenKpiLoopOf3() {
+    var propertiesDto = new PropertiesDto();
+    propertiesDto.setAdditionalProperty("r1", registrationColumn());
+    propertiesDto.setAdditionalProperty("ua1", actionColumn());
+    propertiesDto.setAdditionalProperty("t1", lifetimeColumn());
+    propertiesDto.setAdditionalProperty("c1", computedColumn());
+
+    var kpisDto = new KpisDto();
+    kpisDto.setAdditionalProperty("kpi1",
+        kpi("SUM({kpi.kpi2})",
+            Optional.empty(), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi2",
+        kpi("SUM({kpi.kpi3})",
+            Optional.empty(), List.of("date")));
+    kpisDto.setAdditionalProperty("kpi3",
+        kpi("SUM({kpi.kpi1})",
+            Optional.empty(), List.of("date")));
+
     assertThrows(IllegalArgumentException.class, () ->
         fromColumnsAndKpis(
-            List.of(new EntityPropertiesDto(
-                List.of(registrationColumn("r1")),
-                List.of(userActionColumn("ua1")),
-                List.of(),
-                List.of(totalColumn("t1")),
-                List.of(computedColumn("c1"))
-            )),
-            List.of(new EntityKpisDto("kpis", List.of(
-                new KpiDto(
-                    "kpi1",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({kpi.kpi2})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null),
-                new KpiDto(
-                    "kpi2",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({kpi.kpi3})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null),
-                new KpiDto(
-                    "kpi3",
-                    "label",
-                    "description",
-                    "category",
-                    true,
-                    "SUM({kpi.kpi1})",
-                    null,
-                    null,
-                    List.of("date"),
-                    null,
-                    null)),
-                List.of(), List.of()))));
+            List.of(new EntityPropertiesDto(propertiesDto)),
+            List.of(new EntityKpisDto(kpisDto))));
   }
 
 }

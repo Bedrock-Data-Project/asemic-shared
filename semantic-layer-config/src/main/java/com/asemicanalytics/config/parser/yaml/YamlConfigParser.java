@@ -3,10 +3,7 @@ package com.asemicanalytics.config.parser.yaml;
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.config.parser.EntityDto;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import com.asemicanalytics.core.logicaltable.entity.MaterializedColumnRepository;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.CustomDailyLogicalTableDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.StaticLogicalTableDto;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -58,23 +55,12 @@ public class YamlConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, StaticLogicalTableDto> parseStaticLogicalTables(String appId) {
-    // TODO implement
-    return readTopLevelLogicalTables(appId, StaticLogicalTableDto.class, staticDir(appId));
-  }
-
-  @Override
   public Map<String, ActionLogicalTableDto> parseActionLogicalTables(String appId) {
     return readTopLevelLogicalTables(appId, ActionLogicalTableDto.class, actionsDir(appId));
   }
 
   @Override
-  public Map<String, CustomDailyLogicalTableDto> parseCustomDailyLogicalTables(String appId) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Optional<EntityDto> parseEntityLogicalTable(
+  public EntityDto parseEntityLogicalTable(
       String appId, Map<String, ActionLogicalTable> userActionLogicalTables) {
     return new EntityLogicalTableParser(yamlFileLoader)
         .parse(propertiesDir(appId), kpisDir(appId), userActionLogicalTables);

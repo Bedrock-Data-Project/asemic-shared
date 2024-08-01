@@ -2,7 +2,6 @@ package com.asemicanalytics.config.parser.yaml;
 
 import com.asemicanalytics.config.parser.EntityDto;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import com.asemicanalytics.core.logicaltable.entity.MaterializedColumnRepository;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
@@ -52,11 +51,11 @@ public class EntityLogicalTableParser {
     return kpis;
   }
 
-  public Optional<EntityDto> parse(
+  public EntityDto parse(
       Path propertiesPath, Path kpisPath, Map<String, ActionLogicalTable> actionLogicalTables) {
 
     if (!propertiesPath.toFile().exists()) {
-      return Optional.empty();
+      throw new IllegalArgumentException("entity requires properties directory");
     }
 
     var configPath = propertiesPath.getParent().resolve(CONFIG_FILE);
@@ -71,15 +70,15 @@ public class EntityLogicalTableParser {
     }
 
     if (!kpisPath.toFile().exists() || kpisPath.toFile().isFile()) {
-      throw new IllegalArgumentException("UserWide requires kpis directory");
+      throw new IllegalArgumentException("Entity requires kpis directory");
     }
 
-    return Optional.of(new EntityDto(
+    return new EntityDto(
         configDto,
         loadProperties(propertiesPath),
         loadKpis(kpisPath),
         actionLogicalTables
-    ));
+    );
   }
 
 }

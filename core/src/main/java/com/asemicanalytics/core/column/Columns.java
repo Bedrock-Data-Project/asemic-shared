@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.SequencedMap;
 import java.util.function.Predicate;
 
-public class Columns implements Iterable<Column> {
-  private final SequencedMap<String, Column> columns;
+public class Columns<T extends Column> implements Iterable<T> {
+  private final SequencedMap<String, T> columns;
 
-  public Columns(SequencedMap<String, Column> columns) {
+  public Columns(SequencedMap<String, T> columns) {
     this.columns = Collections.unmodifiableSequencedMap(columns);
 
     if (columns.isEmpty()) {
@@ -19,11 +19,11 @@ public class Columns implements Iterable<Column> {
     }
   }
 
-  public SequencedMap<String, Column> getColumns() {
+  public SequencedMap<String, T> getColumns() {
     return columns;
   }
 
-  public Column column(String id) {
+  public T column(String id) {
     if (!hasColumn(id)) {
       throw new IllegalArgumentException("No column named " + id);
     }
@@ -41,20 +41,30 @@ public class Columns implements Iterable<Column> {
         .findFirst();
   }
 
+  public Columns<T> getColumnsByTag(String tag) {
+    return filter(c -> c.hasTag(tag));
+  }
+
   public String getColumnIdByTag(String tag) {
     return getColumnIdByTagIfExists(tag)
         .orElseThrow(() -> new IllegalArgumentException("No column with tag " + tag));
   }
 
-  public Columns filter(Predicate<Column> predicate) {
-    return new Columns(columns.entrySet().stream()
+  public Columns<T> filter(Predicate<T> predicate) {
+    return new Columns<>(columns.entrySet().stream()
         .filter(entry -> predicate.test(entry.getValue()))
         .collect(LinkedHashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()),
             LinkedHashMap::putAll));
   }
 
   @Override
-  public Iterator<Column> iterator() {
+  public Iterator<T> iterator() {
     return columns.values().iterator();
+  }
+
+  public Columns<T> add(Columns<T> columns) {
+    SequencedMap<String, T> merged = new LinkedHashMap<>(this.columns);
+    merged.putAll(columns.columns);
+    return new Columns(merged);
   }
 }

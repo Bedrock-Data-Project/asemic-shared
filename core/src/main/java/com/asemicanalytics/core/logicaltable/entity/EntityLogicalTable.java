@@ -5,7 +5,6 @@ import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrains;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.column.ComputedColumn;
 import com.asemicanalytics.core.kpi.Kpi;
 import com.asemicanalytics.core.logicaltable.MaterializedIndexTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
@@ -19,12 +18,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class EntityLogicalTable extends TemporalLogicalTable {
-  public static final String FIRST_APPEARANCE_DATE_COLUMN = "registration_date";
+public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
+  public static final String FIRST_APPEARANCE_DATE_COLUMN = "first_appearance_date";
   public static final String COHORT_DAY_COLUMN = "cohort_day";
   public static final String DAYS_SINCE_LAST_ACTIVE = "days_since_last_active";
   public static final String COHORT_SIZE_COLUMN = "cohort_size";
-  public static final String DAU_DATE = "dau_date";
   public static final String LAST_LOGIN_DATE_COLUMN = "last_login_date";
 
   private final FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable;
@@ -36,7 +34,7 @@ public class EntityLogicalTable extends TemporalLogicalTable {
   private final List<Integer> cohortTableDays;
 
   public EntityLogicalTable(String baseTable,
-                            Optional<Columns> columns,
+                            Optional<Columns<EntityProperty>> columns,
                             FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
                             ActivityLogicalTable activityLogicalTable,
                             int activityTableDays,
@@ -98,8 +96,8 @@ public class EntityLogicalTable extends TemporalLogicalTable {
     );
   }
 
-  public static Columns withBaseColumns(
-      Optional<Columns> columns,
+  public static Columns<EntityProperty> withBaseColumns(
+      Optional<Columns<EntityProperty>> columns,
       FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
       ActivityLogicalTable activityLogicalTable) {
 
@@ -127,8 +125,9 @@ public class EntityLogicalTable extends TemporalLogicalTable {
                 true,
                 Set.of()
             ),
-            "{EPOCH_DAYS(" + firstAppearanceActionLogicalTable.getDateColumn().getId()
-                + ")} - {EPOCH_DAYS(" + FIRST_APPEARANCE_DATE_COLUMN + ")}"
+            "{DATE_DIFF(" + FIRST_APPEARANCE_DATE_COLUMN + ", "
+                + firstAppearanceActionLogicalTable.getDateColumn().getId()
+                + ")}"
         ),
         new ComputedColumn(
             new Column(
@@ -142,23 +141,7 @@ public class EntityLogicalTable extends TemporalLogicalTable {
             ),
             "1"
         ),
-        new ActionColumn(
-            new Column(
-                DAU_DATE,
-                DataType.DATE,
-                "DAU Date",
-                Optional.of("Helper column for last_login_date"),
-                false,
-                false,
-                Set.of()
-            ),
-            activityLogicalTable,
-            Optional.empty(),
-            "MAX({" + activityLogicalTable.getDateColumn().getId() + "})",
-            null,
-            false
-        ),
-        new TotalColumn(
+        new LifetimeColumn(
             new Column(
                 LAST_LOGIN_DATE_COLUMN,
                 DataType.DATE,
@@ -168,8 +151,14 @@ public class EntityLogicalTable extends TemporalLogicalTable {
                 true,
                 Set.of()
             ),
-            DAU_DATE,
-            "last_value"
+            new ActionColumn(
+                Column.ofHidden(LAST_LOGIN_DATE_COLUMN + "__inner", DataType.DATE),
+                activityLogicalTable,
+                Optional.empty(),
+                "{" + activityLogicalTable.getDateColumnId() + "}",
+                ActionColumn.AggregateFunction.MAX,
+                null),
+            LifetimeColumn.MergeFunction.LAST_VALUE
         ),
         new ComputedColumn(
             new Column(
@@ -181,25 +170,24 @@ public class EntityLogicalTable extends TemporalLogicalTable {
                 false,
                 Set.of()
             ),
-            "{EPOCH_DAYS("
-                + firstAppearanceActionLogicalTable.getDateColumnId() + ")} - {EPOCH_DAYS("
-                + LAST_LOGIN_DATE_COLUMN + ")}"
-        )
+            "{DATE_DIFF("
+                + firstAppearanceActionLogicalTable.getDateColumnId() + ", "
+                + LAST_LOGIN_DATE_COLUMN + ")}")
     );
 
     var mergedColumns = columns
-        .map(c -> new LinkedHashMap(c.getColumns()))
+        .map(c -> new LinkedHashMap<>(c.getColumns()))
         .orElse(new LinkedHashMap<>());
     baseColumns.forEach(column -> mergedColumns.putIfAbsent(column.getId(), column));
 
-    return new Columns(mergedColumns);
+    return new Columns<>(mergedColumns);
   }
 
-  public Column entityIdColumn() {
+  public EntityProperty entityIdColumn() {
     return columns.column(this.firstAppearanceActionLogicalTable.entityIdColumn().getId());
   }
 
-  public Column getFirstAppearanceDateColumn() {
+  public EntityProperty getFirstAppearanceDateColumn() {
     return columns.column(FIRST_APPEARANCE_DATE_COLUMN);
   }
 
@@ -208,16 +196,36 @@ public class EntityLogicalTable extends TemporalLogicalTable {
     return "user_wide";
   }
 
-  public ActionLogicalTable getFirstAppearanceActionLogicalTable() {
+  public FirstAppearanceActionLogicalTable getFirstAppearanceActionLogicalTable() {
     return firstAppearanceActionLogicalTable;
   }
 
-  public ActionLogicalTable getActivityLogicalTable() {
+  public ActivityLogicalTable getActivityLogicalTable() {
     return activityLogicalTable;
   }
 
   public String getBaseTablePrefix() {
     return baseTablePrefix;
+  }
+
+  public EntityLogicalTable withColumns(Columns columns) {
+    return new EntityLogicalTable(
+        baseTablePrefix,
+        Optional.of(this.columns.add(columns)),
+        firstAppearanceActionLogicalTable,
+        activityLogicalTable,
+        activityTableDays,
+        cohortTableDays,
+        kpis
+    );
+  }
+
+  public int getActivityTableDays() {
+    return activityTableDays;
+  }
+
+  public List<Integer> getCohortTableDays() {
+    return cohortTableDays;
   }
 }
 

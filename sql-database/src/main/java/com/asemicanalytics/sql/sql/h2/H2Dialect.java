@@ -84,6 +84,11 @@ public class H2Dialect implements Dialect {
   }
 
   @Override
+  public String dateDiff(String from, String to) {
+    return "DATEDIFF('day', " + from + "::timestamp, " + to + "::timestamp)";
+  }
+
+  @Override
   public String createTableIfNotExists(TableReference tableReference, List<Column> columns,
                                        Optional<Column> dateColumn) {
     String sql = "CREATE TABLE IF NOT EXISTS " + tableIdentifier(tableReference)

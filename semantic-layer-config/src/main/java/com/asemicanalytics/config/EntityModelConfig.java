@@ -2,45 +2,39 @@ package com.asemicanalytics.config;
 
 import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
 import com.asemicanalytics.config.enrichment.EnrichmentResolver;
-import com.asemicanalytics.config.mapper.ColumnReference;
 import com.asemicanalytics.config.mapper.FullColumnId;
 import com.asemicanalytics.config.mapper.FullKpiId;
-import com.asemicanalytics.config.mapper.KpiReference;
-import com.asemicanalytics.core.logicaltable.LogicalTable;
-import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
+import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.column.Columns;
+import com.asemicanalytics.core.kpi.Kpi;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
-import java.util.ArrayList;
+import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class EntityModelConfig {
   private final Map<String, ActionLogicalTable> logicalTables;
 
-  private final Optional<EntityLogicalTable> entityLogicalTable;
-  private final Optional<FirstAppearanceActionLogicalTable> firstAppearanceActionLogicalTable;
-  private final Optional<ActivityLogicalTable> activityActionLogicalTable;
+  private final EntityLogicalTable entityLogicalTable;
+  private final FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable;
+  private final ActivityLogicalTable activityActionLogicalTable;
   private final Optional<PaymentTransactionActionLogicalTable>
       paymentTransactionActionLogicalTable;
 
   public EntityModelConfig(Map<String, ActionLogicalTable> logicalTables,
-                           Optional<EntityLogicalTable> entityLogicalTable,
+                           EntityLogicalTable entityLogicalTable,
+                           FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
+                           ActivityLogicalTable activityActionLogicalTable,
                            List<EnrichmentDefinition> enrichmentDefinitions) {
     this.logicalTables = logicalTables;
     this.entityLogicalTable = entityLogicalTable;
-    this.firstAppearanceActionLogicalTable = logicalTables.values().stream()
-        .filter(d -> d instanceof FirstAppearanceActionLogicalTable)
-        .map(d -> (FirstAppearanceActionLogicalTable) d)
-        .findFirst();
-    this.activityActionLogicalTable = logicalTables.values().stream()
-        .filter(d -> d instanceof ActivityLogicalTable)
-        .map(d -> (ActivityLogicalTable) d)
-        .findFirst();
+    this.firstAppearanceActionLogicalTable = firstAppearanceActionLogicalTable;
+    this.activityActionLogicalTable = activityActionLogicalTable;
     this.paymentTransactionActionLogicalTable = logicalTables.values().stream()
         .filter(d -> d instanceof PaymentTransactionActionLogicalTable)
         .map(d -> (PaymentTransactionActionLogicalTable) d)
@@ -49,57 +43,26 @@ public class EntityModelConfig {
     EnrichmentResolver.resolve(logicalTables, entityLogicalTable, enrichmentDefinitions);
   }
 
-  public LogicalTable logicalTable(String id) {
+  public ActivityLogicalTable activityLogicalTable(String id) {
     if (logicalTables.containsKey(id)) {
-      return logicalTables.get(id);
-    }
-    if (entityLogicalTable.isPresent() && entityLogicalTable.get().getId().equals(id)) {
-      return entityLogicalTable.get();
+      return (ActivityLogicalTable) logicalTables.get(id);
     }
     throw new IllegalArgumentException("No logicalTable named " + id);
   }
 
-  public TemporalLogicalTable temporalLogicalTable(String id) {
-    var logicalTable = logicalTable(id);
-    if (!(logicalTable instanceof TemporalLogicalTable)) {
-      throw new IllegalArgumentException("LogicalTable " + id + " is not a temporal logicalTable");
-    }
-    return (TemporalLogicalTable) logicalTable;
-  }
-
-  public ColumnReference column(FullColumnId fullColumnId) {
-    var logicalTable = logicalTable(fullColumnId.logicalTableId());
-    return new ColumnReference(logicalTable,
-        logicalTable.getColumns().column(fullColumnId.columnId()).getId());
-  }
-
-  public KpiReference kpi(FullKpiId fullKpiId) {
-    var logicalTable = temporalLogicalTable(fullKpiId.logicalTableId());
-    return new KpiReference(logicalTable.getId(), logicalTable.kpi(fullKpiId.kpiId()));
-  }
-
-  public List<LogicalTable> logicalTables() {
-    List<LogicalTable> logicalTables = new ArrayList<>(this.logicalTables.values());
-    entityLogicalTable.ifPresent(logicalTables::add);
+  public Map<String, ActionLogicalTable> actionLogicalTables() {
     return logicalTables;
   }
 
-  public List<TemporalLogicalTable> temporalLogicalTables() {
-    return logicalTables().stream()
-        .filter(d -> d instanceof TemporalLogicalTable)
-        .map(d -> (TemporalLogicalTable) d)
-        .collect(Collectors.toList());
-  }
-
-  public Optional<EntityLogicalTable> getEntityLogicalTable() {
+  public EntityLogicalTable getEntityLogicalTable() {
     return entityLogicalTable;
   }
 
-  public Optional<FirstAppearanceActionLogicalTable> getFirstAppearanceActionLogicalTable() {
+  public FirstAppearanceActionLogicalTable getFirstAppearanceActionLogicalTable() {
     return firstAppearanceActionLogicalTable;
   }
 
-  public Optional<ActivityLogicalTable> getActivityActionLogicalTable() {
+  public ActivityLogicalTable getActivityActionLogicalTable() {
     return activityActionLogicalTable;
   }
 
@@ -107,5 +70,14 @@ public class EntityModelConfig {
 
   ) {
     return paymentTransactionActionLogicalTable;
+  }
+
+  public EntityModelConfig withAdhocSemanticLayer(Columns<EntityProperty> columns) {
+    return new EntityModelConfig(
+        logicalTables,
+        entityLogicalTable.withColumns(columns),
+        firstAppearanceActionLogicalTable,
+        activityActionLogicalTable,
+        List.of());
   }
 }

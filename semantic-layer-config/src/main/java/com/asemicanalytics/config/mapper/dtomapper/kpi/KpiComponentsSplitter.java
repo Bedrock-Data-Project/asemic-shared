@@ -138,7 +138,7 @@ public class KpiComponentsSplitter {
                   HashMap::new,
                   (map, entry) -> map.put(entry.getKey(), identifier(entry.getValue().select())),
                   HashMap::putAll)), null),
-              filters);
+          filters);
 
       if (!newComponentsReverseIndex.containsKey(kpiComponent)) {
         newComponentsReverseIndex.put(kpiComponent, "component" + componentIndex);
@@ -166,7 +166,7 @@ public class KpiComponentsSplitter {
   }
 
   private static TreeSet<String> buildFilters(KpixaxisConfig kpixaxisConfig,
-                                            ArrayList<String> properties) {
+                                              ArrayList<String> properties) {
     var filters = new TreeSet<String>();
     if (!properties.isEmpty()) {
       filters.addAll(kpixaxisConfig.components().get(properties.getFirst()).filters());

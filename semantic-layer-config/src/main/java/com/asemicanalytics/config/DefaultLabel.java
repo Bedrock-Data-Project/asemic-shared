@@ -15,6 +15,9 @@ public class DefaultLabel {
     StringBuilder capitalized = new StringBuilder();
 
     for (String word : words) {
+      if (word.isEmpty()) {
+        continue;
+      }
       capitalized.append(word.substring(0, 1).toUpperCase());
       capitalized.append(word.substring(1).toLowerCase());
       capitalized.append(" ");

@@ -2,11 +2,7 @@ package com.asemicanalytics.config;
 
 import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
 import com.asemicanalytics.config.enrichment.EnrichmentResolver;
-import com.asemicanalytics.config.mapper.FullColumnId;
-import com.asemicanalytics.config.mapper.FullKpiId;
-import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.kpi.Kpi;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
@@ -41,6 +37,19 @@ public class EntityModelConfig {
         .findFirst();
 
     EnrichmentResolver.resolve(logicalTables, entityLogicalTable, enrichmentDefinitions);
+  }
+
+  private EntityModelConfig(
+      Map<String, ActionLogicalTable> logicalTables,
+      EntityLogicalTable entityLogicalTable,
+      FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
+      ActivityLogicalTable activityActionLogicalTable,
+      Optional<PaymentTransactionActionLogicalTable> paymentTransactionActionLogicalTable) {
+    this.logicalTables = logicalTables;
+    this.entityLogicalTable = entityLogicalTable;
+    this.firstAppearanceActionLogicalTable = firstAppearanceActionLogicalTable;
+    this.activityActionLogicalTable = activityActionLogicalTable;
+    this.paymentTransactionActionLogicalTable = paymentTransactionActionLogicalTable;
   }
 
   public ActivityLogicalTable activityLogicalTable(String id) {
@@ -78,6 +87,6 @@ public class EntityModelConfig {
         entityLogicalTable.withColumns(columns),
         firstAppearanceActionLogicalTable,
         activityActionLogicalTable,
-        List.of());
+        paymentTransactionActionLogicalTable);
   }
 }

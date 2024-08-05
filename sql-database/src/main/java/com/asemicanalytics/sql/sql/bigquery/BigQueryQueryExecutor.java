@@ -72,6 +72,8 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
       case INTEGER -> value.getLongValue();
       case STRING -> value.getStringValue();
       case BOOLEAN -> value.getBooleanValue();
+      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
+          throw new UnsupportedOperationException();
     };
   }
 

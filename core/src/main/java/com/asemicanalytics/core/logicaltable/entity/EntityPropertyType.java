@@ -6,4 +6,5 @@ public enum EntityPropertyType {
   COMPUTED,
   LIFETIME,
   SLIDING_WINDOW,
+  FIXED_WINDOW
 }

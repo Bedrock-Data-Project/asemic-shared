@@ -52,6 +52,8 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
       case INTEGER -> resultSet.getLong(columnIndex);
       case STRING -> resultSet.getString(columnIndex);
       case BOOLEAN -> resultSet.getBoolean(columnIndex);
+      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
+          throw new UnsupportedOperationException();
     };
   }
 

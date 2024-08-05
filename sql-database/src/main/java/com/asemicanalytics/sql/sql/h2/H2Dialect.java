@@ -23,6 +23,8 @@ public class H2Dialect implements Dialect {
       case STRING -> "'" + value + "'";
       case DATE -> "PARSEDATETIME('" + value + "', 'yyyy-MM-dd')";
       case DATETIME -> "PARSEDATETIME('" + value + "', 'yyyy-MM-dd HH:mm:ss')";
+      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
+          throw new UnsupportedOperationException();
     };
   }
 
@@ -143,6 +145,8 @@ public class H2Dialect implements Dialect {
       case STRING -> "VARCHAR(50)";
       case DATE -> "DATE";
       case DATETIME -> "TIMESTAMP";
+      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
+          throw new UnsupportedOperationException();
     };
   }
 

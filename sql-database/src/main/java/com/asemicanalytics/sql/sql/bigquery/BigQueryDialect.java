@@ -23,6 +23,8 @@ public class BigQueryDialect implements Dialect {
       case STRING -> "'" + value + "'";
       case DATE -> "DATE '" + value + "'";
       case DATETIME -> "TIMESTAMP '" + value + "'";
+      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
+          throw new UnsupportedOperationException();
     };
   }
 
@@ -144,6 +146,8 @@ public class BigQueryDialect implements Dialect {
       case STRING -> "STRING";
       case DATE -> "DATE";
       case DATETIME -> "TIMESTAMP";
+      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
+          throw new UnsupportedOperationException();
     };
   }
 }

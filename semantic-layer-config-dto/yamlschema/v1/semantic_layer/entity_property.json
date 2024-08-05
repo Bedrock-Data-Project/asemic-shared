@@ -27,6 +27,9 @@
     "sliding_window_property": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_sliding_window.json"
     },
+    "fixed_window_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_fixed_window.json"
+    },
     "lifetime_property": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_lifetime.json"
     },

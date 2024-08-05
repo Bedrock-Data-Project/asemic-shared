@@ -1,12 +1,12 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_sliding_window.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_fixed_window.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
     "source_property",
     "window_function",
-    "relative_days_from",
-    "relative_days_to"
+    "date_from",
+    "date_to"
   ],
   "properties": {
     "source_property": {
@@ -15,11 +15,13 @@
     "window_function": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_window_function.json"
     },
-    "relative_days_from": {
-      "type": "integer"
+    "date_from": {
+      "type": "string",
+      "format": "date"
     },
-    "relative_days_to": {
-      "type": "integer"
+    "date_to": {
+      "type": "string",
+      "format": "date"
     }
   },
   "additionalProperties": false

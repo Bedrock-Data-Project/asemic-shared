@@ -5,6 +5,7 @@ import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.entity.ActionColumn;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.SlidingWindowColumn;
+import com.asemicanalytics.core.logicaltable.entity.WindowAggregationFunction;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 import java.util.Map;
 import java.util.function.Function;
@@ -27,9 +28,9 @@ public class SlidingWindowPropertyDtoMapper implements
   public SlidingWindowColumn apply(
       EntityPropertySlidingWindowDto dto) {
 
-    if (!columns.containsKey(dto.getSourceActionProperty())) {
+    if (!columns.containsKey(dto.getSourceProperty())) {
       throw new IllegalArgumentException("Source property not found: "
-          + dto.getSourceActionProperty()
+          + dto.getSourceProperty()
           + " in entity for column: "
           + column.getId());
     }
@@ -42,9 +43,9 @@ public class SlidingWindowPropertyDtoMapper implements
     }
 
     return new SlidingWindowColumn(column,
-        (ActionColumn) columns.get(dto.getSourceActionProperty()),
+        columns.get(dto.getSourceProperty()),
         new RelativeDaysInterval(dto.getRelativeDaysFrom(), dto.getRelativeDaysTo()),
-        SlidingWindowColumn.WindowAggregationFunction.valueOf(
-            dto.getSlidingWindowFunction().name()));
+        WindowAggregationFunction.valueOf(
+            dto.getWindowFunction().name()));
   }
 }

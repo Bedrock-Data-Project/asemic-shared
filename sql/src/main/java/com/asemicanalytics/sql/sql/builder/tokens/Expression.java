@@ -36,6 +36,15 @@ public interface Expression extends Token {
       case "<", "<=", ">", ">=", "=", "!=" ->
           new BooleanExpression(parse("{expression} " + operator + " {value}",
               TemplateDict.noMissing(Map.of("expression", this, "value", constants.get(0)))));
+
+      // TODO
+      case "any<", "any<=", "any>", "any>=", "any=", "any!=" ->
+          new BooleanExpression(parse("{expression} " + operator + " {value}",
+              TemplateDict.noMissing(Map.of("expression", this, "value", constants.get(0)))));
+      case "all<", "all<=", "all>", "all>=", "all=", "all!=" ->
+          new BooleanExpression(parse("{expression} " + operator + " {value}",
+              TemplateDict.noMissing(Map.of("expression", this, "value", constants.get(0)))));
+
       case "like" -> new BooleanExpression(parse("{expression} LIKE {value}",
           TemplateDict.noMissing(Map.of("expression", this, "value", constants.get(0)))));
       case "not_like" -> new BooleanExpression(parse("{expression} NOT LIKE {value}",

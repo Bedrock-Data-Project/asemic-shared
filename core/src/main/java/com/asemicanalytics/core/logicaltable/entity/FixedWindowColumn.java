@@ -1,32 +1,30 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
-import com.asemicanalytics.core.RelativeDaysInterval;
+import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.column.Column;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class SlidingWindowColumn extends EntityProperty {
+public class FixedWindowColumn extends EntityProperty {
   private final EntityProperty sourceColumn;
-  private final RelativeDaysInterval relativeDaysInterval;
+  private final DatetimeInterval datetimeInterval;
   private final WindowAggregationFunction windowAggregationFunction;
 
   @Override
   public EntityPropertyType getType() {
-    return EntityPropertyType.SLIDING_WINDOW;
+    return EntityPropertyType.FIXED_WINDOW;
   }
 
-  public SlidingWindowColumn(
+  public FixedWindowColumn(
       Column column,
       EntityProperty sourceColumn,
-      RelativeDaysInterval relativeDaysInterval,
+      DatetimeInterval datetimeInterval,
       WindowAggregationFunction windowAggregationFunction) {
     super(column);
 
-    if (relativeDaysInterval.from() == 0) {
-      throw new IllegalArgumentException("Sliding window cannot start at 0");
-    }
+
     this.sourceColumn = sourceColumn;
-    this.relativeDaysInterval = relativeDaysInterval;
+    this.datetimeInterval = datetimeInterval;
     this.windowAggregationFunction = windowAggregationFunction;
   }
 
@@ -34,8 +32,8 @@ public class SlidingWindowColumn extends EntityProperty {
     return materializedFrom.materializedFrom(getId());
   }
 
-  public RelativeDaysInterval getRelativeDaysInterval() {
-    return relativeDaysInterval;
+  public DatetimeInterval getDatetimeInterval() {
+    return datetimeInterval;
   }
 
   public WindowAggregationFunction getWindowAggregationFunction() {

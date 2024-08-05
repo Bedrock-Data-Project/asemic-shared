@@ -55,6 +55,7 @@ class EntityConfigLoaderTest {
         null,
         null,
         null,
+        null,
         new EntityPropertyFirstAppearanceDto("source"),
         null);
   }
@@ -63,6 +64,7 @@ class EntityConfigLoaderTest {
     return new EntityPropertyDto(
         null,
         ActionColumnDto.DataType.DATE,
+        null,
         null,
         null,
         null,
@@ -91,6 +93,7 @@ class EntityConfigLoaderTest {
         null,
         null,
         null,
+        null,
         null);
   }
 
@@ -104,10 +107,11 @@ class EntityConfigLoaderTest {
         null,
         new EntityPropertySlidingWindowDto(
             sourceProperty,
-            EntityPropertySlidingWindowDto.SlidingWindowFunction.AVG,
+            EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.AVG,
             -5,
             0
         ),
+        null,
         null,
         null,
         null);
@@ -117,6 +121,7 @@ class EntityConfigLoaderTest {
     return new EntityPropertyDto(
         null,
         ActionColumnDto.DataType.DATE,
+        null,
         null,
         null,
         null,

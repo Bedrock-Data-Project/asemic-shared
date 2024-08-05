@@ -1,0 +1,13 @@
+{
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_window_function.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "string",
+  "enum": [
+    "sum",
+    "avg",
+    "count",
+    "min",
+    "max",
+    "array"
+  ]
+}

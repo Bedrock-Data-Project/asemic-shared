@@ -8,6 +8,13 @@
     "STRING",
     "DATE",
     "DATETIME",
-    "BOOLEAN"
+    "BOOLEAN",
+
+    "NUMBER_ARRAY",
+    "INTEGER_ARRAY",
+    "STRING_ARRAY",
+    "DATE_ARRAY",
+    "DATETIME_ARRAY",
+    "BOOLEAN_ARRAY"
   ]
 }

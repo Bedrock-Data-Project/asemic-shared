@@ -88,6 +88,7 @@ public class EntityMapper
     SequencedMap<String, EntityPropertyDto> firstAppearanceProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> actionProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> slidingWindowProperties = new LinkedHashMap<>();
+    SequencedMap<String, EntityPropertyDto> fixedWindowProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> lifetimeProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> computedProperties = new LinkedHashMap<>();
 
@@ -115,6 +116,16 @@ public class EntityMapper
         }
         foundPropertyConfig = true;
         slidingWindowProperties.put(entry.getKey(), entry.getValue());
+
+      }
+
+      if (entry.getValue().getFixedWindowProperty().isPresent()) {
+        if (foundPropertyConfig) {
+          throw new IllegalArgumentException(
+              "Duplicate property config for column: " + entry.getKey());
+        }
+        foundPropertyConfig = true;
+        fixedWindowProperties.put(entry.getKey(), entry.getValue());
 
       }
 
@@ -165,6 +176,11 @@ public class EntityMapper
       var column = buildColumn(entry.getKey(), entry.getValue());
       columns.put(entry.getKey(), new SlidingWindowPropertyDtoMapper(column, columns, activeDays)
           .apply(entry.getValue().getSlidingWindowProperty().get()));
+    }
+    for (var entry : fixedWindowProperties.entrySet()) {
+      var column = buildColumn(entry.getKey(), entry.getValue());
+      columns.put(entry.getKey(), new FixedWindowPropertyDtoMapper(column, columns)
+          .apply(entry.getValue().getFixedWindowProperty().get()));
     }
     for (var entry : computedProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());

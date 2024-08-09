@@ -5,9 +5,35 @@
   "required": [
     "select"
   ],
+  "definitions": {
+    "value_mappings": {
+      "type": "object",
+      "properties": {
+        "constant": {
+          "type": "string"
+        },
+        "range": {
+          "type": "object",
+          "properties": {
+            "from": "string",
+            "to": "string"
+          }
+        },
+        "new_value": {
+          "type": "string"
+        }
+      }
+    }
+  },
   "properties": {
     "select": {
       "type": "string"
+    },
+    "value_mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/value_mappings"
+      }
     }
   },
   "additionalProperties": false

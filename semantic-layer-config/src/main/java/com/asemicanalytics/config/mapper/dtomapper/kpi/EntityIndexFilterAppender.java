@@ -45,6 +45,10 @@ public class EntityIndexFilterAppender {
           if (xaxis.getKey().equals(EntityLogicalTable.COHORT_DAY_COLUMN)) {
             component.filters().add(EntityLogicalTable.cohortIndexFilter(cohortDays));
           } else {
+
+            // TODO this is really ugly, refactor this
+            // Need some code that can resolve the filter of cohort_day ar days_since_last_active
+            // base on basic expressions
             if (component.where().isPresent()
                 && component.where().get()
                 .matches("\\{" + EntityLogicalTable.COHORT_DAY_COLUMN + "\\} = \\d+")) {
@@ -53,6 +57,15 @@ public class EntityIndexFilterAppender {
                 component.filters().add(EntityLogicalTable.activeIndexFilter(activeDays));
               } else {
                 component.filters().add(EntityLogicalTable.cohortIndexFilter(cohortDays));
+              }
+            } else if (component.where().isPresent()
+                && component.where().get()
+                .matches("\\{" + EntityLogicalTable.DAYS_SINCE_LAST_ACTIVE + "\\} = \\d+")) {
+              var daysInactive = Integer.parseInt(component.where().get().split(" = ")[1]);
+              if (daysInactive <= activeDays) {
+                component.filters().add(EntityLogicalTable.activeIndexFilter(activeDays));
+              } else {
+                component.filters().addAll(getFilters(component.select()));
               }
             } else {
               component.filters().addAll(getFilters(component.select()));

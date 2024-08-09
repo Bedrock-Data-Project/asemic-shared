@@ -58,6 +58,10 @@ public class QueryFactory {
     return new CaseExpression(expression);
   }
 
+  public static CaseExpression case_() {
+    return new CaseExpression();
+  }
+
   public static SelectStatement select() {
     return new SelectStatement();
   }

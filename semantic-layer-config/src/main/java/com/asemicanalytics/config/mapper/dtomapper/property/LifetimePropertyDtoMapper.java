@@ -6,6 +6,7 @@ import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.LifetimeColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyComputedDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyLifetimeDto;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -28,7 +29,8 @@ public class LifetimePropertyDtoMapper implements
     var innerColumn = Column.ofHidden(column.getId() + "__inner", column.getDataType());
     if (dto.getSourceProperty().isPresent()) {
       sourceColumn = new ComputedPropertyDtoMapper(innerColumn)
-          .apply(new EntityPropertyComputedDto("{" + dto.getSourceProperty().get() + "}"));
+          .apply(
+              new EntityPropertyComputedDto("{" + dto.getSourceProperty().get() + "}", List.of()));
     }
 
     if (dto.getSourceComputedProperty().isPresent()) {

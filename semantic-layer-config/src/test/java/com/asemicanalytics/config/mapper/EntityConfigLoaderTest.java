@@ -129,7 +129,7 @@ class EntityConfigLoaderTest {
         null,
         null,
         null,
-        new EntityPropertyComputedDto("source"));
+        new EntityPropertyComputedDto("source", List.of()));
   }
 
   private KpiDto kpi(String select, Optional<String> where, List<String> xaxis) {

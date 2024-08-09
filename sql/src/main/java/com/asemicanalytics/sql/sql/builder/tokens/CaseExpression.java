@@ -3,16 +3,21 @@ package com.asemicanalytics.sql.sql.builder.tokens;
 import com.asemicanalytics.core.Dialect;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CaseExpression implements Expression {
 
-  private final Expression switchExpression;
+  private final Optional<Expression> switchExpression;
   private List<CaseWhenThen> whenThens = new ArrayList<>();
   private Expression elseExpression;
 
   CaseExpression(
       Expression switchExpression) {
-    this.switchExpression = switchExpression;
+    this.switchExpression = Optional.of(switchExpression);
+  }
+
+  CaseExpression() {
+    this.switchExpression = Optional.empty();
   }
 
   @Override
@@ -27,15 +32,17 @@ public class CaseExpression implements Expression {
         ? this.elseExpression.render(dialect)
         : "NULL");
 
-    return dialect.caseExpression(
-        switchExpression.render(dialect),
-        whenThenExpressions,
-        elseExpression);
+    return switchExpression
+        .map(s -> dialect.caseExpression(
+            s.render(dialect),
+            whenThenExpressions,
+            elseExpression))
+        .orElseGet(() -> dialect.caseExpression(whenThenExpressions, elseExpression));
   }
 
   @Override
   public void swapTable(TableLike oldTable, TableLike newTable) {
-    switchExpression.swapTable(oldTable, newTable);
+    switchExpression.ifPresent(s -> s.swapTable(oldTable, newTable));
     whenThens.forEach(whenThen -> whenThen.swapTable(oldTable, newTable));
     if (elseExpression != null) {
       elseExpression.swapTable(oldTable, newTable);

@@ -37,6 +37,10 @@ public interface Dialect {
     return "CASE " + switchExpression + " " + whenThens + " " + ifFalse + " END";
   }
 
+  default String caseExpression(String whenThens, String ifFalse) {
+    return "CASE " + whenThens + " " + ifFalse + " END";
+  }
+
   default String caseWhenThen(String when, String then) {
     return "WHEN " + when + " THEN " + then;
   }

@@ -164,7 +164,7 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
             new Column(
                 DAYS_SINCE_LAST_ACTIVE,
                 DataType.INTEGER,
-                "Inactive Days",
+                "Days since last active",
                 Optional.empty(),
                 true,
                 false,

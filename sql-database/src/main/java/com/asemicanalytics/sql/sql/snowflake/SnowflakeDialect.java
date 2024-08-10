@@ -48,18 +48,12 @@ public class SnowflakeDialect implements Dialect {
   }
 
   @Override
-  public String truncateTimestamp(String column, TimeGrains timeGrain, int shiftDays) {
-    var expression = switch (timeGrain) {
-      case min15 -> "DATEADD(MINUTE, FLOOR(DATEDIFF(MINUTE, '1970-01-01 00:00:00', " + column
-          + ") / 15) * 15, '1970-01-01 00:00:00')";
+  public String truncateDate(String column, TimeGrains timeGrain) {
+    return switch (timeGrain) {
+      case min15 -> throw new UnsupportedOperationException();
       case hour, day, week, month, quarter, year ->
           "DATE_TRUNC(" + timeGrain.name().toUpperCase() + ", " + column + ")";
     };
-
-    if (shiftDays != 0) {
-      expression += " INTERVAL " + shiftDays + " DAY";
-    }
-    return expression;
   }
 
   @Override

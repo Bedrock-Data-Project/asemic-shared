@@ -16,7 +16,7 @@ public interface Dialect {
 
   String ifExpression(String condition, String ifTrue, String ifFalse);
 
-  String truncateTimestamp(String column, TimeGrains timeGrain, int shiftDays);
+  String truncateDate(String column, TimeGrains timeGrain);
 
   String dateAdd(String column, String days);
 

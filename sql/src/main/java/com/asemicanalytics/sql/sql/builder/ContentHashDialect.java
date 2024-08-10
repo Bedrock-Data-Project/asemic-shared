@@ -37,8 +37,8 @@ public class ContentHashDialect implements Dialect {
   }
 
   @Override
-  public String truncateTimestamp(String column, TimeGrains timeGrain, int shiftDays) {
-    return "truncateTimestamp_" + column + "_" + timeGrain + "_" + shiftDays;
+  public String truncateDate(String column, TimeGrains timeGrain) {
+    return "truncateTimestamp_" + column + "_" + timeGrain;
   }
 
   @Override

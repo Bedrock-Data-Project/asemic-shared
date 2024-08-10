@@ -3,21 +3,19 @@ package com.asemicanalytics.sql.sql.builder.tokens;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TimeGrains;
 
-class TimeGrainTruncatedExpression implements Expression {
+class DateTruncatedExpression implements Expression {
 
   private final Expression expression;
   private final TimeGrains timeGrain;
-  private final int shiftDays;
 
-  public TimeGrainTruncatedExpression(Expression expression, TimeGrains timeGrain, int shiftDays) {
+  public DateTruncatedExpression(Expression expression, TimeGrains timeGrain) {
     this.expression = expression;
     this.timeGrain = timeGrain;
-    this.shiftDays = shiftDays;
   }
 
   @Override
   public String render(Dialect dialect) {
-    return dialect.truncateTimestamp(expression.render(dialect), timeGrain, shiftDays);
+    return dialect.truncateDate(expression.render(dialect), timeGrain);
   }
 
   @Override

@@ -48,18 +48,12 @@ public class BigQueryDialect implements Dialect {
   }
 
   @Override
-  public String truncateTimestamp(String column, TimeGrains timeGrain, int shiftDays) {
-    var expression = switch (timeGrain) {
-      case min15 -> "TIMESTAMP_ADD(TIMESTAMP_TRUNC(" + column
-          + ", HOUR), INTERVAL CAST(EXTRACT(MINUTE FROM " + column
-          + ") / 15 AS INT64)*15 MINUTE)";
+  public String truncateDate(String column, TimeGrains timeGrain) {
+    return switch (timeGrain) {
+      case min15 -> throw new UnsupportedOperationException();
       case hour, day, week, month, quarter, year ->
           "DATE_TRUNC(" + column + ", " + timeGrain.name().toUpperCase() + ")";
     };
-    if (shiftDays != 0) {
-      expression = "TIMESTAMP_ADD(" + expression + ", INTERVAL " + shiftDays + " DAY)";
-    }
-    return expression;
   }
 
   @Override

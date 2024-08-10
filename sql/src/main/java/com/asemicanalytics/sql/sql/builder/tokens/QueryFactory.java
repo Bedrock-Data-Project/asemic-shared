@@ -134,8 +134,8 @@ public class QueryFactory {
     return new TemplatedExpression(expression, templateDict);
   }
 
-  public static Expression truncate(Expression expression, TimeGrains timeGrain, int shiftDays) {
-    return new TimeGrainTruncatedExpression(expression, timeGrain, shiftDays);
+  public static Expression truncate(Expression expression, TimeGrains timeGrain) {
+    return new DateTruncatedExpression(expression, timeGrain);
   }
 
   public static Expression timestamp(Expression expression, int days) {

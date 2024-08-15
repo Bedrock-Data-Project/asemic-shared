@@ -19,8 +19,9 @@ public class PaymentTransactionActionLogicalTable extends ActionLogicalTable {
                                               Optional<String> description,
                                               TableReference table,
                                               Columns columns,
-                                              Map<String, Kpi> kpis, Set<String> tags) {
-    super(id, label, description, table, columns, kpis, tags);
+                                              Map<String, Kpi> kpis, Optional<String> where,
+                                              Set<String> tags) {
+    super(id, label, description, table, columns, kpis, where, tags);
     this.transactionAmountColumn = columns.getColumnIdByTag(TRANSACTION_AMOUNT_COLUMN_TAG);
   }
 

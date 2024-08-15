@@ -11,6 +11,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.Job;
@@ -19,6 +20,7 @@ import com.google.cloud.bigquery.JobInfo;
 import com.google.cloud.bigquery.JobStatistics;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.Schema;
+import com.google.cloud.bigquery.StandardSQLTypeName;
 import com.google.cloud.bigquery.TableId;
 import com.google.cloud.bigquery.TableResult;
 import java.io.ByteArrayInputStream;
@@ -28,6 +30,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -126,22 +129,37 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
     return new SqlResult(rows);
   }
 
+  private List<Column> getColumnsFromField(String prefix, Field field) {
+    List<Column> columns = new ArrayList<>();
+    if (field.getType().getStandardType() == StandardSQLTypeName.STRUCT) {
+      for (Field subField : field.getSubFields()) {
+        columns.addAll(getColumnsFromField(prefix + field.getName() + ".", subField));
+      }
+    } else {
+      columns.add(new Column(prefix + field.getName(),
+          switch (field.getType().getStandardType()) {
+            case BOOL -> DataType.BOOLEAN;
+            case INT64, BIGNUMERIC, NUMERIC -> DataType.INTEGER;
+            case FLOAT64 -> DataType.NUMBER;
+            case STRING -> DataType.STRING;
+            case BYTES, ARRAY, GEOGRAPHY, JSON, INTERVAL, TIME, STRUCT -> null;
+            case TIMESTAMP, DATETIME -> DataType.DATETIME;
+            case DATE -> DataType.DATE;
+          }, prefix + field.getName(), Optional.empty(), true, false, Set.of()));
+    }
+    return columns;
+  }
+
   @Override
   protected List<Column> getColumns(TableReference table) throws InterruptedException {
     TableId tableIdObject = TableId.of(table.schemaName().get(), table.tableName());
     Schema schema = bigQuery.getTable(tableIdObject).getDefinition().getSchema();
-    return schema.getFields().stream()
-        .map(f -> new Column(f.getName(),
-            switch (f.getType().getStandardType()) {
-              case BOOL -> DataType.BOOLEAN;
-              case INT64, BIGNUMERIC, NUMERIC -> DataType.INTEGER;
-              case FLOAT64 -> DataType.NUMBER;
-              case STRING -> DataType.STRING;
-              case BYTES, STRUCT, ARRAY, GEOGRAPHY, JSON, INTERVAL, TIME -> null;
-              case TIMESTAMP, DATETIME -> DataType.DATETIME;
-              case DATE -> DataType.DATE;
-            }, f.getName(), Optional.empty(), true, false, Set.of()))
-        .filter(c -> c.getDataType() != null)
+    List<Column> columns = new ArrayList<>();
+    for (Field field : schema.getFields()) {
+      columns.addAll(getColumnsFromField("", field));
+    }
+    return columns.stream()
+        .filter(column -> column.getDataType() != null)
         .collect(Collectors.toList());
   }
 

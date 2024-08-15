@@ -14,8 +14,8 @@ public class FirstAppearanceActionLogicalTable extends ActionLogicalTable {
   public FirstAppearanceActionLogicalTable(String id, String label, Optional<String> description,
                                            TableReference table,
                                            Columns columns,
-                                           Map<String, Kpi> kpis, Set<String> tags) {
-    super(id, label, description, table, columns, kpis, tags);
+                                           Map<String, Kpi> kpis, Optional<String> where,
+                                           Set<String> tags) {
+    super(id, label, description, table, columns, kpis, where, tags);
   }
-
 }

@@ -164,7 +164,7 @@ class EntityConfigLoaderTest {
             setAdditionalProperty("unique_id",
                 new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
                     List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
-        }}, List.of());
+        }}, null, List.of());
 
     var activityLogicalTable = new ActionLogicalTableDto(
         "app.activity", List.of(ActivityLogicalTable.TAG),
@@ -179,7 +179,7 @@ class EntityConfigLoaderTest {
             setAdditionalProperty("unique_id",
                 new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
                     List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
-        }}, List.of());
+        }}, null, List.of());
 
     var configLoader = new ConfigLoader(new TestConfigParser(
         Map.of("registration", firstAppearanceActionLogicalTable, "activity", activityLogicalTable),

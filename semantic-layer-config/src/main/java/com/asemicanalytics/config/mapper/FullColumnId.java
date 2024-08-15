@@ -5,7 +5,7 @@ public record FullColumnId(
     String columnId
 ) {
   public static FullColumnId parse(String fullColumnId) {
-    var tokens = fullColumnId.split("\\.");
+    var tokens = fullColumnId.split("\\.", 2);
     if (tokens.length != 2) {
       throw new IllegalArgumentException("Invalid full column id format: " + fullColumnId);
     }

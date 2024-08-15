@@ -50,8 +50,9 @@ public class ActionDtoMapper
           DefaultLabel.of(dto.getLabel(), id),
           dto.getDescription(),
           TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
-          new Columns(columns),
+          new Columns<>(columns),
           Map.of(),
+          dto.getWhere(),
           tags
       );
     } else if (tags.contains(ActivityLogicalTable.TAG)) {
@@ -60,8 +61,9 @@ public class ActionDtoMapper
           DefaultLabel.of(dto.getLabel(), id),
           dto.getDescription(),
           TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
-          new Columns(columns),
+          new Columns<>(columns),
           Map.of(),
+          dto.getWhere(),
           tags
       );
     } else if (tags.contains(PaymentTransactionActionLogicalTable.TAG)) {
@@ -70,8 +72,9 @@ public class ActionDtoMapper
           DefaultLabel.of(dto.getLabel(), id),
           dto.getDescription(),
           TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
-          new Columns(columns),
+          new Columns<>(columns),
           Map.of(),
+          dto.getWhere(),
           tags
       );
     } else {
@@ -80,8 +83,9 @@ public class ActionDtoMapper
           DefaultLabel.of(dto.getLabel(), id),
           dto.getDescription(),
           TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
-          new Columns(columns),
+          new Columns<>(columns),
           Map.of(),
+          dto.getWhere(),
           tags
       );
     }

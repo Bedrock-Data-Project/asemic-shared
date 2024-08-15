@@ -43,7 +43,7 @@ public class SequenceBaseTest {
   private ActionLogicalTable ActionLogicalTable(String stepName) {
     return new ActionLogicalTable(
         stepName, "", Optional.empty(), TableReference.of(stepName),
-        new Columns(new LinkedHashMap<>(Map.of(
+        new Columns<>(new LinkedHashMap<>(Map.of(
             "date_",
             Column.ofHidden("date_", DataType.DATE).withTag(TemporalLogicalTable.DATE_COLUMN_TAG),
             "ts", Column.ofHidden("ts", DataType.DATETIME)
@@ -51,7 +51,7 @@ public class SequenceBaseTest {
             "user_id", Column.ofHidden("user_id", DataType.STRING)
                 .withTag(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)
         ))),
-        Map.of(), Set.of());
+        Map.of(), Optional.empty(), Set.of());
   }
 
   private SqlResult result() throws ExecutionException, InterruptedException {

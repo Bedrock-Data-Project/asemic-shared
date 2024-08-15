@@ -28,6 +28,9 @@
         "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/action_column.json"
       }
     },
+    "where": {
+      "type": "string"
+    },
     "enrichments": {
       "type": "array",
       "items": {

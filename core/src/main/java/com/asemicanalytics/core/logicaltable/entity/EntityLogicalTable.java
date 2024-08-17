@@ -8,7 +8,6 @@ import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.kpi.Kpi;
 import com.asemicanalytics.core.logicaltable.MaterializedIndexTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
 import java.util.LinkedHashMap;

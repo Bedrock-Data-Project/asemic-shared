@@ -6,11 +6,6 @@ import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
-import io.opentelemetry.api.GlobalOpenTelemetry;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.context.Context;
-import io.opentelemetry.context.Scope;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -22,12 +17,11 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
 
-  private static final Tracer tracer = GlobalOpenTelemetry.getTracer("query-engine");
   private final Executor executor;
   private final Dialect dialect;
 
   protected ThreadPoolSqlQueryExecutor(int maxWorkers, Dialect dialect) {
-    executor = Context.taskWrapping(new ThreadPoolExecutor(
+    executor = new ThreadPoolExecutor(
         maxWorkers,
         maxWorkers,
         0,
@@ -35,7 +29,7 @@ public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
         new SynchronousQueue<>(),
         Executors.defaultThreadFactory(),
         new ThreadPoolExecutor.AbortPolicy()
-    ));
+    );
     this.dialect = dialect;
   }
 
@@ -45,13 +39,10 @@ public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
 
   protected <T> CompletableFuture<T> submit(Callable<T> callable) {
     return CompletableFuture.supplyAsync(() -> {
-      Span span = tracer.spanBuilder("SQL query").startSpan();
-      try (Scope scope = span.makeCurrent()) {
+      try {
         return callable.call();
       } catch (Exception e) {
         throw new RuntimeException(e);
-      } finally {
-        span.end();
       }
     }, executor);
   }

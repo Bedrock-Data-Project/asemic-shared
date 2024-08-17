@@ -2,7 +2,6 @@ package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.RelativeDaysInterval;
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.entity.ActionColumn;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.SlidingWindowColumn;
 import com.asemicanalytics.core.logicaltable.entity.WindowAggregationFunction;

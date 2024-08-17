@@ -17,7 +17,6 @@ import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.PropertiesDto;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;

@@ -3,11 +3,6 @@ package com.asemicanalytics.config.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.asemicanalytics.config.parser.EntityDto;
-import com.asemicanalytics.core.DataType;
-import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.kpi.KpiComponent;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
@@ -18,7 +13,6 @@ import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnsDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
@@ -33,7 +27,6 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.Properties
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XAxisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XaxisOverrideDto;
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -161,9 +154,9 @@ class EntityConfigLoaderTest {
           setAdditionalProperty("event_timestamp",
               new ActionColumnDto(ActionColumnDto.DataType.DATETIME, null, null,
                   List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG)));
-            setAdditionalProperty("unique_id",
-                new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
-                    List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
+          setAdditionalProperty("unique_id",
+              new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
+                  List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
         }}, null, List.of());
 
     var activityLogicalTable = new ActionLogicalTableDto(
@@ -176,9 +169,9 @@ class EntityConfigLoaderTest {
           setAdditionalProperty("event_timestamp",
               new ActionColumnDto(ActionColumnDto.DataType.DATETIME, null, null,
                   List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG)));
-            setAdditionalProperty("unique_id",
-                new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
-                    List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
+          setAdditionalProperty("unique_id",
+              new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
+                  List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
         }}, null, List.of());
 
     var configLoader = new ConfigLoader(new TestConfigParser(

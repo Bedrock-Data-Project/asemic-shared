@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class YamlConfigParser implements ConfigParser {
   private final Path appsPath;

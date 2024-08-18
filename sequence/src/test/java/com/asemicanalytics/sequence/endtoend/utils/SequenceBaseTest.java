@@ -2,6 +2,7 @@ package com.asemicanalytics.sequence.endtoend.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import brave.Tracing;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
@@ -37,6 +38,7 @@ public class SequenceBaseTest {
   @BeforeEach
   void setUp() throws SQLException {
     DatabaseHelper.dropAllTables();
+    Tracing.newBuilder().build();
 
   }
 

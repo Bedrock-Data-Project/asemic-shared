@@ -190,7 +190,8 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
           MAX(partition_id) AS max
         FROM `%s.INFORMATION_SCHEMA.PARTITIONS`
         WHERE table_name = '%s' AND partition_id != '__NULL__'
-        """, table.schemaName().get(), table.tableName()), false)));
+        """, table.schemaName().get(), table.tableName()), false)),
+        "SqlQueryExecutor.submitTableFreshness");
 
     return future.thenApply(tableResult -> {
       var row = tableResult.iterateAll().iterator().next();

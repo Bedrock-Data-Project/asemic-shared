@@ -1,5 +1,8 @@
 package com.asemicanalytics.sql.sql.executor;
 
+import brave.Span;
+import brave.Tracer;
+import brave.Tracing;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.SqlQueryExecutor;
@@ -17,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
 
-  private final Executor executor;
+  protected final Executor executor;
   private final Dialect dialect;
 
   protected ThreadPoolSqlQueryExecutor(int maxWorkers, Dialect dialect) {
@@ -37,23 +40,35 @@ public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
     return dialect;
   }
 
-  protected <T> CompletableFuture<T> submit(Callable<T> callable) {
+  protected <T> CompletableFuture<T> submit(Callable<T> callable, String operationName) {
+    var tracer = Tracing.currentTracer();
+    var parentSpan = tracer.currentSpan();
+
     return CompletableFuture.supplyAsync(() -> {
-      try {
+      Span newSpan;
+      if (parentSpan == null) {
+        newSpan = tracer.nextSpan().name(operationName);
+      } else {
+        newSpan = tracer.newChild(parentSpan.context()).name(operationName);
+      }
+
+      try (Tracer.SpanInScope ws = tracer.withSpanInScope(newSpan.start())) {
+        newSpan.tag("executorType", getClass().getSimpleName());
         return callable.call();
       } catch (Exception e) {
         throw new RuntimeException(e);
+      } finally {
+        newSpan.finish();
       }
     }, executor);
   }
 
   public CompletableFuture<SqlResult> submit(String sql, List<DataType> dataTypes, boolean dryRun) {
-    return submit(() -> executeQuery(sql, dataTypes, dryRun));
+    return submit(() -> executeQuery(sql, dataTypes, dryRun), "SqlQueryExecutor.submit");
   }
 
   public CompletableFuture<List<Column>> submitGetColumns(TableReference table) {
-    return submit(() -> getColumns(table));
-
+    return submit(() -> getColumns(table), "SqlQueryExecutor.submitGetColumns");
   }
 
   protected abstract SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)

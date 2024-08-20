@@ -44,8 +44,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
     }
 
     return switch (xaxisType) {
-      case DATE -> LocalDate.parse(resultSet.getString(columnIndex))
-          .atStartOfDay(ZoneId.of("UTC"));
+      case DATE -> LocalDate.parse(resultSet.getString(columnIndex));
       case DATETIME -> LocalDateTime.parse(resultSet.getString(columnIndex), getDatetimeFormatter())
           .atZone(ZoneId.of("UTC"));
       case NUMBER -> resultSet.getDouble(columnIndex);

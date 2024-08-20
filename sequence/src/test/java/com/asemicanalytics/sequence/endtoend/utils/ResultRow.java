@@ -11,7 +11,7 @@ public record ResultRow(
   public SqlResultRow toSqlResultRow() {
     return new SqlResultRow(
         Arrays.asList(userId, DatabaseHelper.BASE_DATE.plus(timestamp),
-            DatabaseHelper.BASE_DATE.plus(timestamp).truncatedTo(ChronoUnit.DAYS),
+            DatabaseHelper.BASE_DATE.plus(timestamp).toLocalDate(),
             action, sequence, subsequence, repetitions, repetition, step, isValid));
   }
 }

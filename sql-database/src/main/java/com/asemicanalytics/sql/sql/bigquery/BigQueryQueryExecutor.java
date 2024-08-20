@@ -69,7 +69,7 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
     }
 
     return switch (xaxisType) {
-      case DATE -> LocalDate.parse(value.getStringValue()).atStartOfDay(ZoneId.of("UTC"));
+      case DATE -> LocalDate.parse(value.getStringValue());
       case DATETIME -> value.getTimestampInstant().atZone(ZoneId.of("UTC"));
       case NUMBER -> value.getDoubleValue();
       case INTEGER -> value.getLongValue();

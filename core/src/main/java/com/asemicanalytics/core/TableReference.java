@@ -31,4 +31,9 @@ public record TableReference(Optional<String> schemaName, String tableName) {
       default -> throw new IllegalStateException("Cant parse table " + table);
     };
   }
+
+  @Override
+  public String toString() {
+    return schemaName.map(s -> s + ".").orElse("") + tableName;
+  }
 }

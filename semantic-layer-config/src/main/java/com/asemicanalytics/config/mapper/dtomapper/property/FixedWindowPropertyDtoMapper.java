@@ -1,5 +1,6 @@
 package com.asemicanalytics.config.mapper.dtomapper.property;
 
+import com.asemicanalytics.core.DateInterval;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
@@ -34,7 +35,7 @@ public class FixedWindowPropertyDtoMapper implements
 
     return new FixedWindowColumn(column,
         columns.get(dto.getSourceProperty()),
-        DatetimeInterval.ofMidnight(
+        new DateInterval(
             LocalDate.parse(dto.getDateFrom()),
             LocalDate.parse(dto.getDateTo())),
         WindowAggregationFunction.valueOf(

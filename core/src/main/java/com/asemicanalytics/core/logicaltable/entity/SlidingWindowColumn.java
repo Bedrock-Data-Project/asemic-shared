@@ -1,6 +1,8 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
+import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.RelativeDaysInterval;
+import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -30,8 +32,9 @@ public class SlidingWindowColumn extends EntityProperty {
     this.windowAggregationFunction = windowAggregationFunction;
   }
 
-  public Optional<LocalDate> getMaterializedFrom(MaterializedColumnRepository materializedFrom) {
-    return materializedFrom.materializedFrom(getId());
+  public DisconnectedDateIntervals getMaterializedFrom(
+      TableReference tableReference, MaterializedColumnRepository materializedFrom) {
+    return materializedFrom.materializedOn(getId());
   }
 
   public RelativeDaysInterval getRelativeDaysInterval() {

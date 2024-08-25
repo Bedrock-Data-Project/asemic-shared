@@ -16,7 +16,11 @@ class BooleanExpressionGroup extends BooleanExpression {
   @Override
   public String render(Dialect dialect) {
     var tail = nextNode != null ? nextNode.render(dialect) : "";
-    return "(" + head.render(dialect) + ")" + tail;
+    var renderedHead = head.render(dialect);
+    if (head.nextNode != null) {
+      renderedHead = "(" + renderedHead + ")";
+    }
+    return renderedHead + tail;
   }
 
   @Override

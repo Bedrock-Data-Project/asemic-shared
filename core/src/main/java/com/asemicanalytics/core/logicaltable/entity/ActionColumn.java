@@ -1,8 +1,8 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
+import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import java.time.LocalDate;
 import java.util.Optional;
 
 public class ActionColumn extends EntityProperty {
@@ -54,8 +54,9 @@ public class ActionColumn extends EntityProperty {
     return select;
   }
 
-  public Optional<LocalDate> getMaterializedFrom(MaterializedColumnRepository materializedFrom) {
-    return materializedFrom.materializedFrom(getId());
+  public DisconnectedDateIntervals getMaterializedOn(
+      MaterializedColumnRepository materializedFrom) {
+    return materializedFrom.materializedOn(getId());
   }
 
   public AggregateFunction getAggregationFunction() {

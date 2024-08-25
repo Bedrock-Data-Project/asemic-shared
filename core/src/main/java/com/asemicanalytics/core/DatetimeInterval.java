@@ -53,4 +53,8 @@ public record DatetimeInterval(
   public DatetimeInterval plusDays(long fromDays, long toDays) {
     return new DatetimeInterval(from.plusDays(fromDays), to.plusDays(toDays));
   }
+
+  public DateInterval toDateInterval() {
+    return new DateInterval(from.toLocalDate(), to.toLocalDate());
+  }
 }

@@ -6,7 +6,7 @@
 
     <groupId>com.asemicanalytics</groupId>
     <artifactId>asemic-shared</artifactId>
-    <version>1.23</version>
+    <version>1.24</version>
     <packaging>pom</packaging>
     <name>Asemic Shared</name>
     <description>Collection for utilities that power up asemic query engine</description>
@@ -63,7 +63,11 @@
             <artifactId>brave</artifactId>
             <version>5.15.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.3.0-jre</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>

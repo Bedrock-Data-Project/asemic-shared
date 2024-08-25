@@ -7,6 +7,7 @@ import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.string_;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.core.DisconnectedDateIntervals;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,14 @@ public interface Expression extends Token {
     return condition("between", List.of(
         interval.from().toLocalDate().toString(), interval.to().toLocalDate().toString()
     ), DataType.DATE);
+  }
+
+  default BooleanExpression between(DisconnectedDateIntervals intervals) {
+    return QueryFactory.or(intervals.intervals().stream()
+        .map(i -> condition("between", List.of(
+            i.from().toString(), i.to().toString()
+        ), DataType.DATE))
+        .toList());
   }
 
   default BooleanExpression asCondition() {

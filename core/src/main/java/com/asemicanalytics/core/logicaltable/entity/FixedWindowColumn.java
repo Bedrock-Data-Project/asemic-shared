@@ -1,13 +1,16 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
+import com.asemicanalytics.core.DateInterval;
 import com.asemicanalytics.core.DatetimeInterval;
+import com.asemicanalytics.core.DisconnectedDateIntervals;
+import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import java.time.LocalDate;
 import java.util.Optional;
 
 public class FixedWindowColumn extends EntityProperty {
   private final EntityProperty sourceColumn;
-  private final DatetimeInterval datetimeInterval;
+  private final DateInterval dateInterval;
   private final WindowAggregationFunction windowAggregationFunction;
 
   @Override
@@ -18,22 +21,22 @@ public class FixedWindowColumn extends EntityProperty {
   public FixedWindowColumn(
       Column column,
       EntityProperty sourceColumn,
-      DatetimeInterval datetimeInterval,
+      DateInterval dateInterval,
       WindowAggregationFunction windowAggregationFunction) {
     super(column);
-
-
     this.sourceColumn = sourceColumn;
-    this.datetimeInterval = datetimeInterval;
+    this.dateInterval = dateInterval;
     this.windowAggregationFunction = windowAggregationFunction;
   }
 
-  public Optional<LocalDate> getMaterializedFrom(MaterializedColumnRepository materializedFrom) {
-    return materializedFrom.materializedFrom(getId());
+  public DisconnectedDateIntervals getMaterializedOn(
+      TableReference tableReference,
+      MaterializedColumnRepository materializedFrom) {
+    return materializedFrom.materializedOn(getId());
   }
 
-  public DatetimeInterval getDatetimeInterval() {
-    return datetimeInterval;
+  public DateInterval getDateInterval() {
+    return dateInterval;
   }
 
   public WindowAggregationFunction getWindowAggregationFunction() {

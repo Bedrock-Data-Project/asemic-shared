@@ -140,4 +140,19 @@ class DisconnectedDateIntervalsTest {
         new DateInterval(LocalDate.of(2021, 1, 18), LocalDate.of(2021, 1, 18))
     ), disconnectedDateIntervals.intervals());
   }
+
+  @Test
+  void givenAListOfPoints_shouldReturnInterval_whenExpandLeftAndShrinkRight() {
+    DisconnectedDateIntervals disconnectedDateIntervals = DisconnectedDateIntervals.ofDates(
+        new TreeSet<>(Set.of(
+            LocalDate.of(2021, 1, 10),
+            LocalDate.of(2021, 1, 11),
+            LocalDate.of(2021, 1, 12)
+        )));
+    disconnectedDateIntervals.expandOrShrink(-2, -1);
+
+    assertEquals(List.of(
+        new DateInterval(LocalDate.of(2021, 1, 8), LocalDate.of(2021, 1, 11))
+    ), disconnectedDateIntervals.intervals());
+  }
 }

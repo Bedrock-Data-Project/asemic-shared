@@ -95,24 +95,28 @@ public class DisconnectedDateIntervals {
     return result;
   }
 
-  public DisconnectedDateIntervals plusDays(long days) {
-    var newIntervals = new DisconnectedDateIntervals();
-    for (var range : intervals.asRanges()) {
-      newIntervals.intervals.add(Range.closed(
-          range.lowerEndpoint().plusDays(days),
-          range.upperEndpoint().plusDays(days)));
-    }
-    return newIntervals;
-  }
+  public DisconnectedDateIntervals expandOrShrink(long fromDays, long toDays) {
+    var newIntervals = new DisconnectedDateIntervals(intervals);
 
-  public DisconnectedDateIntervals shiftDays(long fromDays, long toDays) {
-    if (intervals.asRanges().size() != 1) {
-      throw new IllegalArgumentException("Can only shift one interval");
+    if (fromDays > 0) {
+      newIntervals.intervals.remove(Range.closed(
+          intervals.span().lowerEndpoint(),
+            intervals.span().lowerEndpoint().plusDays(fromDays)));
+    } else if (fromDays < 0) {
+      newIntervals.intervals.add(Range.closed(
+          intervals.span().lowerEndpoint().plusDays(fromDays),
+          intervals.span().lowerEndpoint()));
     }
-    var newIntervals = new DisconnectedDateIntervals();
-    newIntervals.intervals.add(Range.closed(
-        intervals.span().lowerEndpoint().plusDays(fromDays),
-        intervals.span().upperEndpoint().plusDays(toDays)));
+
+    if (toDays > 0) {
+      newIntervals.intervals.add(Range.closed(
+          intervals.span().upperEndpoint(),
+          intervals.span().upperEndpoint().plusDays(toDays)));
+    } else if (toDays < 0) {
+      newIntervals.intervals.remove(Range.closed(
+          intervals.span().upperEndpoint().plusDays(toDays),
+          intervals.span().upperEndpoint()));
+    }
     return newIntervals;
   }
 

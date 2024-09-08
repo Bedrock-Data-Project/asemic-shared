@@ -17,6 +17,7 @@
     "aggregate_function": {
       "type": "string",
       "enum": [
+        "count",
         "sum",
         "avg",
         "min",

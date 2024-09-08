@@ -24,9 +24,6 @@ public class SlidingWindowColumn extends EntityProperty {
       WindowAggregationFunction windowAggregationFunction) {
     super(column);
 
-    if (relativeDaysInterval.from() == 0) {
-      throw new IllegalArgumentException("Sliding window cannot start at 0");
-    }
     this.sourceColumn = sourceColumn;
     this.relativeDaysInterval = relativeDaysInterval;
     this.windowAggregationFunction = windowAggregationFunction;

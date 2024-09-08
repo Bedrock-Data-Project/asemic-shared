@@ -12,10 +12,19 @@ public class QueryFactory {
   }
 
   public static Cte cte(QueryBuilder queryBuilder, String name, SelectStatement select) {
+    return cte(queryBuilder, name, select, List.of());
+  }
+
+  public static Cte cte(QueryBuilder queryBuilder, String name, SelectStatement select,
+                        List<Cte> skipReuse) {
     var cte = new Cte(name, queryBuilder.nextCteIndex(), select);
     var contentHash = cte.contentHash();
 
     for (var existingCte : queryBuilder.ctes.values()) {
+      if (skipReuse.stream().anyMatch(c -> c == existingCte)) {
+        continue;
+      }
+
       if (existingCte.contentHash().equals(contentHash)
           && existingCte.select().select().merge(cte.select().select())) {
         return existingCte;

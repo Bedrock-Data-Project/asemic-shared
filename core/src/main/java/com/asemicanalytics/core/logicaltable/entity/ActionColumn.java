@@ -18,6 +18,7 @@ public class ActionColumn extends EntityProperty {
   }
 
   public enum AggregateFunction {
+    COUNT,
     SUM,
     AVG,
     MIN,

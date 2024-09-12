@@ -1,5 +1,7 @@
 # Funnel Analysis in Asemic
 
+> TOOD: Ovo treba skroz od nule napisati
+
 Funnel analysis is a powerful tool for understanding user journeys and identifying bottlenecks in your product or process. Asemic's funnel analysis feature goes beyond simple linear funnels, allowing you to define and analyze complex sequences of user actions.
 
 ## Creating a Basic Funnel

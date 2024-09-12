@@ -1,5 +1,7 @@
 # Query Optimization in Asemic
 
+> TODO: Ovo ne bih sad gurao u dokumentaciju, ali ima smisla da se jednom i ovo uradi
+
 Asemic is designed to handle large volumes of data efficiently, with optimizations at both the data model and query level. This guide will explain how Asemic optimizes queries and provide tips for writing more efficient queries.
 
 ## How Asemic Optimizes Queries

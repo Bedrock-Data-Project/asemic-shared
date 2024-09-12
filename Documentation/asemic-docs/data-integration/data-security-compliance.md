@@ -1,4 +1,5 @@
 # Data Security and Compliance in Asemic
+> TODO: @korhner most of this is bullshit, check if anything makes sense to leave
 
 Ensuring the security of your data and compliance with relevant regulations is paramount. This guide outlines Asemic's approach to data security and provides best practices for maintaining compliance.
 

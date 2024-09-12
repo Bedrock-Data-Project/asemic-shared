@@ -12,25 +12,13 @@ A cohort is a group of users who share a common characteristic, typically the da
 
 ## Creating a Cohort Analysis
 
-To create a cohort analysis in Asemic:
+Every metric created can be used to track both daily changes and for cohort analysis. Simply pick a metric with the `cohort` tag and it will be displayed as a cohort chart.
 
-1. Navigate to the Cohort Analysis section in the Asemic UI.
-2. Select the metric you want to analyze.
-3. Choose your cohort definition (e.g., registration date, first purchase date).
-4. Set the time range for your analysis.
-5. (Optional) Apply filters or segments.
+This enables analysis of many other metrics past the standard Retention and LTV / CLV metrics. For instance, you might be tracking time spent in the app, but that's typically very stable metric. Do the cohort analysis and you might see that your users spend a lot of time on the day on registration, then it sharply drops and subsequently climbs slowly until it reaches 70% if the day 0 value. 
 
-Here's an example of how you might define a cohort analysis in Asemic:
+Track a point in journey accross time - how does Retention d7 look like from day to day?
 
-```yaml
-cohort_analysis:
-  metric: revenue
-  cohort_by: registration_date
-  time_range: 
-    start: 2023-01-01
-    end: 2023-12-31
-  granularity: week
-```
+[insert cohort analysis image here]
 
 ## Cohort Metrics
 

@@ -55,7 +55,7 @@ kpis:
     select: SUM({property.dau})
     x_axis:
       date: { total_function: avg }
-      cohort_day: { }
+      cohort_day: { }  # TODO: šta ovo znači?
 ```
 
 ### Filtered KPI
@@ -114,26 +114,6 @@ kpis:
 7. **Review and Refine**: Regularly review your KPIs to ensure they're still relevant and accurately measuring what you intend.
 
 ## Advanced Features
-
-### Custom SQL in KPIs
-
-For complex calculations that can't be expressed in the standard KPI syntax, you can use custom SQL:
-
-```yaml
-kpis:
-  complex_metric:
-    label: "Complex Metric"
-    select: |
-      WITH intermediate_calc AS (
-        SELECT user_id, SUM(revenue) as total_revenue
-        FROM user_purchases
-        GROUP BY user_id
-      )
-      SELECT AVG(total_revenue)
-      FROM intermediate_calc
-    x_axis:
-      date: { total_function: avg }
-```
 
 ### KPI Dependencies
 

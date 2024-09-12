@@ -1,4 +1,5 @@
 # API Integration with Asemic
+> TODO: @korhner Ovde ima zanimljivih stvari. Baci pogled i predloži šta od ovoga da zadržimo, šta da napravimo.
 
 Asemic provides a robust API that allows you to integrate our analytics capabilities into your own applications or workflows. This guide will help you get started with the Asemic API.
 

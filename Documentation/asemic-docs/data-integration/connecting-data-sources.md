@@ -1,5 +1,7 @@
 # Connecting Data Sources to Asemic
 
+> TODO: @korhner
+
 This guide will walk you through the process of connecting your data sources to Asemic. We'll cover the steps for the main supported data warehouses.
 
 ## General Process

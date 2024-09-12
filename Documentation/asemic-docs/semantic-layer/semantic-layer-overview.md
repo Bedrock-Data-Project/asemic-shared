@@ -10,6 +10,8 @@ Key features:
 - Define available User Actions
 - Map raw event data to meaningful actions
 - Apply semantic tags to provide context
+- Generate custom tables in the event-like format and use them alongside actual events
+Consider having ML model that scores users based on churn probability. You can simply add this to the list of Actions.
 
 Example:
 ```yaml
@@ -31,8 +33,8 @@ The User Properties layer aggregates actions on a per-user, per-day basis. These
 
 Key features:
 - Define properties computed for each user
-- Support for action-based, lifetime, and sliding window properties
 - Complex calculations like sliding windows and computed properties
+- Used for slicing data and for building metrics
 
 Example:
 ```yaml
@@ -68,7 +70,7 @@ kpis:
     select: SUM({property.dau})
     x_axis:
       date: { total_function: avg }
-      cohort_day: { }
+      cohort_day: { }  # 
 ```
 
 [Add an image here showing the KPI Definition layer]

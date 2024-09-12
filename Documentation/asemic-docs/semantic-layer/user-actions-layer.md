@@ -28,6 +28,7 @@ columns:
   language: { data_type: STRING }
 ```
 
+> TODO: we don't need both the image and the definition above
 ![User Actions Layer](../assets/Layer0.png)
 
 ### Key Components
@@ -37,6 +38,9 @@ columns:
 - **columns**: Definitions of the columns in your event table
   - **data_type**: The type of data in the column (e.g., INTEGER, STRING, DATE)
   - **tags**: Tags that provide additional context about the column
+
+#### Tags
+> TODO: @korhner list the tags with description
 
 ## Best Practices
 

@@ -8,13 +8,14 @@ Line charts are ideal for showing trends over time or comparing multiple metrics
 
 **Use cases:**
 - Tracking KPIs over time
+- Comparing KPIs with past performance
 - Comparing performance across different segments
 
 ![Line Chart](../assets/line-chart.png)
 
 To create a line chart:
-1. Select your KPI
-2. Choose 'Date' as your X-axis
+1. Click on a Line Chart and select your KPI
+2. That's it
 3. (Optional) Add segments or groups
 
 ## Bar Chart
@@ -24,13 +25,14 @@ Bar charts are great for comparing values across categories.
 **Use cases:**
 - Comparing revenue across product categories
 - Visualizing user distribution by country
+- Readable substitution for pie charts
 
 ![Bar Chart](../assets/bar-chart.png)
 
 To create a bar chart:
 1. Select your KPI
-2. Choose a categorical dimension for your X-axis
-3. (Optional) Add segments or groups
+2. Go to Full Edit Mode
+3. Pick a Bar Chart in Visualization tab
 
 ## Cohort Chart
 
@@ -39,13 +41,13 @@ Cohort charts help you analyze how user behavior changes over time for different
 **Use cases:**
 - Analyzing retention rates
 - Comparing LTV for different acquisition cohorts
+- Tracking User Journey over long periods of time for various metrics
 
 ![Cohort Chart](../assets/cohort-chart.png)
 
 To create a cohort chart:
-1. Select your KPI
-2. Choose 'Cohort Day' as your X-axis
-3. Define your cohort (e.g., by registration date)
+1. Select your KPI with a tag `cohort`
+2. That's it
 
 ## Funnel Chart
 
@@ -83,8 +85,7 @@ Asemic's Layout Engine automatically selects the most appropriate chart type bas
 
 To change the chart type:
 1. Click on the chart type icon in the top-right corner of your visualization
-2. Select your preferred chart type from the dropdown menu
+2. Go to Full Edit Mode
+3. Go to Visualization tab
 
 Remember, the best chart type depends on the story you're trying to tell with your data. Experiment with different visualizations to find the one that communicates your insights most effectively.
-
-For more advanced visualization techniques, check out our guide on [Creating Custom Visualizations](custom-visualizations.md).

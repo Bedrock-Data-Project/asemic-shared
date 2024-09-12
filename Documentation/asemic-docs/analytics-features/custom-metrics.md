@@ -100,24 +100,6 @@ metrics:
     template: cohort_day
 ```
 
-### Custom SQL Metrics
-
-For complex calculations that can't be expressed in the standard metric syntax:
-
-```yaml
-metrics:
-  complex_segmentation:
-    label: "Complex User Segmentation"
-    select: |
-      CASE
-        WHEN {property.lifetime_purchases} > 10 AND {property.average_order_value} > 100 THEN 'High Value'
-        WHEN {property.lifetime_purchases} > 5 OR {property.average_order_value} > 50 THEN 'Medium Value'
-        ELSE 'Low Value'
-      END
-    x_axis:
-      date: { }
-```
-
 ## Best Practices for Custom Metrics
 
 1. **Use Clear Naming Conventions**: Choose descriptive names that clearly indicate what the metric measures.
@@ -143,8 +125,5 @@ Once defined, custom metrics can be used throughout Asemic:
 - In cohort analysis
 - For segmentation and filtering
 
-## Conclusion
-
-Custom metrics in Asemic provide the flexibility to measure and analyze the specific aspects of user behavior that matter most to your business. By leveraging this powerful feature and following best practices, you can create a suite of metrics that precisely match your analytical needs and drive informed decision-making.
-
+---
 For more advanced topics, check out our guides on [Query Optimization](../advanced-topics/query-optimization.md) and [Custom SQL](../advanced-topics/custom-sql.md).

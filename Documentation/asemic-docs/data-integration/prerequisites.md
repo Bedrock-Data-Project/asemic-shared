@@ -2,14 +2,6 @@
 
 Before you begin integrating your data with Asemic, there are several prerequisites you need to meet. This guide will walk you through the necessary steps and requirements.
 
-## Supported Data Warehouses
-
-Asemic currently supports the following data warehouses:
-
-- BigQuery
-- Snowflake
-- (Additional warehouses may be supported; check the latest documentation)
-
 ## Data Requirements
 
 1. **SQL Data Warehouse**: Your data must be stored in a SQL-compatible data warehouse.
@@ -19,6 +11,15 @@ Asemic currently supports the following data warehouses:
 3. **First Appearance Event**: One of your event tables should have one row per user's first appearance in the system.
 
 4. **Activity Tracking**: You need a table or event that encodes information about user activity.
+
+## Supported Data Warehouses
+> TODO: @korhner Šta se možemo da stavimo na ovu listu, a da se ne upucamo u nogu?
+
+Asemic currently supports the following data warehouses:
+
+- BigQuery
+- Snowflake
+- (Additional warehouses may be supported; check the latest documentation)
 
 ## Access and Permissions
 
@@ -43,6 +44,7 @@ While Asemic is flexible in terms of data structure, having a well-organized eve
 1. **Consistent User Identifier**: Ensure you have a consistent user ID across all relevant tables.
 2. **Timestamp Fields**: Each event should have an associated timestamp.
 3. **Event Type Identification**: There should be a clear way to distinguish between different types of events.
+4. **Event structure**: Events are stored either each in a separate table, or all events in one big table with clear event type identification
 
 ## Asemic CLI Installation
 

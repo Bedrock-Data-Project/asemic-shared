@@ -1,5 +1,7 @@
 # Data Modeling in Asemic
 
+> TODO: fale tagovi za User Actions, i primeri definicija različitih tipova Propertyja o metrika
+
 After connecting your data sources, the next step is to model your data in Asemic. This process involves defining user actions, properties, and KPIs that will form the foundation of your analytics.
 
 ## Understanding Asemic's Data Model
@@ -42,13 +44,13 @@ properties:
   dau:
     label: DAU
     data_type: INTEGER
-    can_filter: true
-    can_group_by: true
+    can_filter: true # will it show up in Drill Down filters?
+    can_group_by: true  # will it show in Group By option?
     action_property:
       source_action: activity
       select: 1
       aggregate_function: none
-      default_value: 0
+      default_value: 0 # will be used if there's no data for this date
 
   lifetime_revenue:
     label: Lifetime Revenue
@@ -110,8 +112,31 @@ After defining your actions, properties, and KPIs:
 
 ## Advanced Modeling Techniques
 
-### Funnel Definition
+### Computed Properties
+> TODO
 
+### Windowed properties
+> TODO
+
+### Lifetime properties
+> TODO
+
+### Buckets
+
+Define a new property based on range of values:
+
+```yaml
+cohort_definition:
+  property: first_purchase_amount
+  ranges:
+    - {min: 0, max: 50, label: "Low Value"}
+    - {min: 50, max: 200, label: "Medium Value"}
+    - {min: 200, label: "High Value"}
+```
+
+### Sequence Definition and Funnels
+
+> TODO: redefine this, link main article
 You can define complex funnels using Asemic's sequence matching capabilities:
 
 ```python
@@ -124,19 +149,6 @@ Funnel(
         Step(Purchase)
     ]
 )
-```
-
-### Cohort Analysis
-
-Define cohorts based on user properties or actions:
-
-```yaml
-cohort_definition:
-  property: first_purchase_amount
-  ranges:
-    - {min: 0, max: 50, label: "Low Value"}
-    - {min: 50, max: 200, label: "Medium Value"}
-    - {min: 200, label: "High Value"}
 ```
 
 ## Iterating on Your Data Model

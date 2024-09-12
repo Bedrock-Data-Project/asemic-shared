@@ -9,6 +9,7 @@ The main purposes of the User Properties Layer are:
 1. To aggregate user actions into meaningful properties
 2. To provide a foundation for defining complex KPIs
 3. To enable efficient filtering and grouping in analyses
+4. To create User state model that can be used for time-travel analysis
 
 ## Types of User Properties
 
@@ -69,6 +70,17 @@ properties:
     can_group_by: true
     computed_property: 
       select: '{daily_payers} = 1'
+
+  # Bucketing
+  early_buyer_category:
+    date_type: STRING
+    can_filter: true
+    can_group_by: true
+    property: first_purchase_amount
+    ranges:
+      - {min: 0, max: 50, label: "Low Value"}
+      - {min: 50, max: 200, label: "Medium Value"}
+      - {min: 200, label: "High Value"}
 ```
 
 ## Best Practices

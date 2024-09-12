@@ -31,7 +31,6 @@ Dashboards in Asemic allow you to combine multiple visualizations into a single 
 
 1. Drag and drop visualizations to rearrange them on your dashboard.
 2. Resize visualizations by clicking and dragging the bottom-right corner.
-3. Use the layout options in the top right to adjust the grid size and snap-to-grid settings.
 
 ## Adding Text and Annotations
 
@@ -57,28 +56,15 @@ Global filters will apply to all visualizations on your dashboard unless you spe
 
 ![Share Dashboard](../assets/share-dashboard.png)
 
-## Best Practices for Dashboard Creation
+## Dashboards
 
-1. **Start with a clear goal**: Define what questions your dashboard should answer before you start building.
+Asemic is not a dashboarding tool. Dashboards are just a format for communicating data, but in Asemic the first class citizens are metrics and other elements defined in Semantic Layer. Dashboard is a container within which we can easily recombine these building blocks for various purposes.
 
-2. **Use a logical layout**: Arrange your visualizations in a way that tells a coherent story.
+1. **Ad-hoc data requests**: Business often needs value of a metric for a specific segment. Just go to KPI explorer, pick a metric or more and define your segment(s). You don't have to save this, it's a minute of work to get it and it is always available.
 
-3. **Limit the number of visualizations**: Aim for 5-7 visualizations per dashboard to avoid overwhelming viewers.
+2. **Exploratory Analysis**: Asemic allows building highly complex analysis out of the box and supports large number of Charts. Put 100s of charts with various segments to give yourself multiple perspectives on data. Once you satisfy your curiosity, build a proper dashboard for sharing with other people.
 
-4. **Use consistent formatting**: Stick to a consistent color scheme and chart types for a professional look.
+3. **Operational Dashboard**: There a business units that require a fixed set of metrics with the ability to change the view by tinkering with available filters. In Asemic the line between creating a dashboard and interacting with one is blurred. This enables much greater flexibilty in interacting with a dashboard.
 
-5. **Provide context**: Use text boxes to explain complex metrics or provide additional context for your data.
-
-6. **Update regularly**: Set up automated refresh schedules to keep your dashboard data up-to-date.
-
-7. **Iterate based on feedback**: Regularly ask for feedback from dashboard users and make improvements accordingly.
-
-## Advanced Features
-
-- **Dashboard Templates**: Save your dashboard as a template for quick reuse across different data sets or teams.
-- **Dynamic Date Ranges**: Use relative date ranges to create dashboards that automatically update to show the most recent data.
-- **Drill-Down Capabilities**: Set up drill-down links between dashboards for deeper analysis.
-
-For more advanced visualization techniques, check out our guide on [Creating Custom Visualizations](custom-visualizations.md).
-
+---
 Remember, the most effective dashboards are those that provide clear, actionable insights at a glance. Take the time to refine your dashboards and ensure they're meeting the needs of your team.

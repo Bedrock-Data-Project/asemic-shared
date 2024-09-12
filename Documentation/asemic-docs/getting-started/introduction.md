@@ -4,15 +4,24 @@ Asemic is a next-generation product analytics platform designed to give you deep
 
 ## Core Concepts
 
+### Data Integration
+
+Asemic is designed to work with your existing data warehouse, minimizing the need for complex ETL processes. Our system can automatically generate and maintain your data model based on the definitions in the Semantic Layer.
+
 ### Semantic Layer
 
 At the heart of Asemic is our innovative three-layer Semantic Layer:
 
-1. **Action Definition Layer**: Defines available User Actions, providing context to raw event data.
-2. **User Properties Layer**: Aggregates actions on a per-user, per-day basis, serving as building blocks for KPIs.
+1. **User Action Definition Layer**: Defines available User Actions, providing context to raw event data.
+2. **User Properties Layer**: Aggregates actions on a per-user, per-day basis, serving as building blocks for KPIs. Tracks state of the user through time, allowing easy time-travel and simplifies advanced analysis.
 3. **KPI Layer**: Constructs complex KPIs with awareness of different dimensions and aggregation methods.
 
 This approach allows for unprecedented flexibility in defining and analyzing user behavior.
+
+### Auto-maintanence of the Physical Model
+
+Semantic Layer is not an afterthought, it is the core concept that preceeds physical data model. Asemic uses logical structure in the Semantic Layer to generate data model from the events and then automatically builds and maintains this structure. 
+
 
 ### Advanced Funnel Analysis
 
@@ -25,9 +34,10 @@ Asemic's funnel analysis goes beyond simple linear funnels:
 
 This allows you to model complex user journeys and gain insights into nuanced behavior patterns.
 
-### Data Integration
+### Long-term User Journey
 
-Asemic is designed to work with your existing data warehouse, minimizing the need for complex ETL processes. Our system can automatically generate and maintain your data model based on the definitions in the Semantic Layer.
+Funnels can provide insights in the early days of User Journey and model short-term decision making processes later on. 
+Long-term User Journey is best modeled with series of cohort metrics that track various states over many days. Asemic provides simple interface for defining cohort metrics and has specialized UI for working with it.
 
 ## What Sets Asemic Apart
 

@@ -4,6 +4,5 @@ public enum WindowAggregationFunction {
   SUM,
   AVG,
   MIN,
-  MAX,
-  ARRAY
+  MAX
 }

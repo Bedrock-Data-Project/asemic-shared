@@ -100,6 +100,8 @@ class EntityConfigLoaderTest {
         null,
         new EntityPropertySlidingWindowDto(
             sourceProperty,
+            null,
+            null,
             EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.AVG,
             -5,
             0
@@ -258,9 +260,10 @@ class EntityConfigLoaderTest {
         ),
         List.of());
 
-    assertEquals(17, ds.getColumns().getColumns().size());
+    assertEquals(21, ds.getColumns().getColumns().size());
     assertEquals(Set.of(
-            "r1", "r2", "ua1", "ua2", "t1", "t2", "c1", "c2", "sl1", "sl2",
+            "r1", "r2", "ua1", "ua2", "t1", "t1__inner", "t2", "t2__inner", "c1", "c2", "sl1",
+            "sl1__inner", "sl2", "sl2__inner",
             "first_appearance_date", "date_", "unique_id", "last_login_date", "cohort_day",
             "days_since_last_active", "cohort_size"),
         ds.getColumns().getColumns().keySet());

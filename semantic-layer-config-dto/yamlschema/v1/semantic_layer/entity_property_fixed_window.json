@@ -3,7 +3,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "source_property",
     "window_function",
     "date_from",
     "date_to"
@@ -11,6 +10,12 @@
   "properties": {
     "source_property": {
       "type": "string"
+    },
+    "source_computed_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_computed.json"
+    },
+    "source_action_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json"
     },
     "window_function": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_window_function.json"

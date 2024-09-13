@@ -168,18 +168,24 @@ public class EntityMapper
     }
     for (var entry : lifetimeProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new LifetimePropertyDtoMapper(column, actionLogicalTables)
-          .apply(entry.getValue().getLifetimeProperty().get()));
+      var entity = new LifetimePropertyDtoMapper(column, actionLogicalTables)
+          .apply(entry.getValue().getLifetimeProperty().get());
+      columns.put(entry.getKey(), entity);
+      columns.put(entity.getSourceColumn().getId(), entity.getSourceColumn());
     }
     for (var entry : slidingWindowProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new SlidingWindowPropertyDtoMapper(column, columns, activeDays)
-          .apply(entry.getValue().getSlidingWindowProperty().get()));
+      var entity = new SlidingWindowPropertyDtoMapper(column, activeDays, actionLogicalTables)
+          .apply(entry.getValue().getSlidingWindowProperty().get());
+      columns.put(entry.getKey(), entity);
+      columns.put(entity.getSourceColumn().getId(), entity.getSourceColumn());
     }
     for (var entry : fixedWindowProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new FixedWindowPropertyDtoMapper(column, columns)
-          .apply(entry.getValue().getFixedWindowProperty().get()));
+      var entity = new FixedWindowPropertyDtoMapper(column, actionLogicalTables)
+          .apply(entry.getValue().getFixedWindowProperty().get());
+      columns.put(entry.getKey(), entity);
+      columns.put(entity.getSourceColumn().getId(), entity.getSourceColumn());
     }
     for (var entry : computedProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());

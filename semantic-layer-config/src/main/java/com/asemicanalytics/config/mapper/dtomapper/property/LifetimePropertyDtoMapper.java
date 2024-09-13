@@ -24,37 +24,13 @@ public class LifetimePropertyDtoMapper implements
   @Override
   public LifetimeColumn apply(
       EntityPropertyLifetimeDto dto) {
-    EntityProperty sourceColumn = null;
-
-    var innerColumn = Column.ofHidden(column.getId() + "__inner", column.getDataType());
-    if (dto.getSourceProperty().isPresent()) {
-      sourceColumn = new ComputedPropertyDtoMapper(innerColumn)
-          .apply(
-              new EntityPropertyComputedDto("{" + dto.getSourceProperty().get() + "}", List.of()));
-    }
-
-    if (dto.getSourceComputedProperty().isPresent()) {
-      if (sourceColumn != null) {
-        throw new IllegalArgumentException(
-            "Can have either source property, source action property or source computed property");
-      }
-      sourceColumn = new ComputedPropertyDtoMapper(innerColumn)
-          .apply(dto.getSourceComputedProperty().get());
-    }
-
-    if (dto.getSourceActionProperty().isPresent()) {
-      if (sourceColumn != null) {
-        throw new IllegalArgumentException(
-            "Can have either source property, source action property or source computed property");
-      }
-      sourceColumn = new ActionPropertyDtoMapper(innerColumn, actionLogicalTables)
-          .apply(dto.getSourceActionProperty().get());
-    }
-
-    if (sourceColumn == null) {
-      throw new IllegalArgumentException(
-          "Must have either source property, source action property or source computed property");
-    }
+    EntityProperty sourceColumn = ComposableColumnHelper.getSourceColumn(
+        column,
+        dto.getSourceProperty(),
+        dto.getSourceComputedProperty(),
+        dto.getSourceActionProperty(),
+        actionLogicalTables
+    );
 
     return new LifetimeColumn(
         column,

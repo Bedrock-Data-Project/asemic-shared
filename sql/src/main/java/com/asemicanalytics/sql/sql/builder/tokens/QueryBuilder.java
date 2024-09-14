@@ -4,7 +4,9 @@ import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.sql.sql.builder.optimizer.SimplifyCteNames;
 import com.asemicanalytics.sql.sql.builder.optimizer.SortCtes;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.StringJoiner;
 
 public class QueryBuilder implements Token {
@@ -18,7 +20,7 @@ public class QueryBuilder implements Token {
     return this;
   }
 
-  QueryBuilder with(Cte cte) {
+  public QueryBuilder put(Cte cte) {
     ctes.put(cte.name(), cte);
     return this;
   }
@@ -54,5 +56,9 @@ public class QueryBuilder implements Token {
 
   int nextCteIndex() {
     return cteIndex++;
+  }
+
+  public Map<String, Cte> getCtes() {
+    return new HashMap<>(ctes);
   }
 }

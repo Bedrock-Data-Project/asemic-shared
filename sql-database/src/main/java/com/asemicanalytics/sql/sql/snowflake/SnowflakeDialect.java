@@ -23,8 +23,6 @@ public class SnowflakeDialect implements Dialect {
       case STRING -> "'" + value + "'";
       case DATE -> "TO_DATE('" + value + "', 'YYYY-MM-DD')";
       case DATETIME -> "TO_TIMESTAMP('" + value + "', 'YYYY-MM-DD HH24:MI:SS.FF3')";
-      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
-          throw new UnsupportedOperationException();
     };
   }
 

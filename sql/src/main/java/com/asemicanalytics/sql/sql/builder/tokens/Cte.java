@@ -2,16 +2,19 @@ package com.asemicanalytics.sql.sql.builder.tokens;
 
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class Cte implements TableLike {
-  private final SelectStatement select;
-  private String tag;
-  private int index;
+  protected final SelectStatement select;
+  protected String tag;
+  protected int index;
 
-  Cte(String tag, int index, SelectStatement select) {
+  private Map<String, Object> metadata = new HashMap<>();
+
+  protected Cte(String tag, int index, SelectStatement select) {
     this.tag = tag;
     this.select = select;
     this.index = index;
@@ -22,6 +25,10 @@ public class Cte implements TableLike {
       return tag;
     }
     return tag + "_" + index;
+  }
+
+  public int index() {
+    return index;
   }
 
   public String renderDefinition(Dialect dialect) {
@@ -78,5 +85,11 @@ public class Cte implements TableLike {
     select.select().merge(new Select(new ExpressionList(expressions)));
   }
 
+  public void setMetadata(String key, Object value) {
+    this.metadata.put(key, value);
+  }
 
+  public Object getMetadata(String key) {
+    return this.metadata.get(key);
+  }
 }

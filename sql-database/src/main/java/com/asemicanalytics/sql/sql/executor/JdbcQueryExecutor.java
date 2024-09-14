@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -51,8 +53,6 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
       case INTEGER -> resultSet.getLong(columnIndex);
       case STRING -> resultSet.getString(columnIndex);
       case BOOLEAN -> resultSet.getBoolean(columnIndex);
-      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
-          throw new UnsupportedOperationException();
     };
   }
 
@@ -63,6 +63,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
   @Override
   protected SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
       throws InterruptedException {
+    var start = Instant.now();
     try (Connection connection = getConnection()) {
       try (Statement statement = connection.createStatement()) {
         try (ResultSet resultSet = statement.executeQuery(sql)) {
@@ -78,7 +79,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
             rows.add(new SqlResultRow(columns));
           }
 
-          return new SqlResult(rows);
+          return new SqlResult(rows, sql, Duration.between(start, Instant.now()));
         }
       }
     } catch (SQLException e) {

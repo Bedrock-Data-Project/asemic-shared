@@ -26,6 +26,8 @@ import com.google.cloud.bigquery.TableResult;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -75,8 +77,6 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
       case INTEGER -> value.getLongValue();
       case STRING -> value.getStringValue();
       case BOOLEAN -> value.getBooleanValue();
-      case NUMBER_ARRAY, DATETIME_ARRAY, INTEGER_ARRAY, STRING_ARRAY, DATE_ARRAY, BOOLEAN_ARRAY ->
-          throw new UnsupportedOperationException();
     };
   }
 
@@ -117,16 +117,18 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
   @Override
   protected SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
       throws InterruptedException {
+    Instant start = Instant.now();
     TableResult result = executeQuery(sql, dryRun);
     if (dryRun) {
-      return new SqlResult(List.of());
+      return new SqlResult(List.of(), sql, Duration.between(start, Instant.now()));
     }
+
 
     List<SqlResultRow> rows = new LinkedList<>();
     for (FieldValueList row : result.iterateAll()) {
       rows.add(new SqlResultRow(parseRow(row, dataTypes)));
     }
-    return new SqlResult(rows);
+    return new SqlResult(rows, sql, Duration.between(start, Instant.now()));
   }
 
   private List<Column> getColumnsFromField(String prefix, Field field) {

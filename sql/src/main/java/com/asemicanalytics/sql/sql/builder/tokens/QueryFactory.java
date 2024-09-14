@@ -31,7 +31,7 @@ public class QueryFactory {
       }
     }
 
-    queryBuilder.with(cte);
+    queryBuilder.put(cte);
     return cte;
   }
 

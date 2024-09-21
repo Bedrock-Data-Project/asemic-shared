@@ -12,11 +12,14 @@ public class ActionPropertyDtoMapper implements
 
   private final Column column;
   private final Map<String, ActionLogicalTable> actionLogicalTables;
+  private final boolean generated;
 
   public ActionPropertyDtoMapper(Column column,
-                                 Map<String, ActionLogicalTable> actionLogicalTables) {
+                                 Map<String, ActionLogicalTable> actionLogicalTables,
+                                 boolean generated) {
     this.column = column;
     this.actionLogicalTables = actionLogicalTables;
+    this.generated = generated;
   }
 
   @Override
@@ -34,6 +37,7 @@ public class ActionPropertyDtoMapper implements
         logicalTable,
         dto.getWhere(), dto.getSelect(),
         ActionColumn.AggregateFunction.valueOf(dto.getAggregateFunction().name()),
-        dto.getDefaultValue().orElse(null));
+        dto.getDefaultValue().orElse(null),
+        generated);
   }
 }

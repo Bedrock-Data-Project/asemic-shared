@@ -11,6 +11,7 @@ public class ActionColumn extends EntityProperty {
   private final String select;
   private final AggregateFunction aggregationFunction;
   private final String defaultValue;
+  private final boolean generated;
 
   @Override
   public EntityPropertyType getType() {
@@ -35,12 +36,24 @@ public class ActionColumn extends EntityProperty {
       String select,
       AggregateFunction aggregationFunction,
       String defaultValue) {
+    this(column, actionLogicalTable, where, select, aggregationFunction, defaultValue, false);
+  }
+
+  public ActionColumn(
+      Column column,
+      ActionLogicalTable actionLogicalTable,
+      Optional<String> where,
+      String select,
+      AggregateFunction aggregationFunction,
+      String defaultValue,
+      boolean generated) {
     super(column);
     this.actionLogicalTable = actionLogicalTable;
     this.where = where;
     this.select = select;
     this.aggregationFunction = aggregationFunction;
     this.defaultValue = defaultValue;
+    this.generated = generated;
   }
 
   public ActionLogicalTable getActionLogicalTable() {
@@ -66,5 +79,9 @@ public class ActionColumn extends EntityProperty {
 
   public String getDefaultValue() {
     return defaultValue;
+  }
+
+  public boolean isGenerated() {
+    return generated;
   }
 }

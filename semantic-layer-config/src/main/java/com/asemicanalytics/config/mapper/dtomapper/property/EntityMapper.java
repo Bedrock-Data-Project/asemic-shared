@@ -158,12 +158,7 @@ public class EntityMapper
     }
     for (var entry : actionProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new ActionPropertyDtoMapper(column, actionLogicalTables)
-          .apply(entry.getValue().getActionProperty().get()));
-    }
-    for (var entry : actionProperties.entrySet()) {
-      var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new ActionPropertyDtoMapper(column, actionLogicalTables)
+      columns.put(entry.getKey(), new ActionPropertyDtoMapper(column, actionLogicalTables, false)
           .apply(entry.getValue().getActionProperty().get()));
     }
     for (var entry : lifetimeProperties.entrySet()) {

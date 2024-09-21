@@ -40,7 +40,7 @@ public class ComposableColumnHelper {
         throw new IllegalArgumentException(
             "Can have either source property, source action property or source computed property");
       }
-      sourceColumn = new ActionPropertyDtoMapper(innerColumn, actionLogicalTables)
+      sourceColumn = new ActionPropertyDtoMapper(innerColumn, actionLogicalTables, true)
           .apply(actionSourceProperty.get());
     }
 

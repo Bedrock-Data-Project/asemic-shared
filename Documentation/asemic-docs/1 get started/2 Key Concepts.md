@@ -29,6 +29,8 @@ The Asemic CLI is used for managing your Semantic Layer and maintaining physical
 
 Current list of operations are:
 
+> TODO
+
 ```bash
 asemic-cli init
 

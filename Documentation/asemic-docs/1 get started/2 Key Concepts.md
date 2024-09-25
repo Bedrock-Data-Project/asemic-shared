@@ -39,3 +39,5 @@ asemic-cli config validate # validates your setup without changing production
 asemic-cli config push     # once validation passes, push your configuration
 
 ```
+
+> TODO: jeremy dodaj BI tool

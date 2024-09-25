@@ -4,6 +4,8 @@ Simple business questions often requre complex interaction with data, with our t
 
 Asemic is a next-generation data warehouse-natice product analytics platform designed to simplify how you interact with the data and automating data modelling tasks. The core to this is our powerful Semantic Layer.
 
+![Asemic App](../assets/asemic.png)
+
 ## Core Concepts
 
 ### Data Integration

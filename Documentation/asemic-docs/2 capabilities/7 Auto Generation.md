@@ -40,6 +40,7 @@ While the auto-generation process is largely automated, you have several control
    asemic-cli model update --kpi daily_revenue
    ```
 
+> TODO: Delete Best Practices
 ## Best Practices
 
 1. **Start Small**: Begin with a small subset of your data to ensure your configuration is correct before scaling up.
@@ -52,5 +53,6 @@ While the auto-generation process is largely automated, you have several control
 - The auto-generation process can take significant time for very large datasets or complex configurations.
 - There's a limit to the complexity of calculations that can be auto-generated. For extremely complex cases, you may need to use custom SQL.
 
+---
 By leveraging Asemic's auto-generation capabilities, you can maintain a complex, performant data model with minimal manual intervention. This allows you to focus on deriving insights from your data rather than managing infrastructure.
 

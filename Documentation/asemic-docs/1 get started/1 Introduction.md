@@ -44,25 +44,28 @@ Semantic Layer is not an afterthought, it is the core concept that preceeds phys
 
 ### Advanced Funnel Analysis
 
-Asemic's funnel analysis goes beyond simple linear funnels:
+Asemic provides simple pattern-matching language for dealing with sequences. Asemic's funnel analysis goes beyond simple linear funnels:
 
 - Support for optional steps
+- Time-dependant Funnels
 - Parallel paths
 - Negative conditions (NOT steps)
 - Flexible time horizons and delays between steps
+- Setting custom Domain for funnel analysis
 
 This allows you to model complex user journeys and gain insights into nuanced behavior patterns.
 
 ### Long-term User Journey
 
-Funnels can provide insights in the early days of User Journey and model short-term decision making processes later on. 
-Long-term User Journey is best modeled with series of cohort metrics that track various states over many days. Asemic provides simple interface for defining cohort metrics and has specialized UI for working with it.
+Funnels can provide insights in the early days of User Journey and model short-term decision making processes. 
+
+Long-term User Journey is best modeled using multiple cohort metrics that track various states over many days. Asemic provides simple interface for defining cohort metrics and has specialized UI for working with it.
 
 ## What Sets Asemic Apart
 
-- **Flexibility**: Define metrics and KPIs using a business-logic first approach, without being constrained by your physical data model.
-- **Power**: Perform complex analyses that would be difficult or impossible with traditional tools.
-- **Ease of Use**: Our intuitive interface and smart Layout Engine make it easy to create insightful visualizations.
+- **Business-First**: Define metrics and KPIs using a business-logic first approach, without being constrained by your physical data model.
+- **Not-only-visualization tool**: Asemic is not visualizatin tool for your data, it's doing data modelling so you don't have to, unless you want to.
+- **Power**: Perform complex analyses that would be difficult or impossible with traditional tools. Internal data model provides capabilities beyond what is possible with other tools, even when they are using the same model.
 - **Scalability**: Asemic is built to handle large volumes of data efficiently, with optimizations at both the data model and query level.
 
 ## Prerequisites
@@ -72,6 +75,8 @@ Long-term User Journey is best modeled with series of cohort metrics that track 
 2. **User Events**: You should have tables containing user events, either stored in separate tables or in one consolidated table.
 
 3. **First Appearance Event**: One of your tables should have one row per user's first appearance in the system.
+
+4. **Activity Event**: One of your tables should have at least one row per user per day when they are active.
 
 While Asemic is flexible in terms of data structure, having a well-organized event schema will make the integration process smoother. Consider the following:
 

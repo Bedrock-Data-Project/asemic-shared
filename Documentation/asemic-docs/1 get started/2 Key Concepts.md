@@ -29,7 +29,7 @@ The Asemic CLI is used for managing your Semantic Layer and maintaining physical
 
 Current list of operations are:
 
-> TODO
+> TODO: ivan
 
 ```bash
 asemic-cli init
@@ -40,4 +40,22 @@ asemic-cli config push     # once validation passes, push your configuration
 
 ```
 
-> TODO: jeremy dodaj BI tool
+## AsemicBI
+
+The Asemic BI tool is a web application that serves as the primary interface for analyzing data processed through Asemic's Semantic Layer. Key features include:
+
+1. User-friendly interface for creating custom dashboards without SQL knowledge
+2. Automatic chart suggestions via the Layout Engine
+3. Advanced filtering, including Time Travel for temporal analysis
+4. KPI Explorer for data exploration
+5. Funnel and Cohort Analysis for user behavior insights
+6. Smart Date Picker for flexible time period selection
+7. Annotations feature for adding context to data trends
+
+The tool translates complex data structures into business-friendly terms, allowing users to work with concepts like "Monthly Active Users" or "Customer Lifetime Value" directly. It adapts to user needs in real-time, enabling quick, data-driven decision-making across organizations.
+
+By combining powerful analytics with an accessible interface, the Asemic BI tool bridges the gap between raw data and actionable business insights.
+
+
+---
+In the next section we'll go over the basic steps of setting up Asemic and starting with analysis on your data.

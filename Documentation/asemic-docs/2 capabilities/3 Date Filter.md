@@ -3,6 +3,8 @@
 
 Asemic's custom Date Picker allows you to flexibly set the time period for your dashboard analysis. This guide explains how to use the Date Picker effectively, including relative and fixed date selections, granularity options, and setting up comparison periods.
 
+![Date Picker](../assets/date-picker.png)
+
 ## Date Picker Tabs
 
 The Date Picker has two main tabs:
@@ -52,6 +54,8 @@ For both tabs, you can select the granularity of your data:
 
 When you select a granularity other than "Day", the Date Picker adjusts to allow selection of whole units of the chosen granularity.
 
+![Date Picker Months](../assets/date-picker-month.png)
+
 __Example__:
 If you select "Month" granularity:
 - The Date Picker will show a month selector
@@ -80,13 +84,11 @@ Use case: Use comparison periods to track performance improvements, identify sea
 
 ## Best Practices
 
-1. **Consistent Reporting**: For recurring reports, stick to consistent time periods and granularities to ensure comparability.
+1. **Granularity Selection**: Choose a granularity that balances detail with readability. Daily data might be too noisy for year-long trends, while monthly data might miss important weekly patterns. Match granularity here with the granularity in charts - if your charts show months, choose a date range that takes only whole months.
 
-2. **Granularity Selection**: Choose a granularity that balances detail with readability. Daily data might be too noisy for year-long trends, while monthly data might miss important weekly patterns.
+2. **Comparison Periods**: When using comparison periods, consider seasonal effects and ensure you're comparing like with like.
 
-3. **Comparison Periods**: When using comparison periods, consider seasonal effects and ensure you're comparing like with like.
-
-4. **Relative vs. Fixed**: Use relative periods for ongoing monitoring and fixed periods for historical analysis or event-specific reporting.
+3. **Relative vs. Fixed**: Use relative periods for ongoing monitoring and fixed periods for historical analysis or event-specific reporting.
 
 ---
 By leveraging Asemic's flexible Date Picker, you can ensure your dashboards and analyses are always showing the most relevant data for your needs, whether that's the latest information or a specific historical period.

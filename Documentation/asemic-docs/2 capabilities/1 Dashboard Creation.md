@@ -8,17 +8,24 @@ Dashboards in Asemic allow you to combine multiple visualizations into a single 
 
 One the homepage of your workspace go to Dashboards, if not already there. Here's a dashboard-like option named KPI EXPLORER, this is where you can go for a quick look of a specific metric(s), but also a place where you can start building a dashboard.
 
+![KPI Explorer](../assets/kpi-explorer.png){100x100}
+
 1. In the top right corner of KPI EXPLORER click on a the options and then `Clear Dashboard`
 2. Click the KPI EXPLORER
 3. Add Visualizations and set up Segments
 4. Click on the top right button `Save as Dashboard`
 5. Give it a name
 
-Now the dashboard is saved as private. You can find it on the home screen in Dashboard -> All Dashboards, or in Dashboards -> My Dashboards.
+![Save As](../assets/save-as-dashboard.png)
+
+Now the dashboard is saved as private. You can find it on the home screen in `Dashboard -> All Dashboards`, or in Dashboards -> My Dashboards.
 
 ### Editing a Dashboard
 
 In the top bar there's `Edit Mode` switch. As long as it is on, there's an indicatior next to the name of a dashboard signaling that Auto-save is on. Every change will be saved and synced with the cloud.
+
+![Edit](../assets/edit-switch.png)
+![Edit On](../assets/edit-switch-on.png)
 
 If you, as a creator, turn off Edit Mode, you can interact with the dashboard as anyone else, no changes will be made.
 
@@ -36,14 +43,18 @@ Open a dashboard of interest. Click the arrow next to the name of the dashboard 
 
 ## Adding Visualizations
 
+> TODO: fix this image
+
+![Topbar](../assets/topbar.png)
+
 There are 3 options currently available:
 1. Add Chart
    Under this option you have:
    - Line Chart
-   - Cohort Chart
    - Bar Chart
-2. Table
-3. Funnel [WIP]
+2. Add Cohort Chart
+3. Table
+4. Funnel [WIP]
 
 ### 1. Add Chart
 
@@ -82,11 +93,10 @@ Click `Add Table` on the top bar. You can select multiple metrics to add, they w
 1. Drag and drop visualizations to rearrange them on your dashboard.
 2. Resize visualizations by clicking and dragging the bottom-right corner.
 
-
 ## Applying Global Filters - User Segments
 
 ![User Segments](../assets/user-segments.png)
-
+ 
 #### 1. Drill Down
 
 Click `Drill Down` on any existing segment to add a filter to the segment. This will be applied to all the charts that are using global segments.

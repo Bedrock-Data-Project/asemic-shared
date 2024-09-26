@@ -11,7 +11,7 @@ Line charts are ideal for showing trends over time or comparing multiple metrics
 - Comparing KPIs with past performance
 - Comparing performance across different segments
 
-![Line Chart](../assets/line-chart.png)
+![alt text](../assets/line-chart.png)
 
 To create a line chart:
 1. Click on Add Chart and select your KPI
@@ -72,7 +72,7 @@ Tables provide a detailed view of your data, allowing for precise comparisons an
 - Detailed breakdowns of KPIs by multiple dimensions
 - Exporting data for further analysis
 
-![Table View](../assets/table.png)
+![Table View](../assets/table-chart.png)
 
 To create a table:
 1. Click on Add Table

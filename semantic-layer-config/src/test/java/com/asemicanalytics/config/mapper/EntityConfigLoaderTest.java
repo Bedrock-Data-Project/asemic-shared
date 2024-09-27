@@ -265,7 +265,7 @@ class EntityConfigLoaderTest {
     assertEquals(Set.of(
             "r1", "r2", "ua1", "ua2", "t1", "t1__inner", "t2", "t2__inner", "c1", "c2", "sl1",
             "sl1__inner", "sl2", "sl2__inner",
-            "first_appearance_date", "date_", "unique_id", "last_login_date", "cohort_day",
+            "registration_date", "date_", "unique_id", "last_activity_date", "cohort_day",
             "days_since_last_active", "cohort_size"),
         ds.getColumns().getColumns().keySet());
   }

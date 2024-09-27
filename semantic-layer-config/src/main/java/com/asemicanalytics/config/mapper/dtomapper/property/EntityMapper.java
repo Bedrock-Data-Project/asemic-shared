@@ -94,7 +94,7 @@ public class EntityMapper
 
     SequencedMap<String, EntityProperty> columns = new LinkedHashMap<>(existingProperties);
 
-    SequencedMap<String, EntityPropertyDto> firstAppearanceProperties = new LinkedHashMap<>();
+    SequencedMap<String, EntityPropertyDto> registrationProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> actionProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> slidingWindowProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> fixedWindowProperties = new LinkedHashMap<>();
@@ -105,7 +105,7 @@ public class EntityMapper
       boolean foundPropertyConfig = false;
       if (entry.getValue().getRegistrationProperty().isPresent()) {
         foundPropertyConfig = true;
-        firstAppearanceProperties.put(entry.getKey(), entry.getValue());
+        registrationProperties.put(entry.getKey(), entry.getValue());
       }
 
       if (entry.getValue().getEventProperty().isPresent()) {
@@ -161,7 +161,7 @@ public class EntityMapper
       }
     }
 
-    for (var entry : firstAppearanceProperties.entrySet()) {
+    for (var entry : registrationProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
       columns.put(entry.getKey(), new RegistrationPropertyDtoMapper(column).apply(
           entry.getValue().getRegistrationProperty().get()));

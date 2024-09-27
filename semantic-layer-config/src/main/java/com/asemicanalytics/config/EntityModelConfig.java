@@ -9,23 +9,22 @@ import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.core.logicaltable.event.RegistrationsLogicalTable;
 import java.util.List;
-import java.util.Optional;
 
 public class EntityModelConfig {
   private final EventLogicalTables logicalTables;
 
   private final EntityLogicalTable entityLogicalTable;
-  private final RegistrationsLogicalTable firstAppearanceActionLogicalTable;
+  private final RegistrationsLogicalTable registrationLogicalTable;
   private final ActivityLogicalTable activityActionLogicalTable;
 
   public EntityModelConfig(EventLogicalTables logicalTables,
                            EntityLogicalTable entityLogicalTable,
-                           RegistrationsLogicalTable firstAppearanceActionLogicalTable,
+                           RegistrationsLogicalTable registrationLogicalTable,
                            ActivityLogicalTable activityActionLogicalTable,
                            List<EnrichmentDefinition> enrichmentDefinitions) {
     this.logicalTables = logicalTables;
     this.entityLogicalTable = entityLogicalTable;
-    this.firstAppearanceActionLogicalTable = firstAppearanceActionLogicalTable;
+    this.registrationLogicalTable = registrationLogicalTable;
     this.activityActionLogicalTable = activityActionLogicalTable;
 
     EnrichmentResolver.resolve(logicalTables.getEventLogicalTables(), entityLogicalTable,
@@ -35,11 +34,11 @@ public class EntityModelConfig {
   private EntityModelConfig(
       EventLogicalTables logicalTables,
       EntityLogicalTable entityLogicalTable,
-      RegistrationsLogicalTable firstAppearanceActionLogicalTable,
+      RegistrationsLogicalTable registrationLogicalTable,
       ActivityLogicalTable activityActionLogicalTable) {
     this.logicalTables = logicalTables;
     this.entityLogicalTable = entityLogicalTable;
-    this.firstAppearanceActionLogicalTable = firstAppearanceActionLogicalTable;
+    this.registrationLogicalTable = registrationLogicalTable;
     this.activityActionLogicalTable = activityActionLogicalTable;
   }
 
@@ -51,8 +50,8 @@ public class EntityModelConfig {
     return entityLogicalTable;
   }
 
-  public RegistrationsLogicalTable getFirstAppearanceActionLogicalTable() {
-    return firstAppearanceActionLogicalTable;
+  public RegistrationsLogicalTable getRegistrationLogicalTable() {
+    return registrationLogicalTable;
   }
 
   public ActivityLogicalTable getActivityActionLogicalTable() {
@@ -63,7 +62,7 @@ public class EntityModelConfig {
     return new EntityModelConfig(
         logicalTables,
         entityLogicalTable.withColumns(columns),
-        firstAppearanceActionLogicalTable,
+        registrationLogicalTable,
         activityActionLogicalTable);
   }
 }

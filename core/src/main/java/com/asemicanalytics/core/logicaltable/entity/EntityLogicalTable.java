@@ -18,13 +18,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
-  public static final String FIRST_APPEARANCE_DATE_COLUMN = "first_appearance_date";
+  public static final String REGISTRATION_DATE_COLUMN = "registration_date";
   public static final String COHORT_DAY_COLUMN = "cohort_day";
   public static final String DAYS_SINCE_LAST_ACTIVE = "days_since_last_active";
   public static final String COHORT_SIZE_COLUMN = "cohort_size";
-  public static final String LAST_LOGIN_DATE_COLUMN = "last_login_date";
+  public static final String LAST_ACTIVITY_DATE_COLUMN = "last_activity_date";
 
-  private final RegistrationsLogicalTable firstAppearanceActionLogicalTable;
+  private final RegistrationsLogicalTable registrationLogicalTable;
   private final ActivityLogicalTable activityLogicalTable;
   private final String baseTablePrefix;
   private final TableReference baseTable;
@@ -34,21 +34,21 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
 
   public EntityLogicalTable(String baseTable,
                             Optional<Columns<EntityProperty>> columns,
-                            RegistrationsLogicalTable firstAppearanceActionLogicalTable,
+                            RegistrationsLogicalTable registrationLogicalTable,
                             ActivityLogicalTable activityLogicalTable,
                             int activityTableDays,
                             List<Integer> cohortTableDays,
                             Map<String, Kpi> kpis) {
     super("user_wide", "Entity", Optional.empty(),
         TableReference.parse(baseTable).withTableSuffix("_totals"),
-        withBaseColumns(columns, firstAppearanceActionLogicalTable, activityLogicalTable), kpis,
+        withBaseColumns(columns, registrationLogicalTable, activityLogicalTable), kpis,
         TimeGrains.day,
         Set.of(),
         withMaterializedIndexTables(TableReference.parse(baseTable), activityTableDays,
             cohortTableDays));
     this.baseTablePrefix = baseTable;
     this.baseTable = TableReference.parse(baseTable);
-    this.firstAppearanceActionLogicalTable = firstAppearanceActionLogicalTable;
+    this.registrationLogicalTable = registrationLogicalTable;
     this.activityLogicalTable = activityLogicalTable;
     this.activityTableDays = activityTableDays;
     this.cohortTableDays = cohortTableDays;
@@ -97,23 +97,23 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
 
   public static Columns<EntityProperty> withBaseColumns(
       Optional<Columns<EntityProperty>> columns,
-      RegistrationsLogicalTable firstAppearanceActionLogicalTable,
+      RegistrationsLogicalTable registrationActionLogicalTable,
       ActivityLogicalTable activityLogicalTable) {
 
     var baseColumns = List.of(
-        new RegistrationColumn(firstAppearanceActionLogicalTable.getDateColumn(),
-            firstAppearanceActionLogicalTable.getDateColumn().getId()),
-        new RegistrationColumn(firstAppearanceActionLogicalTable.entityIdColumn(),
-            firstAppearanceActionLogicalTable.entityIdColumn().getId()),
+        new RegistrationColumn(registrationActionLogicalTable.getDateColumn(),
+            registrationActionLogicalTable.getDateColumn().getId()),
+        new RegistrationColumn(registrationActionLogicalTable.entityIdColumn(),
+            registrationActionLogicalTable.entityIdColumn().getId()),
         new RegistrationColumn(new Column(
-            FIRST_APPEARANCE_DATE_COLUMN,
+            REGISTRATION_DATE_COLUMN,
             DataType.DATE,
             "Registration Date",
             Optional.empty(),
             true,
             true,
             Set.of()
-        ), firstAppearanceActionLogicalTable.getDateColumn().getId()),
+        ), registrationActionLogicalTable.getDateColumn().getId()),
         new ComputedColumn(
             new Column(
                 COHORT_DAY_COLUMN,
@@ -124,8 +124,8 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
                 true,
                 Set.of()
             ),
-            "{DATE_DIFF(" + FIRST_APPEARANCE_DATE_COLUMN + ", "
-                + firstAppearanceActionLogicalTable.getDateColumn().getId()
+            "{DATE_DIFF(" + REGISTRATION_DATE_COLUMN + ", "
+                + registrationActionLogicalTable.getDateColumn().getId()
                 + ")}"
         ),
         new ComputedColumn(
@@ -142,16 +142,16 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
         ),
         new LifetimeColumn(
             new Column(
-                LAST_LOGIN_DATE_COLUMN,
+                LAST_ACTIVITY_DATE_COLUMN,
                 DataType.DATE,
-                "Last Login Date",
+                "Last Activity Date",
                 Optional.empty(),
                 true,
                 true,
                 Set.of()
             ),
             new EventColumn(
-                Column.ofHidden(LAST_LOGIN_DATE_COLUMN + "__inner", DataType.DATE),
+                Column.ofHidden(LAST_ACTIVITY_DATE_COLUMN + "__inner", DataType.DATE),
                 activityLogicalTable,
                 Optional.empty(),
                 "{" + activityLogicalTable.getDateColumnId() + "}",
@@ -170,8 +170,8 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
                 Set.of()
             ),
             "{DATE_DIFF("
-                + firstAppearanceActionLogicalTable.getDateColumnId() + ", "
-                + LAST_LOGIN_DATE_COLUMN + ")}")
+                + registrationActionLogicalTable.getDateColumnId() + ", "
+                + LAST_ACTIVITY_DATE_COLUMN + ")}")
     );
 
     var mergedColumns = columns
@@ -183,11 +183,11 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
   }
 
   public EntityProperty entityIdColumn() {
-    return columns.column(this.firstAppearanceActionLogicalTable.entityIdColumn().getId());
+    return columns.column(this.registrationLogicalTable.entityIdColumn().getId());
   }
 
-  public EntityProperty getFirstAppearanceDateColumn() {
-    return columns.column(FIRST_APPEARANCE_DATE_COLUMN);
+  public EntityProperty getRegistrationDateColumn() {
+    return columns.column(REGISTRATION_DATE_COLUMN);
   }
 
   @Override
@@ -195,8 +195,8 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
     return "user_wide";
   }
 
-  public RegistrationsLogicalTable getFirstAppearanceActionLogicalTable() {
-    return firstAppearanceActionLogicalTable;
+  public RegistrationsLogicalTable getRegistrationLogicalTable() {
+    return registrationLogicalTable;
   }
 
   public ActivityLogicalTable getActivityLogicalTable() {
@@ -211,7 +211,7 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
     return new EntityLogicalTable(
         baseTablePrefix,
         Optional.of(this.columns.add(columns)),
-        firstAppearanceActionLogicalTable,
+        registrationLogicalTable,
         activityLogicalTable,
         activityTableDays,
         cohortTableDays,

@@ -34,7 +34,7 @@ public class ConfigLoader {
             .apply(this.configParser.parseEntityLogicalTable(appId, eventLogicalTables));
 
     return new EntityModelConfig(eventLogicalTables, entity,
-        entity.getFirstAppearanceActionLogicalTable(),
+        entity.getRegistrationLogicalTable(),
         entity.getActivityLogicalTable(),
         enrichmentCollector);
   }

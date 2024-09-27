@@ -1,9 +1,9 @@
 package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.LifetimeColumn;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyLifetimeDto;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,7 +26,7 @@ public class LifetimePropertyDtoMapper implements
         column,
         dto.getSourceProperty(),
         dto.getSourceComputedProperty(),
-        dto.getSourceActionProperty(),
+        dto.getSourceEventProperty(),
         actionLogicalTables
     );
 

@@ -12,8 +12,8 @@
     "source_computed_property": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_computed.json"
     },
-    "source_action_property": {
-      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json"
+    "source_event_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_event.json"
     },
     "merge_function": {
       "type": "string",

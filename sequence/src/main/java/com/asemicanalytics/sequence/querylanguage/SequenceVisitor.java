@@ -1,6 +1,6 @@
 package com.asemicanalytics.sequence.querylanguage;
 
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import java.util.List;
 import java.util.Map;
 

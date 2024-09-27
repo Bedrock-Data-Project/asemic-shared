@@ -12,7 +12,7 @@ import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sql.sql.h2.H2QueryExecutor;
 import java.sql.SQLException;
@@ -29,9 +29,9 @@ public class SequenceBaseTest {
   protected final SqlQueryExecutor executor = new H2QueryExecutor(
       DatabaseHelper.USER, DatabaseHelper.PASSWORD, DatabaseHelper.JDBC_URL, 10);
   protected final Map<String, EventLogicalTable> STEP_COLUMN_SOURCES = Map.of(
-      "login", ActionLogicalTable("login"),
-      "battle", ActionLogicalTable("battle"),
-      "transaction", ActionLogicalTable("transaction")
+      "login", eventLogicalTable("login"),
+      "battle", eventLogicalTable("battle"),
+      "transaction", eventLogicalTable("transaction")
   );
   protected SequenceService sequenceService = new SequenceService(executor);
 
@@ -42,7 +42,7 @@ public class SequenceBaseTest {
 
   }
 
-  private EventLogicalTable ActionLogicalTable(String stepName) {
+  private EventLogicalTable eventLogicalTable(String stepName) {
     return new EventLogicalTable(
         stepName, "", Optional.empty(), TableReference.of(stepName),
         new Columns<>(new LinkedHashMap<>(Map.of(

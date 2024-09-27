@@ -1,10 +1,10 @@
 package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyComputedDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyEventDto;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +14,7 @@ public class ComposableColumnHelper {
       Column column,
       Optional<String> sourceProperty,
       Optional<EntityPropertyComputedDto> computedSourceProperty,
-      Optional<EntityPropertyActionDto> actionSourceProperty,
+      Optional<EntityPropertyEventDto> eventSourceProperty,
       Map<String, EventLogicalTable> actionLogicalTables
   ) {
     EntityProperty sourceColumn = null;
@@ -35,13 +35,13 @@ public class ComposableColumnHelper {
           .apply(computedSourceProperty.get());
     }
 
-    if (actionSourceProperty.isPresent()) {
+    if (eventSourceProperty.isPresent()) {
       if (sourceColumn != null) {
         throw new IllegalArgumentException(
             "Can have either source property, source action property or source computed property");
       }
-      sourceColumn = new ActionPropertyDtoMapper(innerColumn, actionLogicalTables, true)
-          .apply(actionSourceProperty.get());
+      sourceColumn = new EventPropertyDtoMapper(innerColumn, actionLogicalTables, true)
+          .apply(eventSourceProperty.get());
     }
 
     if (sourceColumn == null) {

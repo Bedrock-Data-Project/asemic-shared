@@ -6,7 +6,7 @@ import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.Step;
 import java.util.LinkedHashMap;

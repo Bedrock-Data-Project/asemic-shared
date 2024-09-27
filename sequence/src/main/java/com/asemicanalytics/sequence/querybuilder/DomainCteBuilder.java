@@ -7,7 +7,7 @@ import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.string_;
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.table;
 
 import com.asemicanalytics.core.DatetimeInterval;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sequence.sequence.Sequence;
 import com.asemicanalytics.sql.sql.builder.tokens.Cte;

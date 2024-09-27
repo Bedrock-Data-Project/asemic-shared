@@ -10,11 +10,11 @@ import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.kpi.Kpi;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
+import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.FirstAppearanceEventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 import java.util.HashMap;
@@ -37,13 +37,13 @@ public class EntityMapper
   @Override
   public EntityLogicalTable apply(EntityDto dto) {
     var firstAppearanceActionLogicalTable =
-        (FirstAppearanceEventLogicalTable) dto.actionLogicalTables()
+        (FirstAppearanceEventLogicalTable) dto.eventLogicalTables()
             .values().stream()
             .filter(d -> d instanceof FirstAppearanceEventLogicalTable)
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("No logical table tagged with "
                 + FirstAppearanceEventLogicalTable.TAG + " found"));
-    var activityLogicalTable = (ActivityLogicalTable) dto.actionLogicalTables()
+    var activityLogicalTable = (ActivityLogicalTable) dto.eventLogicalTables()
         .values().stream()
         .filter(d -> d instanceof ActivityLogicalTable)
         .findFirst()
@@ -55,7 +55,7 @@ public class EntityMapper
 
     EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
     SequencedMap<String, EntityProperty> columnMap =
-        buildColumnsMap(dto.actionLogicalTables(), mergedColumns.getProperties()
+        buildColumnsMap(dto.eventLogicalTables(), mergedColumns.getProperties()
             .getAdditionalProperties(), Map.of(), dto.config().getActiveDays());
     var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns<>(columnMap)),
         firstAppearanceActionLogicalTable, activityLogicalTable);
@@ -98,7 +98,7 @@ public class EntityMapper
         firstAppearanceProperties.put(entry.getKey(), entry.getValue());
       }
 
-      if (entry.getValue().getActionProperty().isPresent()) {
+      if (entry.getValue().getEventProperty().isPresent()) {
         if (foundPropertyConfig) {
           throw new IllegalArgumentException(
               "Duplicate property config for column: " + entry.getKey());
@@ -158,8 +158,8 @@ public class EntityMapper
     }
     for (var entry : actionProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new ActionPropertyDtoMapper(column, actionLogicalTables, false)
-          .apply(entry.getValue().getActionProperty().get()));
+      columns.put(entry.getKey(), new EventPropertyDtoMapper(column, actionLogicalTables, false)
+          .apply(entry.getValue().getEventProperty().get()));
     }
     for (var entry : lifetimeProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());

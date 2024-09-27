@@ -2,8 +2,8 @@ package com.asemicanalytics.config.mapper;
 
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.config.parser.EntityDto;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventLogicalTableDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 public class TestConfigParser implements ConfigParser {
 
-  private final Map<String, ActionLogicalTableDto> actionLogicalTables;
+  private final Map<String, EventLogicalTableDto> actionLogicalTables;
   private final List<EntityPropertiesDto> columnsDtos;
   private final List<EntityKpisDto> kpisDtos;
 
-  public TestConfigParser(Map<String, ActionLogicalTableDto> actionLogicalTables,
+  public TestConfigParser(Map<String, EventLogicalTableDto> actionLogicalTables,
                           List<EntityPropertiesDto> columnsDtos,
                           List<EntityKpisDto> kpisDtos) {
     this.actionLogicalTables = actionLogicalTables;
@@ -31,7 +31,7 @@ public class TestConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, ActionLogicalTableDto> parseActionLogicalTables(String appId) {
+  public Map<String, EventLogicalTableDto> parseActionLogicalTables(String appId) {
     return actionLogicalTables;
   }
 

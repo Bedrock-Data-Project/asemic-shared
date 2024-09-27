@@ -6,21 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.asemicanalytics.core.kpi.KpiComponent;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
+import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.FirstAppearanceEventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnsDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.DataType;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyComputedDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyEventDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyFirstAppearanceDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyLifetimeDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventLogicalTableDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.PropertiesDto;
@@ -41,7 +42,7 @@ class EntityConfigLoaderTest {
   private EntityPropertyDto registrationColumn() {
     return new EntityPropertyDto(
         null,
-        ActionColumnDto.DataType.DATE,
+        DataType.DATE,
         null,
         null,
         null,
@@ -56,7 +57,7 @@ class EntityConfigLoaderTest {
   private EntityPropertyDto lifetimeColumn() {
     return new EntityPropertyDto(
         null,
-        ActionColumnDto.DataType.DATE,
+        DataType.DATE,
         null,
         null,
         null,
@@ -72,14 +73,14 @@ class EntityConfigLoaderTest {
   private EntityPropertyDto actionColumn() {
     return new EntityPropertyDto(
         null,
-        ActionColumnDto.DataType.DATE,
+        DataType.DATE,
         null,
         null,
         null,
-        new EntityPropertyActionDto(
+        new EntityPropertyEventDto(
             "registration",
             "{l}",
-            EntityPropertyActionDto.AggregateFunction.SUM,
+            EntityPropertyEventDto.AggregateFunction.SUM,
             "{l}",
             null
         ),
@@ -93,7 +94,7 @@ class EntityConfigLoaderTest {
   private EntityPropertyDto slidingWindowColumn(String sourceProperty) {
     return new EntityPropertyDto(
         null,
-        ActionColumnDto.DataType.DATE,
+        DataType.DATE,
         null,
         null,
         null,
@@ -115,7 +116,7 @@ class EntityConfigLoaderTest {
   private EntityPropertyDto computedColumn() {
     return new EntityPropertyDto(
         null,
-        ActionColumnDto.DataType.DATE,
+        DataType.DATE,
         null,
         null,
         null,
@@ -146,33 +147,33 @@ class EntityConfigLoaderTest {
   private EntityLogicalTable fromColumnsAndKpis(List<EntityPropertiesDto> columnsDtos,
                                                 List<EntityKpisDto> kpisDtos) throws IOException {
 
-    var firstAppearanceActionLogicalTable = new ActionLogicalTableDto(
+    var firstAppearanceActionLogicalTable = new EventLogicalTableDto(
         "app.registration", List.of(FirstAppearanceEventLogicalTable.TAG),
         null, null,
         new ColumnsDto() {{
           setAdditionalProperty("date_",
-              new ActionColumnDto(ActionColumnDto.DataType.DATE, null, null,
+              new EventColumnDto(DataType.DATE, null, null,
                   List.of(TemporalLogicalTable.DATE_COLUMN_TAG)));
           setAdditionalProperty("event_timestamp",
-              new ActionColumnDto(ActionColumnDto.DataType.DATETIME, null, null,
+              new EventColumnDto(DataType.DATETIME, null, null,
                   List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG)));
           setAdditionalProperty("unique_id",
-              new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
+              new EventColumnDto(DataType.STRING, null, null,
                   List.of(EventLogicalTable.ENTITY_ID_COLUMN_TAG)));
         }}, null, List.of());
 
-    var activityLogicalTable = new ActionLogicalTableDto(
+    var activityLogicalTable = new EventLogicalTableDto(
         "app.activity", List.of(ActivityLogicalTable.TAG),
         null, null,
         new ColumnsDto() {{
           setAdditionalProperty("date_",
-              new ActionColumnDto(ActionColumnDto.DataType.DATE, null, null,
+              new EventColumnDto(DataType.DATE, null, null,
                   List.of(TemporalLogicalTable.DATE_COLUMN_TAG)));
           setAdditionalProperty("event_timestamp",
-              new ActionColumnDto(ActionColumnDto.DataType.DATETIME, null, null,
+              new EventColumnDto(DataType.DATETIME, null, null,
                   List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG)));
           setAdditionalProperty("unique_id",
-              new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
+              new EventColumnDto(DataType.STRING, null, null,
                   List.of(EventLogicalTable.ENTITY_ID_COLUMN_TAG)));
         }}, null, List.of());
 

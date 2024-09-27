@@ -2,10 +2,10 @@ package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.DateInterval;
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.FixedWindowColumn;
 import com.asemicanalytics.core.logicaltable.entity.WindowAggregationFunction;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyFixedWindowDto;
 import java.time.LocalDate;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class FixedWindowPropertyDtoMapper implements
         column,
         dto.getSourceProperty(),
         dto.getSourceComputedProperty(),
-        dto.getSourceActionProperty(),
+        dto.getSourceEventProperty(),
         actionLogicalTables
     );
 

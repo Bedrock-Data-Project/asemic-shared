@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class EventLikeLogicalTable extends TemporalLogicalTable<Column> {
-  public static final String TIMESTAMP_COLUMN_TAG = "action_timestamp_column";
+  public static final String TIMESTAMP_COLUMN_TAG = "event_timestamp_column";
   protected final String timestampColumn;
 
   public EventLikeLogicalTable(String id, String label, Optional<String> description,

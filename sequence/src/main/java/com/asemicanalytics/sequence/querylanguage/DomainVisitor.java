@@ -2,7 +2,7 @@ package com.asemicanalytics.sequence.querylanguage;
 
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.table;
 
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sql.sql.builder.tokens.BooleanExpression;
 import java.util.List;

@@ -2,10 +2,10 @@ package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.RelativeDaysInterval;
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.SlidingWindowColumn;
 import com.asemicanalytics.core.logicaltable.entity.WindowAggregationFunction;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 import java.util.Map;
 import java.util.function.Function;
@@ -34,7 +34,7 @@ public class SlidingWindowPropertyDtoMapper implements
         column,
         dto.getSourceProperty(),
         dto.getSourceComputedProperty(),
-        dto.getSourceActionProperty(),
+        dto.getSourceEventProperty(),
         actionLogicalTables
     );
 

@@ -30,7 +30,7 @@ public class EntityIndexFilterAppender {
       Set<String> filters = switch (column.getType()) {
         case COMPUTED -> getFilters(((ComputedColumn) column).getFormula());
         case FIRST_APPEARANCE, LIFETIME, FIXED_WINDOW -> Set.of();
-        case ACTION -> Set.of(EntityLogicalTable.dailyIndexFilter());
+        case EVENT -> Set.of(EntityLogicalTable.dailyIndexFilter());
         case SLIDING_WINDOW -> Set.of(EntityLogicalTable.activeIndexFilter(activeDays));
       };
       allFilters.addAll(filters);

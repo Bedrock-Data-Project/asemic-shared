@@ -1,4 +1,4 @@
-package com.asemicanalytics.core.logicaltable.action;
+package com.asemicanalytics.core.logicaltable.event;
 
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;

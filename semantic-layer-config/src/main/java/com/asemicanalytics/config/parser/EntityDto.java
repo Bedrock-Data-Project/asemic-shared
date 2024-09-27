@@ -1,6 +1,6 @@
 package com.asemicanalytics.config.parser;
 
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
@@ -11,5 +11,5 @@ public record EntityDto(
     EntityConfigDto config,
     List<EntityPropertiesDto> columns,
     List<EntityKpisDto> kpis,
-    Map<String, EventLogicalTable> actionLogicalTables) {
+    Map<String, EventLogicalTable> eventLogicalTables) {
 }

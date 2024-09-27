@@ -4,8 +4,8 @@ import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.Enrichment;
 import com.asemicanalytics.core.logicaltable.EnrichmentColumnPair;
 import com.asemicanalytics.core.logicaltable.LogicalTable;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import java.util.List;
 import java.util.Map;
 

@@ -8,8 +8,8 @@ import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.kpi.Kpi;
 import com.asemicanalytics.core.logicaltable.MaterializedIndexTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.FirstAppearanceEventLogicalTable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,12 +150,12 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
                 true,
                 Set.of()
             ),
-            new ActionColumn(
+            new EventColumn(
                 Column.ofHidden(LAST_LOGIN_DATE_COLUMN + "__inner", DataType.DATE),
                 activityLogicalTable,
                 Optional.empty(),
                 "{" + activityLogicalTable.getDateColumnId() + "}",
-                ActionColumn.AggregateFunction.MAX,
+                EventColumn.AggregateFunction.MAX,
                 null),
             LifetimeColumn.MergeFunction.LAST_VALUE
         ),

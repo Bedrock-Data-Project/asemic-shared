@@ -5,7 +5,7 @@ import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.select;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.sequence.querybuilder.DomainCteBuilder;
 import com.asemicanalytics.sequence.querybuilder.SequenceQuery;
 import com.asemicanalytics.sequence.querybuilder.SqlQueryBuilder;

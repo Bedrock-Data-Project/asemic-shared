@@ -2,10 +2,10 @@ package com.asemicanalytics.core.logicaltable.entity;
 
 import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import java.util.Optional;
 
-public class ActionColumn extends EntityProperty {
+public class EventColumn extends EntityProperty {
   private final EventLogicalTable eventLogicalTable;
   private final Optional<String> where;
   private final String select;
@@ -15,7 +15,7 @@ public class ActionColumn extends EntityProperty {
 
   @Override
   public EntityPropertyType getType() {
-    return EntityPropertyType.ACTION;
+    return EntityPropertyType.EVENT;
   }
 
   public enum AggregateFunction {
@@ -29,7 +29,7 @@ public class ActionColumn extends EntityProperty {
     NONE
   }
 
-  public ActionColumn(
+  public EventColumn(
       Column column,
       EventLogicalTable eventLogicalTable,
       Optional<String> where,
@@ -39,7 +39,7 @@ public class ActionColumn extends EntityProperty {
     this(column, eventLogicalTable, where, select, aggregationFunction, defaultValue, false);
   }
 
-  public ActionColumn(
+  public EventColumn(
       Column column,
       EventLogicalTable eventLogicalTable,
       Optional<String> where,

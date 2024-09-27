@@ -1,14 +1,14 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_event.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "source_action",
+    "source_event",
     "select",
     "aggregate_function"
   ],
   "properties": {
-    "source_action": {
+    "source_event": {
       "type": "string"
     },
     "select": {

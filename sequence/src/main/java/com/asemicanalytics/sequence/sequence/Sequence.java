@@ -1,6 +1,6 @@
 package com.asemicanalytics.sequence.sequence;
 
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;

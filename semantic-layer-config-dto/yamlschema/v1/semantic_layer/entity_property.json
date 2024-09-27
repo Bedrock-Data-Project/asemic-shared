@@ -21,8 +21,8 @@
     "can_group_by": {
       "type": "boolean"
     },
-    "action_property": {
-      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_action.json"
+    "event_property": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_event.json"
     },
     "sliding_window_property": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_sliding_window.json"

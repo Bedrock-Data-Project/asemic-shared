@@ -2,8 +2,8 @@ package com.asemicanalytics.config.parser.yaml;
 
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.config.parser.EntityDto;
-import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventLogicalTableDto;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -54,8 +54,8 @@ public class YamlConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, ActionLogicalTableDto> parseActionLogicalTables(String appId) {
-    return readTopLevelLogicalTables(appId, ActionLogicalTableDto.class, actionsDir(appId));
+  public Map<String, EventLogicalTableDto> parseActionLogicalTables(String appId) {
+    return readTopLevelLogicalTables(appId, EventLogicalTableDto.class, actionsDir(appId));
   }
 
   @Override

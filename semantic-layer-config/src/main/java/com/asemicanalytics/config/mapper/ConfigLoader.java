@@ -6,6 +6,7 @@ import com.asemicanalytics.config.mapper.dtomapper.event.EventDtoMapper;
 import com.asemicanalytics.config.mapper.dtomapper.property.EntityMapper;
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class ConfigLoader {
     this.configParser = configParser;
   }
 
-  public Map<String, EventLogicalTable> parseEvents(
+  public EventLogicalTables parseEvents(
       String appId, List<EnrichmentDefinition> enrichmentCollector) {
     configParser.init(appId);
     return loadTopLevelLogicalTables(appId, enrichmentCollector);
@@ -38,12 +39,12 @@ public class ConfigLoader {
         enrichmentCollector);
   }
 
-  private Map<String, EventLogicalTable> loadTopLevelLogicalTables(
+  private EventLogicalTables loadTopLevelLogicalTables(
       String appId, List<EnrichmentDefinition> enrichmentCollector) {
     Map<String, EventLogicalTable> logicalTables = new HashMap<>();
-    this.configParser.parseActionLogicalTables(appId)
+    this.configParser.parseeventLogicalTables(appId)
         .forEach((k, v) -> logicalTables.put(k,
             new EventDtoMapper(k, appId, enrichmentCollector).apply(v)));
-    return logicalTables;
+    return new EventLogicalTables(logicalTables);
   }
 }

@@ -2,30 +2,29 @@ package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.entity.EventColumn;
-import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyEventDto;
-import java.util.Map;
 import java.util.function.Function;
 
 public class EventPropertyDtoMapper implements
     Function<EntityPropertyEventDto, EventColumn> {
 
   private final Column column;
-  private final Map<String, EventLogicalTable> actionLogicalTables;
+  private final EventLogicalTables eventLogicalTables;
   private final boolean generated;
 
   public EventPropertyDtoMapper(Column column,
-                                Map<String, EventLogicalTable> actionLogicalTables,
+                                EventLogicalTables eventLogicalTables,
                                 boolean generated) {
     this.column = column;
-    this.actionLogicalTables = actionLogicalTables;
+    this.eventLogicalTables = eventLogicalTables;
     this.generated = generated;
   }
 
   @Override
   public EventColumn apply(
       EntityPropertyEventDto dto) {
-    var logicalTable = actionLogicalTables.get(dto.getSourceEvent());
+    var logicalTable = eventLogicalTables.get(dto.getSourceEvent());
     if (logicalTable == null) {
       throw new IllegalArgumentException("Action not found: "
           + dto.getSourceEvent()

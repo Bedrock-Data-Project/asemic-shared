@@ -6,10 +6,7 @@ import com.asemicanalytics.config.mapper.dtomapper.EnrichmentDtoMapper;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
-import com.asemicanalytics.core.logicaltable.event.FirstAppearanceEventLogicalTable;
-import com.asemicanalytics.core.logicaltable.event.PaymentTransactionEventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventLogicalTableDto;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -44,50 +41,16 @@ public class EventDtoMapper
     }
     var tags = dto.getTags().map(Set::copyOf).orElse(Set.of());
 
-    if (tags.contains(FirstAppearanceEventLogicalTable.TAG)) {
-      return new FirstAppearanceEventLogicalTable(
-          id,
-          DefaultLabel.of(dto.getLabel(), id),
-          dto.getDescription(),
-          TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
-          new Columns<>(columns),
-          Map.of(),
-          dto.getWhere(),
-          tags
-      );
-    } else if (tags.contains(ActivityLogicalTable.TAG)) {
-      return new ActivityLogicalTable(
-          id,
-          DefaultLabel.of(dto.getLabel(), id),
-          dto.getDescription(),
-          TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
-          new Columns<>(columns),
-          Map.of(),
-          dto.getWhere(),
-          tags
-      );
-    } else if (tags.contains(PaymentTransactionEventLogicalTable.TAG)) {
-      return new PaymentTransactionEventLogicalTable(
-          id,
-          DefaultLabel.of(dto.getLabel(), id),
-          dto.getDescription(),
-          TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
-          new Columns<>(columns),
-          Map.of(),
-          dto.getWhere(),
-          tags
-      );
-    } else {
-      return new EventLogicalTable(
-          id,
-          DefaultLabel.of(dto.getLabel(), id),
-          dto.getDescription(),
-          TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
-          new Columns<>(columns),
-          Map.of(),
-          dto.getWhere(),
-          tags
-      );
-    }
+    return new EventLogicalTable(
+        id,
+        DefaultLabel.of(dto.getLabel(), id),
+        dto.getDescription(),
+        TableReference.parse(dto.getTableName().replace("{app_id}", appId)),
+        new Columns<>(columns),
+        Map.of(),
+        dto.getWhere(),
+        tags
+    );
+
   }
 }

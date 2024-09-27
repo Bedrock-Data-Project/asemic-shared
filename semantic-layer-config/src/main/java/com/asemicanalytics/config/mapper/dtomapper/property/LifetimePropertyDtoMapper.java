@@ -3,20 +3,19 @@ package com.asemicanalytics.config.mapper.dtomapper.property;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.LifetimeColumn;
-import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyLifetimeDto;
-import java.util.Map;
 import java.util.function.Function;
 
 public class LifetimePropertyDtoMapper implements
     Function<EntityPropertyLifetimeDto, LifetimeColumn> {
   private final Column column;
-  private final Map<String, EventLogicalTable> actionLogicalTables;
+  private final EventLogicalTables eventLogicalTables;
 
   public LifetimePropertyDtoMapper(Column column,
-                                   Map<String, EventLogicalTable> actionLogicalTables) {
+                                   EventLogicalTables eventLogicalTables) {
     this.column = column;
-    this.actionLogicalTables = actionLogicalTables;
+    this.eventLogicalTables = eventLogicalTables;
   }
 
   @Override
@@ -27,7 +26,7 @@ public class LifetimePropertyDtoMapper implements
         dto.getSourceProperty(),
         dto.getSourceComputedProperty(),
         dto.getSourceEventProperty(),
-        actionLogicalTables
+        eventLogicalTables
     );
 
     return new LifetimeColumn(

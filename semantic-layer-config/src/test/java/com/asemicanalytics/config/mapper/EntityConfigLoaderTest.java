@@ -9,7 +9,7 @@ import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
-import com.asemicanalytics.core.logicaltable.event.FirstAppearanceEventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.RegistrationsLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnsDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.DataType;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
@@ -17,8 +17,8 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityProp
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyComputedDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyEventDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyFirstAppearanceDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyLifetimeDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyRegistrationDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventColumnDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventLogicalTableDto;
@@ -50,7 +50,7 @@ class EntityConfigLoaderTest {
         null,
         null,
         null,
-        new EntityPropertyFirstAppearanceDto("source"),
+        new EntityPropertyRegistrationDto("source"),
         null);
   }
 
@@ -148,7 +148,7 @@ class EntityConfigLoaderTest {
                                                 List<EntityKpisDto> kpisDtos) throws IOException {
 
     var firstAppearanceActionLogicalTable = new EventLogicalTableDto(
-        "app.registration", List.of(FirstAppearanceEventLogicalTable.TAG),
+        "app.registration", List.of(RegistrationsLogicalTable.TAG),
         null, null,
         new ColumnsDto() {{
           setAdditionalProperty("date_",

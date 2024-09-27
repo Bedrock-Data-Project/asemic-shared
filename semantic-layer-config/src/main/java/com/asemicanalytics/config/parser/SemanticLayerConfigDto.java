@@ -5,6 +5,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public record SemanticLayerConfigDto(
-    Map<String, EventLogicalTableDto> actionLogicalTables,
+    Map<String, EventLogicalTableDto> eventLogicalTables,
     Optional<EntityDto> entityLogicalTable) {
 }

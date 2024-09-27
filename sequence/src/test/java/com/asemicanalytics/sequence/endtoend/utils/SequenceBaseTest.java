@@ -13,6 +13,7 @@ import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sql.sql.h2.H2QueryExecutor;
 import java.sql.SQLException;
@@ -28,11 +29,11 @@ import org.junit.jupiter.api.BeforeEach;
 public class SequenceBaseTest {
   protected final SqlQueryExecutor executor = new H2QueryExecutor(
       DatabaseHelper.USER, DatabaseHelper.PASSWORD, DatabaseHelper.JDBC_URL, 10);
-  protected final Map<String, EventLogicalTable> STEP_COLUMN_SOURCES = Map.of(
+  protected final EventLogicalTables STEP_COLUMN_SOURCES = new EventLogicalTables(Map.of(
       "login", eventLogicalTable("login"),
       "battle", eventLogicalTable("battle"),
       "transaction", eventLogicalTable("transaction")
-  );
+  ));
   protected SequenceService sequenceService = new SequenceService(executor);
 
   @BeforeEach

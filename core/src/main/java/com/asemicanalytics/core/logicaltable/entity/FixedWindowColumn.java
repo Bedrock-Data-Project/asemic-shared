@@ -1,12 +1,9 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
 import com.asemicanalytics.core.DateInterval;
-import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
-import java.time.LocalDate;
-import java.util.Optional;
 
 public class FixedWindowColumn extends EntityProperty {
   private final EntityProperty sourceColumn;

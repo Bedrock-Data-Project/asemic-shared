@@ -4,8 +4,6 @@ import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.RelativeDaysInterval;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
-import java.time.LocalDate;
-import java.util.Optional;
 
 public class SlidingWindowColumn extends EntityProperty {
   private final EntityProperty sourceColumn;

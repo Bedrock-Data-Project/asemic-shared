@@ -1,5 +1,5 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_first_appearance.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_property_registration.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [

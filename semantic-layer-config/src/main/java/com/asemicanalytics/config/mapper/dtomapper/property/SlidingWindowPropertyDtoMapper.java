@@ -5,9 +5,8 @@ import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.SlidingWindowColumn;
 import com.asemicanalytics.core.logicaltable.entity.WindowAggregationFunction;
-import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
-import java.util.Map;
 import java.util.function.Function;
 
 public class SlidingWindowPropertyDtoMapper implements
@@ -15,15 +14,15 @@ public class SlidingWindowPropertyDtoMapper implements
 
   private final int activeDays;
   private final Column column;
-  private final Map<String, EventLogicalTable> actionLogicalTables;
+  private final EventLogicalTables eventLogicalTables;
 
 
   public SlidingWindowPropertyDtoMapper(Column column,
                                         int activeDays,
-                                        Map<String, EventLogicalTable> actionLogicalTables) {
+                                        EventLogicalTables eventLogicalTables) {
     this.column = column;
     this.activeDays = activeDays;
-    this.actionLogicalTables = actionLogicalTables;
+    this.eventLogicalTables = eventLogicalTables;
   }
 
   @Override
@@ -35,7 +34,7 @@ public class SlidingWindowPropertyDtoMapper implements
         dto.getSourceProperty(),
         dto.getSourceComputedProperty(),
         dto.getSourceEventProperty(),
-        actionLogicalTables
+        eventLogicalTables
     );
 
     if (dto.getRelativeDaysTo() < -activeDays) {

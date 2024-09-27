@@ -101,7 +101,7 @@ public class DisconnectedDateIntervals {
     if (fromDays > 0) {
       newIntervals.intervals.remove(Range.closed(
           intervals.span().lowerEndpoint(),
-            intervals.span().lowerEndpoint().plusDays(fromDays - 1)));
+          intervals.span().lowerEndpoint().plusDays(fromDays - 1)));
     } else if (fromDays < 0) {
       newIntervals.intervals.add(Range.closed(
           intervals.span().lowerEndpoint().plusDays(fromDays),

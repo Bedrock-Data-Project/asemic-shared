@@ -7,6 +7,7 @@ import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sequence.sequence.Step;
 import java.util.LinkedHashMap;
@@ -16,11 +17,11 @@ import java.util.Optional;
 import java.util.Set;
 
 public class QueryLanguageTestBase {
-  protected final Map<String, EventLogicalTable> stepLogicalTables = Map.of(
+  protected final EventLogicalTables stepLogicalTables = new EventLogicalTables(Map.of(
       "login", ActionLogicalTable("login"),
       "battle", ActionLogicalTable("battle"),
       "transaction", ActionLogicalTable("transaction")
-  );
+  ));
 
   private EventLogicalTable ActionLogicalTable(String stepName) {
     return new EventLogicalTable(

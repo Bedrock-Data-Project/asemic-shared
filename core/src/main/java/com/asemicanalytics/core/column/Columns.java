@@ -47,7 +47,8 @@ public class Columns<T extends Column> implements Iterable<T> {
 
   public String getColumnIdByTag(String tag) {
     return getColumnIdByTagIfExists(tag)
-        .orElseThrow(() -> new IllegalArgumentException("No column with tag " + tag));
+        .orElseThrow(() ->
+            new IllegalArgumentException("No column with tag " + tag));
   }
 
   public Columns<T> filter(Predicate<T> predicate) {

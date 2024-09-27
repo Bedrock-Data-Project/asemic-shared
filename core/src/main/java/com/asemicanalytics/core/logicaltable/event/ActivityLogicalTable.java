@@ -1,21 +1,37 @@
 package com.asemicanalytics.core.logicaltable.event;
 
 import com.asemicanalytics.core.TableReference;
+import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.kpi.Kpi;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 public class ActivityLogicalTable extends EventLogicalTable {
-  public static final String TAG = "activity_action";
-  public static final String LAST_LOGIN_PROPERTY_TAG = "last_login_property";
+  public static final String TAG = "activity_event";
 
+  private final List<EventLogicalTable> activityEvents;
 
-  public ActivityLogicalTable(String id, String label, Optional<String> description,
+  public ActivityLogicalTable(String id,
                               TableReference table,
-                              Columns columns,
-                              Map<String, Kpi> kpis, Optional<String> where, Set<String> tags) {
-    super(id, label, description, table, columns, kpis, where, tags);
+                              List<EventLogicalTable> activityEvents) {
+    super(id, null, Optional.empty(), table,
+        new Columns<Column>(new LinkedHashMap<>(Map.of(
+            activityEvents.getFirst().getEntityIdColumnId(),
+            activityEvents.getFirst().entityIdColumn(),
+            activityEvents.getFirst().getTimestampColumnId(),
+            activityEvents.getFirst().getTimestampColumn(),
+            activityEvents.getFirst().getDateColumnId(),
+            activityEvents.getFirst().getDateColumn()
+        ))),
+        Map.of(),
+        Optional.empty(), Set.of());
+    this.activityEvents = activityEvents;
+  }
+
+  public List<EventLogicalTable> getActivityEvents() {
+    return activityEvents;
   }
 }

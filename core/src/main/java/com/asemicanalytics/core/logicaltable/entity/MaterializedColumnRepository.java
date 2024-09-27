@@ -1,12 +1,8 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
-import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.DisconnectedDateIntervals;
-import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.logicaltable.LogicalTable;
 import java.time.LocalDate;
 import java.util.Map;
-import java.util.Optional;
 
 public interface MaterializedColumnRepository {
 

@@ -1,6 +1,7 @@
 package com.asemicanalytics.sequence.sequence;
 
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,11 +16,11 @@ public class Sequence {
   private final Map<String, DomainStep> domain;
   private final Duration timeHorizon;
   private final boolean ignoreIncompleteSequences;
-  private final Map<String, EventLogicalTable> stepTables;
+  private final EventLogicalTables stepTables;
 
   public Sequence(List<Step> steps, Map<String, DomainStep> domain,
                   Duration timeHorizon, boolean ignoreIncompleteSequences,
-                  Map<String, EventLogicalTable> stepTables) {
+                  EventLogicalTables stepTables) {
     this.steps = steps;
     this.domain = domain;
     this.timeHorizon = timeHorizon;

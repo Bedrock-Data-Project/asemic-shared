@@ -1,6 +1,6 @@
 package com.asemicanalytics.config.parser;
 
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
 import java.util.Map;
 
@@ -10,5 +10,5 @@ public interface ConfigParser {
   Map<String, ActionLogicalTableDto> parseActionLogicalTables(String appId);
 
   EntityDto parseEntityLogicalTable(
-      String appId, Map<String, ActionLogicalTable> userActionLogicalTables);
+      String appId, Map<String, EventLogicalTable> userActionLogicalTables);
 }

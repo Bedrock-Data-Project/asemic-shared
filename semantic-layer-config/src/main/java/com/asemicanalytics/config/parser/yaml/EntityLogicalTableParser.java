@@ -1,7 +1,7 @@
 package com.asemicanalytics.config.parser.yaml;
 
 import com.asemicanalytics.config.parser.EntityDto;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
@@ -51,7 +51,7 @@ public class EntityLogicalTableParser {
   }
 
   public EntityDto parse(
-      Path propertiesPath, Path kpisPath, Map<String, ActionLogicalTable> actionLogicalTables) {
+      Path propertiesPath, Path kpisPath, Map<String, EventLogicalTable> actionLogicalTables) {
 
     if (!propertiesPath.toFile().exists()) {
       throw new IllegalArgumentException("entity requires properties directory");

@@ -12,7 +12,7 @@ import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.sequence.SequenceService;
 import com.asemicanalytics.sql.sql.h2.H2QueryExecutor;
 import java.sql.SQLException;
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 public class SequenceBaseTest {
   protected final SqlQueryExecutor executor = new H2QueryExecutor(
       DatabaseHelper.USER, DatabaseHelper.PASSWORD, DatabaseHelper.JDBC_URL, 10);
-  protected final Map<String, ActionLogicalTable> STEP_COLUMN_SOURCES = Map.of(
+  protected final Map<String, EventLogicalTable> STEP_COLUMN_SOURCES = Map.of(
       "login", ActionLogicalTable("login"),
       "battle", ActionLogicalTable("battle"),
       "transaction", ActionLogicalTable("transaction")
@@ -42,8 +42,8 @@ public class SequenceBaseTest {
 
   }
 
-  private ActionLogicalTable ActionLogicalTable(String stepName) {
-    return new ActionLogicalTable(
+  private EventLogicalTable ActionLogicalTable(String stepName) {
+    return new EventLogicalTable(
         stepName, "", Optional.empty(), TableReference.of(stepName),
         new Columns<>(new LinkedHashMap<>(Map.of(
             "date_",
@@ -51,7 +51,7 @@ public class SequenceBaseTest {
             "ts", Column.ofHidden("ts", DataType.DATETIME)
                 .withTag(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG),
             "user_id", Column.ofHidden("user_id", DataType.STRING)
-                .withTag(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)
+                .withTag(EventLogicalTable.ENTITY_ID_COLUMN_TAG)
         ))),
         Map.of(), Optional.empty(), Set.of());
   }

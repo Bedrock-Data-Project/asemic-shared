@@ -3,10 +3,10 @@ package com.asemicanalytics.config;
 import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
 import com.asemicanalytics.config.enrichment.EnrichmentResolver;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.PaymentTransactionEventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import java.util.List;
@@ -14,17 +14,17 @@ import java.util.Map;
 import java.util.Optional;
 
 public class EntityModelConfig {
-  private final Map<String, ActionLogicalTable> logicalTables;
+  private final Map<String, EventLogicalTable> logicalTables;
 
   private final EntityLogicalTable entityLogicalTable;
-  private final FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable;
+  private final FirstAppearanceEventLogicalTable firstAppearanceActionLogicalTable;
   private final ActivityLogicalTable activityActionLogicalTable;
-  private final Optional<PaymentTransactionActionLogicalTable>
+  private final Optional<PaymentTransactionEventLogicalTable>
       paymentTransactionActionLogicalTable;
 
-  public EntityModelConfig(Map<String, ActionLogicalTable> logicalTables,
+  public EntityModelConfig(Map<String, EventLogicalTable> logicalTables,
                            EntityLogicalTable entityLogicalTable,
-                           FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
+                           FirstAppearanceEventLogicalTable firstAppearanceActionLogicalTable,
                            ActivityLogicalTable activityActionLogicalTable,
                            List<EnrichmentDefinition> enrichmentDefinitions) {
     this.logicalTables = logicalTables;
@@ -32,19 +32,19 @@ public class EntityModelConfig {
     this.firstAppearanceActionLogicalTable = firstAppearanceActionLogicalTable;
     this.activityActionLogicalTable = activityActionLogicalTable;
     this.paymentTransactionActionLogicalTable = logicalTables.values().stream()
-        .filter(d -> d instanceof PaymentTransactionActionLogicalTable)
-        .map(d -> (PaymentTransactionActionLogicalTable) d)
+        .filter(d -> d instanceof PaymentTransactionEventLogicalTable)
+        .map(d -> (PaymentTransactionEventLogicalTable) d)
         .findFirst();
 
     EnrichmentResolver.resolve(logicalTables, entityLogicalTable, enrichmentDefinitions);
   }
 
   private EntityModelConfig(
-      Map<String, ActionLogicalTable> logicalTables,
+      Map<String, EventLogicalTable> logicalTables,
       EntityLogicalTable entityLogicalTable,
-      FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
+      FirstAppearanceEventLogicalTable firstAppearanceActionLogicalTable,
       ActivityLogicalTable activityActionLogicalTable,
-      Optional<PaymentTransactionActionLogicalTable> paymentTransactionActionLogicalTable) {
+      Optional<PaymentTransactionEventLogicalTable> paymentTransactionActionLogicalTable) {
     this.logicalTables = logicalTables;
     this.entityLogicalTable = entityLogicalTable;
     this.firstAppearanceActionLogicalTable = firstAppearanceActionLogicalTable;
@@ -59,7 +59,7 @@ public class EntityModelConfig {
     throw new IllegalArgumentException("No logicalTable named " + id);
   }
 
-  public Map<String, ActionLogicalTable> actionLogicalTables() {
+  public Map<String, EventLogicalTable> actionLogicalTables() {
     return logicalTables;
   }
 
@@ -67,7 +67,7 @@ public class EntityModelConfig {
     return entityLogicalTable;
   }
 
-  public FirstAppearanceActionLogicalTable getFirstAppearanceActionLogicalTable() {
+  public FirstAppearanceEventLogicalTable getFirstAppearanceActionLogicalTable() {
     return firstAppearanceActionLogicalTable;
   }
 
@@ -75,7 +75,7 @@ public class EntityModelConfig {
     return activityActionLogicalTable;
   }
 
-  public Optional<PaymentTransactionActionLogicalTable> getPaymentTransactionActionLogicalTable(
+  public Optional<PaymentTransactionEventLogicalTable> getPaymentTransactionActionLogicalTable(
 
   ) {
     return paymentTransactionActionLogicalTable;

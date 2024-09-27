@@ -5,7 +5,7 @@ import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.select;
 import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.TableReference;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.sequence.querybuilder.DomainCteBuilder;
 import com.asemicanalytics.sequence.querybuilder.SequenceQuery;
 import com.asemicanalytics.sequence.querybuilder.SqlQueryBuilder;
@@ -22,14 +22,14 @@ public class SequenceService {
   }
 
   public static Sequence parseSequence(String sequenceQuery,
-                                       Map<String, ActionLogicalTable> stepTables) {
+                                       Map<String, EventLogicalTable> stepTables) {
     QueryLanguageEvaluator queryLanguageEvaluator = new QueryLanguageEvaluator(stepTables);
     return queryLanguageEvaluator.parse(sequenceQuery);
   }
 
   public SequenceQuery getSequenceQuery(
       DatetimeInterval datetimeInterval, String sequenceQuery,
-      Map<String, ActionLogicalTable> stepTables, List<String> includeColumns) {
+      Map<String, EventLogicalTable> stepTables, List<String> includeColumns) {
     return SqlQueryBuilder.prepareCtes(
         parseSequence(sequenceQuery, stepTables), datetimeInterval, includeColumns);
 
@@ -37,7 +37,7 @@ public class SequenceService {
 
   public String getSequenceSql(
       DatetimeInterval datetimeInterval, String sequenceQuery,
-      Map<String, ActionLogicalTable> stepTables, List<String> includeColumns) {
+      Map<String, EventLogicalTable> stepTables, List<String> includeColumns) {
     var query =
         getSequenceQuery(datetimeInterval, sequenceQuery, stepTables, includeColumns);
     query.queryBuilder().select(select()
@@ -53,7 +53,7 @@ public class SequenceService {
 
   public void dumpSequenceToTable(
       DatetimeInterval datetimeInterval, String sequenceQuery,
-      Map<String, ActionLogicalTable> stepTables,
+      Map<String, EventLogicalTable> stepTables,
       TableReference tableReference, List<String> includeColumns) {
     var select = getSequenceSql(datetimeInterval, sequenceQuery, stepTables, includeColumns);
     var createTable =

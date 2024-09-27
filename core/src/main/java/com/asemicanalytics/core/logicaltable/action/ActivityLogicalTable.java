@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class ActivityLogicalTable extends ActionLogicalTable {
+public class ActivityLogicalTable extends EventLogicalTable {
   public static final String TAG = "activity_action";
   public static final String LAST_LOGIN_PROPERTY_TAG = "last_login_property";
 

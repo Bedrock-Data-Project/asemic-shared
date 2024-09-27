@@ -1,6 +1,6 @@
 package com.asemicanalytics.sequence.querylanguage;
 
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.sequence.sequence.Sequence;
 import java.time.Duration;
 import java.util.Map;
@@ -9,9 +9,9 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class QueryLanguageEvaluator {
-  private final Map<String, ActionLogicalTable> stepLogicalTables;
+  private final Map<String, EventLogicalTable> stepLogicalTables;
 
-  public QueryLanguageEvaluator(Map<String, ActionLogicalTable> stepLogicalTables) {
+  public QueryLanguageEvaluator(Map<String, EventLogicalTable> stepLogicalTables) {
     this.stepLogicalTables = stepLogicalTables;
   }
 

@@ -1,7 +1,7 @@
 package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyComputedDto;
@@ -15,7 +15,7 @@ public class ComposableColumnHelper {
       Optional<String> sourceProperty,
       Optional<EntityPropertyComputedDto> computedSourceProperty,
       Optional<EntityPropertyActionDto> actionSourceProperty,
-      Map<String, ActionLogicalTable> actionLogicalTables
+      Map<String, EventLogicalTable> actionLogicalTables
   ) {
     EntityProperty sourceColumn = null;
 

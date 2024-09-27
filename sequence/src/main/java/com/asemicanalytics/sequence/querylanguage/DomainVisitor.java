@@ -2,7 +2,7 @@ package com.asemicanalytics.sequence.querylanguage;
 
 import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.table;
 
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.sequence.sequence.DomainStep;
 import com.asemicanalytics.sql.sql.builder.tokens.BooleanExpression;
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.Optional;
 
 class DomainVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
 
-  private final Map<String, ActionLogicalTable> stepLogicalTables;
+  private final Map<String, EventLogicalTable> stepLogicalTables;
 
-  public DomainVisitor(Map<String, ActionLogicalTable> stepLogicalTables) {
+  public DomainVisitor(Map<String, EventLogicalTable> stepLogicalTables) {
     this.stepLogicalTables = stepLogicalTables;
   }
 

@@ -10,9 +10,9 @@ import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.kpi.Kpi;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
@@ -37,12 +37,12 @@ public class EntityMapper
   @Override
   public EntityLogicalTable apply(EntityDto dto) {
     var firstAppearanceActionLogicalTable =
-        (FirstAppearanceActionLogicalTable) dto.actionLogicalTables()
+        (FirstAppearanceEventLogicalTable) dto.actionLogicalTables()
             .values().stream()
-            .filter(d -> d instanceof FirstAppearanceActionLogicalTable)
+            .filter(d -> d instanceof FirstAppearanceEventLogicalTable)
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("No logical table tagged with "
-                + FirstAppearanceActionLogicalTable.TAG + " found"));
+                + FirstAppearanceEventLogicalTable.TAG + " found"));
     var activityLogicalTable = (ActivityLogicalTable) dto.actionLogicalTables()
         .values().stream()
         .filter(d -> d instanceof ActivityLogicalTable)
@@ -77,7 +77,7 @@ public class EntityMapper
   }
 
   public static SequencedMap<String, EntityProperty> buildColumnsMap(
-      Map<String, ActionLogicalTable> actionLogicalTables,
+      Map<String, EventLogicalTable> actionLogicalTables,
       Map<String, EntityPropertyDto> newProperties,
       Map<String, EntityProperty> existingProperties,
       int activeDays) {

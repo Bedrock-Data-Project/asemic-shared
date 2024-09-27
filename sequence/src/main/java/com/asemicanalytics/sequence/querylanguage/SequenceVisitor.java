@@ -1,13 +1,13 @@
 package com.asemicanalytics.sequence.querylanguage;
 
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import java.util.List;
 import java.util.Map;
 
 class SequenceVisitor extends QueryLanguageBaseVisitor<VisitorResult> {
-  private final Map<String, ActionLogicalTable> stepLogicalTables;
+  private final Map<String, EventLogicalTable> stepLogicalTables;
 
-  public SequenceVisitor(Map<String, ActionLogicalTable> stepLogicalTables) {
+  public SequenceVisitor(Map<String, EventLogicalTable> stepLogicalTables) {
     this.stepLogicalTables = stepLogicalTables;
   }
 

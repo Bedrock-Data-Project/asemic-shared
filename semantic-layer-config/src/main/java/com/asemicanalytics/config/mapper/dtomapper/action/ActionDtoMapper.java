@@ -6,10 +6,10 @@ import com.asemicanalytics.config.mapper.dtomapper.EnrichmentDtoMapper;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.PaymentTransactionEventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class ActionDtoMapper
-    implements Function<ActionLogicalTableDto, ActionLogicalTable> {
+    implements Function<ActionLogicalTableDto, EventLogicalTable> {
   private final String id;
   private final String appId;
   private final List<EnrichmentDefinition> enrichmentCollector;
@@ -32,7 +32,7 @@ public class ActionDtoMapper
   }
 
   @Override
-  public ActionLogicalTable apply(ActionLogicalTableDto dto) {
+  public EventLogicalTable apply(ActionLogicalTableDto dto) {
     dto.getEnrichments().ifPresent(enrichments -> enrichments.forEach(e -> enrichmentCollector.add(
         new EnrichmentDtoMapper(id).apply(e))));
 
@@ -44,8 +44,8 @@ public class ActionDtoMapper
     }
     var tags = dto.getTags().map(Set::copyOf).orElse(Set.of());
 
-    if (tags.contains(FirstAppearanceActionLogicalTable.TAG)) {
-      return new FirstAppearanceActionLogicalTable(
+    if (tags.contains(FirstAppearanceEventLogicalTable.TAG)) {
+      return new FirstAppearanceEventLogicalTable(
           id,
           DefaultLabel.of(dto.getLabel(), id),
           dto.getDescription(),
@@ -66,8 +66,8 @@ public class ActionDtoMapper
           dto.getWhere(),
           tags
       );
-    } else if (tags.contains(PaymentTransactionActionLogicalTable.TAG)) {
-      return new PaymentTransactionActionLogicalTable(
+    } else if (tags.contains(PaymentTransactionEventLogicalTable.TAG)) {
+      return new PaymentTransactionEventLogicalTable(
           id,
           DefaultLabel.of(dto.getLabel(), id),
           dto.getDescription(),
@@ -78,7 +78,7 @@ public class ActionDtoMapper
           tags
       );
     } else {
-      return new ActionLogicalTable(
+      return new EventLogicalTable(
           id,
           DefaultLabel.of(dto.getLabel(), id),
           dto.getDescription(),

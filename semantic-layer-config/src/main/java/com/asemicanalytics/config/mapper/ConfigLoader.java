@@ -5,9 +5,9 @@ import com.asemicanalytics.config.enrichment.EnrichmentDefinition;
 import com.asemicanalytics.config.mapper.dtomapper.action.ActionDtoMapper;
 import com.asemicanalytics.config.mapper.dtomapper.property.EntityMapper;
 import com.asemicanalytics.config.parser.ConfigParser;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class ConfigLoader {
     this.configParser = configParser;
   }
 
-  public Map<String, ActionLogicalTable> parseActions(
+  public Map<String, EventLogicalTable> parseActions(
       String appId, List<EnrichmentDefinition> enrichmentCollector) {
     configParser.init(appId);
     return loadTopLevelLogicalTables(appId, enrichmentCollector);
@@ -35,8 +35,8 @@ public class ConfigLoader {
             .apply(this.configParser.parseEntityLogicalTable(appId, actionLogicalTables));
 
     var firstAppearanceActionLogicalTable = actionLogicalTables.values().stream()
-        .filter(d -> d instanceof FirstAppearanceActionLogicalTable)
-        .map(d -> (FirstAppearanceActionLogicalTable) d)
+        .filter(d -> d instanceof FirstAppearanceEventLogicalTable)
+        .map(d -> (FirstAppearanceEventLogicalTable) d)
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("No first appearance action table found"));
     var activityActionLogicalTable = actionLogicalTables.values().stream()
@@ -48,9 +48,9 @@ public class ConfigLoader {
         activityActionLogicalTable, enrichmentCollector);
   }
 
-  private Map<String, ActionLogicalTable> loadTopLevelLogicalTables(
+  private Map<String, EventLogicalTable> loadTopLevelLogicalTables(
       String appId, List<EnrichmentDefinition> enrichmentCollector) {
-    Map<String, ActionLogicalTable> logicalTables = new HashMap<>();
+    Map<String, EventLogicalTable> logicalTables = new HashMap<>();
     this.configParser.parseActionLogicalTables(appId)
         .forEach((k, v) -> logicalTables.put(k,
             new ActionDtoMapper(k, appId, enrichmentCollector).apply(v)));

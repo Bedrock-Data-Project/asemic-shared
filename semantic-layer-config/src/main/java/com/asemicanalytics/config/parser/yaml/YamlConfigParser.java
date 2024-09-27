@@ -2,7 +2,7 @@ package com.asemicanalytics.config.parser.yaml;
 
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.config.parser.EntityDto;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,7 +60,7 @@ public class YamlConfigParser implements ConfigParser {
 
   @Override
   public EntityDto parseEntityLogicalTable(
-      String appId, Map<String, ActionLogicalTable> userActionLogicalTables) {
+      String appId, Map<String, EventLogicalTable> userActionLogicalTables) {
     return new EntityLogicalTableParser(yamlFileLoader)
         .parse(propertiesDir(appId), kpisDir(appId), userActionLogicalTables);
   }

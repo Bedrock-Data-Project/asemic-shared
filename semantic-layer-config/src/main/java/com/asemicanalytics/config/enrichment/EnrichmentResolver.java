@@ -4,7 +4,7 @@ import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.Enrichment;
 import com.asemicanalytics.core.logicaltable.EnrichmentColumnPair;
 import com.asemicanalytics.core.logicaltable.LogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +20,8 @@ public class EnrichmentResolver {
     });
 
     logicalTables.values().stream()
-        .filter(d -> d instanceof ActionLogicalTable)
-        .map(d -> (ActionLogicalTable) d)
+        .filter(d -> d instanceof EventLogicalTable)
+        .map(d -> (EventLogicalTable) d)
         .forEach(d -> d.addEnrichment(
             new Enrichment(entityLogicalTable, List.of(
                 new EnrichmentColumnPair(d.getDateColumn().getId(),

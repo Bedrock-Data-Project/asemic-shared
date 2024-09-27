@@ -1,7 +1,7 @@
 package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.ActionColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
 import java.util.Map;
@@ -11,11 +11,11 @@ public class ActionPropertyDtoMapper implements
     Function<EntityPropertyActionDto, ActionColumn> {
 
   private final Column column;
-  private final Map<String, ActionLogicalTable> actionLogicalTables;
+  private final Map<String, EventLogicalTable> actionLogicalTables;
   private final boolean generated;
 
   public ActionPropertyDtoMapper(Column column,
-                                 Map<String, ActionLogicalTable> actionLogicalTables,
+                                 Map<String, EventLogicalTable> actionLogicalTables,
                                  boolean generated) {
     this.column = column;
     this.actionLogicalTables = actionLogicalTables;

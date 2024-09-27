@@ -7,15 +7,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class FirstAppearanceActionLogicalTable extends ActionLogicalTable {
+public class FirstAppearanceEventLogicalTable extends EventLogicalTable {
   public static final String TAG = "first_appearance_action";
   public static final String FIRST_APPEARANCE_PROPERTY_TAG = "first_appearance_property";
 
-  public FirstAppearanceActionLogicalTable(String id, String label, Optional<String> description,
-                                           TableReference table,
-                                           Columns columns,
-                                           Map<String, Kpi> kpis, Optional<String> where,
-                                           Set<String> tags) {
+  public FirstAppearanceEventLogicalTable(String id, String label, Optional<String> description,
+                                          TableReference table,
+                                          Columns columns,
+                                          Map<String, Kpi> kpis, Optional<String> where,
+                                          Set<String> tags) {
     super(id, label, description, table, columns, kpis, where, tags);
   }
 }

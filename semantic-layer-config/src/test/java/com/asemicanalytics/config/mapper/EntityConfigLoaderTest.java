@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.asemicanalytics.core.kpi.KpiComponent;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
@@ -147,7 +147,7 @@ class EntityConfigLoaderTest {
                                                 List<EntityKpisDto> kpisDtos) throws IOException {
 
     var firstAppearanceActionLogicalTable = new ActionLogicalTableDto(
-        "app.registration", List.of(FirstAppearanceActionLogicalTable.TAG),
+        "app.registration", List.of(FirstAppearanceEventLogicalTable.TAG),
         null, null,
         new ColumnsDto() {{
           setAdditionalProperty("date_",
@@ -158,7 +158,7 @@ class EntityConfigLoaderTest {
                   List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG)));
           setAdditionalProperty("unique_id",
               new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
-                  List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
+                  List.of(EventLogicalTable.ENTITY_ID_COLUMN_TAG)));
         }}, null, List.of());
 
     var activityLogicalTable = new ActionLogicalTableDto(
@@ -173,7 +173,7 @@ class EntityConfigLoaderTest {
                   List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG)));
           setAdditionalProperty("unique_id",
               new ActionColumnDto(ActionColumnDto.DataType.STRING, null, null,
-                  List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG)));
+                  List.of(EventLogicalTable.ENTITY_ID_COLUMN_TAG)));
         }}, null, List.of());
 
     var configLoader = new ConfigLoader(new TestConfigParser(

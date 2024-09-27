@@ -9,7 +9,7 @@ import com.asemicanalytics.core.kpi.Kpi;
 import com.asemicanalytics.core.logicaltable.MaterializedIndexTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.FirstAppearanceEventLogicalTable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
   public static final String COHORT_SIZE_COLUMN = "cohort_size";
   public static final String LAST_LOGIN_DATE_COLUMN = "last_login_date";
 
-  private final FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable;
+  private final FirstAppearanceEventLogicalTable firstAppearanceActionLogicalTable;
   private final ActivityLogicalTable activityLogicalTable;
   private final String baseTablePrefix;
   private final TableReference baseTable;
@@ -34,7 +34,7 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
 
   public EntityLogicalTable(String baseTable,
                             Optional<Columns<EntityProperty>> columns,
-                            FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
+                            FirstAppearanceEventLogicalTable firstAppearanceActionLogicalTable,
                             ActivityLogicalTable activityLogicalTable,
                             int activityTableDays,
                             List<Integer> cohortTableDays,
@@ -97,7 +97,7 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
 
   public static Columns<EntityProperty> withBaseColumns(
       Optional<Columns<EntityProperty>> columns,
-      FirstAppearanceActionLogicalTable firstAppearanceActionLogicalTable,
+      FirstAppearanceEventLogicalTable firstAppearanceActionLogicalTable,
       ActivityLogicalTable activityLogicalTable) {
 
     var baseColumns = List.of(
@@ -195,7 +195,7 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
     return "user_wide";
   }
 
-  public FirstAppearanceActionLogicalTable getFirstAppearanceActionLogicalTable() {
+  public FirstAppearanceEventLogicalTable getFirstAppearanceActionLogicalTable() {
     return firstAppearanceActionLogicalTable;
   }
 

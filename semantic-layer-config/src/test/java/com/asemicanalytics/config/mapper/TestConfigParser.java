@@ -2,7 +2,7 @@ package com.asemicanalytics.config.mapper;
 
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.config.parser.EntityDto;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
@@ -37,7 +37,7 @@ public class TestConfigParser implements ConfigParser {
 
   @Override
   public EntityDto parseEntityLogicalTable(
-      String appId, Map<String, ActionLogicalTable> userActionLogicalTables) {
+      String appId, Map<String, EventLogicalTable> userActionLogicalTables) {
     return new EntityDto(
         new EntityConfigDto("{app_id}.table", List.of(1, 2), 90),
         columnsDtos,

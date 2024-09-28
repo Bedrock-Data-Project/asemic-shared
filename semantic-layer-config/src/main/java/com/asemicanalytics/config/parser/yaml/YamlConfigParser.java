@@ -33,7 +33,7 @@ public class YamlConfigParser implements ConfigParser {
             String[] tokens = file.getName().split("\\.");
             if (tokens.length != 2) {
               throw new IllegalArgumentException(
-                  "Invalid logical table file name: " + file.getName());
+                  "Invalid table file name: " + file.getName());
             }
             String logicalTableId = tokens[0];
             logicalTables.put(
@@ -54,7 +54,7 @@ public class YamlConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, EventLogicalTableDto> parseeventLogicalTables(String appId) {
+  public Map<String, EventLogicalTableDto> parseEventLogicalTables(String appId) {
     return readTopLevelLogicalTables(appId, EventLogicalTableDto.class, actionsDir(appId));
   }
 
@@ -66,7 +66,7 @@ public class YamlConfigParser implements ConfigParser {
   }
 
   public Path actionsDir(String appId) {
-    return appsPath.resolve(appId).resolve("userentity").resolve("actions");
+    return appsPath.resolve(appId).resolve("userentity").resolve("events");
   }
 
   public Path staticDir(String appId) {

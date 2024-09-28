@@ -10,23 +10,36 @@ import java.util.Optional;
 import java.util.Set;
 
 public class RegistrationsLogicalTable extends EventLogicalTable {
-  public static final String TAG = "registrations_event";
-  public static final String REGISTRATIONS_PROPERTY_TAG = "registrations_property";
-
+  public static final String TAG = "registration_event";
+  public static final String REGISTRATIONS_PROPERTY_TAG = "registration_property";
   private List<EventLogicalTable> registrationEvents;
 
-  public RegistrationsLogicalTable(String id,
-                                   TableReference table,
+  private static Columns<Column> buildColumns(List<EventLogicalTable> registrationEvents) {
+    LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
+
+
+    columns.put(registrationEvents.getFirst().getEntityIdColumnId(),
+        registrationEvents.getFirst().entityIdColumn());
+    columns.put(registrationEvents.getFirst().getTimestampColumnId(),
+        registrationEvents.getFirst().getTimestampColumn());
+    columns.put(registrationEvents.getFirst().getDateColumnId(),
+        registrationEvents.getFirst().getDateColumn());
+
+    for (var eventTable : registrationEvents) {
+      for (var column : eventTable.getColumns()) {
+        if (column.hasTag(RegistrationsLogicalTable.REGISTRATIONS_PROPERTY_TAG)) {
+          columns.put(column.getId(), column);
+        }
+      }
+    }
+
+    return new Columns<>(columns);
+  }
+
+  public RegistrationsLogicalTable(TableReference table,
                                    List<EventLogicalTable> registrationEvents) {
-    super(id, null, Optional.empty(), table,
-        new Columns<Column>(new LinkedHashMap<>(Map.of(
-            registrationEvents.getFirst().getEntityIdColumnId(),
-            registrationEvents.getFirst().entityIdColumn(),
-            registrationEvents.getFirst().getTimestampColumnId(),
-            registrationEvents.getFirst().getTimestampColumn(),
-            registrationEvents.getFirst().getDateColumnId(),
-            registrationEvents.getFirst().getDateColumn()
-        ))),
+    super("entity_registrations", null, Optional.empty(), table,
+        buildColumns(registrationEvents),
         Map.of(),
         Optional.empty(), Set.of());
     this.registrationEvents = registrationEvents;

@@ -11,13 +11,11 @@ import java.util.Set;
 
 public class ActivityLogicalTable extends EventLogicalTable {
   public static final String TAG = "activity_event";
-
   private final List<EventLogicalTable> activityEvents;
 
-  public ActivityLogicalTable(String id,
-                              TableReference table,
+  public ActivityLogicalTable(TableReference table,
                               List<EventLogicalTable> activityEvents) {
-    super(id, null, Optional.empty(), table,
+    super("entity_activity", null, Optional.empty(), table,
         new Columns<Column>(new LinkedHashMap<>(Map.of(
             activityEvents.getFirst().getEntityIdColumnId(),
             activityEvents.getFirst().entityIdColumn(),

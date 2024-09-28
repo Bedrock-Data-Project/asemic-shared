@@ -37,7 +37,6 @@ public class EntityMapper
 
   private RegistrationsLogicalTable buildRegistrationsTable(EntityDto dto) {
     return new RegistrationsLogicalTable(
-        "entity_registrations",
         TableReference.parse(
             dto.config().getBaseTablePrefix()
                 .replace("{app_id}", appId) + "_registrations"),
@@ -47,16 +46,22 @@ public class EntityMapper
 
   private ActivityLogicalTable buildActivityTable(EntityDto dto) {
     return new ActivityLogicalTable(
-        "entity_activity",
         TableReference.parse(
             dto.config().getBaseTablePrefix()
-                .replace("{app_id}", appId) + "_registrations"),
+                .replace("{app_id}", appId) + "_activity"),
         dto.eventLogicalTables().getByTag(ActivityLogicalTable.TAG)
     );
   }
 
   @Override
   public EntityLogicalTable apply(EntityDto dto) {
+    var registrationsLogicalTable = buildRegistrationsTable(dto);
+    var activityLogicalTable = buildActivityTable(dto);
+    dto.eventLogicalTables().getEventLogicalTables().put(
+        registrationsLogicalTable.getId(), registrationsLogicalTable);
+    dto.eventLogicalTables().getEventLogicalTables().put(
+        activityLogicalTable.getId(), activityLogicalTable);
+
     int activeDays = dto.config().getActiveDays();
     List<Integer> cohortDays = dto.config().getCohortedDailyKpisDays();
 
@@ -65,8 +70,6 @@ public class EntityMapper
         buildColumnsMap(dto.eventLogicalTables(), mergedColumns.getProperties()
             .getAdditionalProperties(), Map.of(), dto.config().getActiveDays());
 
-    var registrationsLogicalTable = buildRegistrationsTable(dto);
-    var activityLogicalTable = buildActivityTable(dto);
     var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns<>(columnMap)),
         registrationsLogicalTable, activityLogicalTable);
 

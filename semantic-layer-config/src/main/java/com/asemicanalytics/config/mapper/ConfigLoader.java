@@ -42,7 +42,7 @@ public class ConfigLoader {
   private EventLogicalTables loadTopLevelLogicalTables(
       String appId, List<EnrichmentDefinition> enrichmentCollector) {
     Map<String, EventLogicalTable> logicalTables = new HashMap<>();
-    this.configParser.parseeventLogicalTables(appId)
+    this.configParser.parseEventLogicalTables(appId)
         .forEach((k, v) -> logicalTables.put(k,
             new EventDtoMapper(k, appId, enrichmentCollector).apply(v)));
     return new EventLogicalTables(logicalTables);

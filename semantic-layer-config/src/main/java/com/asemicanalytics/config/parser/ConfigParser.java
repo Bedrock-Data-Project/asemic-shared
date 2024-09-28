@@ -7,7 +7,7 @@ import java.util.Map;
 public interface ConfigParser {
   void init(String appId);
 
-  Map<String, EventLogicalTableDto> parseeventLogicalTables(String appId);
+  Map<String, EventLogicalTableDto> parseEventLogicalTables(String appId);
 
   EntityDto parseEntityLogicalTable(
       String appId, EventLogicalTables usereventLogicalTables);

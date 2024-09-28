@@ -56,7 +56,7 @@ public class EventColumn extends EntityProperty {
     this.generated = generated;
   }
 
-  public EventLogicalTable getActionLogicalTable() {
+  public EventLogicalTable getEventLogicalTable() {
     return eventLogicalTable;
   }
 

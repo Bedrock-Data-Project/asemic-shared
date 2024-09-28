@@ -31,7 +31,7 @@ public class TestConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, EventLogicalTableDto> parseeventLogicalTables(String appId) {
+  public Map<String, EventLogicalTableDto> parseEventLogicalTables(String appId) {
     return eventLogicalTables;
   }
 

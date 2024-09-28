@@ -187,12 +187,12 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
   @Override
   public CompletableFuture<DatetimeInterval> submitTableFreshness(TableReference table, String id) {
     var future = submit((() -> executeQuery(String.format("""
-        SELECT
-          MIN(partition_id) AS min,
-          MAX(partition_id) AS max
-        FROM `%s.INFORMATION_SCHEMA.PARTITIONS`
-        WHERE table_name = '%s' AND partition_id != '__NULL__'
-        """, table.schemaName().get(), table.tableName()), false)),
+            SELECT
+              MIN(partition_id) AS min,
+              MAX(partition_id) AS max
+            FROM `%s.INFORMATION_SCHEMA.PARTITIONS`
+            WHERE table_name = '%s' AND partition_id != '__NULL__'
+            """, table.schemaName().get(), table.tableName()), false)),
         "SqlQueryExecutor.submitTableFreshness");
 
     return future.thenApply(tableResult -> {

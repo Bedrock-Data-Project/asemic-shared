@@ -1,7 +1,7 @@
 package com.asemicanalytics.config.parser.yaml;
 
 import com.asemicanalytics.config.parser.EntityDto;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class EntityLogicalTableParser {
   private static final String CONFIG_FILE = "config.yml";
@@ -51,7 +50,7 @@ public class EntityLogicalTableParser {
   }
 
   public EntityDto parse(
-      Path propertiesPath, Path kpisPath, Map<String, ActionLogicalTable> actionLogicalTables) {
+      Path propertiesPath, Path kpisPath, EventLogicalTables eventLogicalTables) {
 
     if (!propertiesPath.toFile().exists()) {
       throw new IllegalArgumentException("entity requires properties directory");
@@ -76,7 +75,7 @@ public class EntityLogicalTableParser {
         configDto,
         loadProperties(propertiesPath),
         loadKpis(kpisPath),
-        actionLogicalTables
+        eventLogicalTables
     );
   }
 

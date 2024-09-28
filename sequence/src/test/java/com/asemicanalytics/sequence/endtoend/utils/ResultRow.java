@@ -2,7 +2,6 @@ package com.asemicanalytics.sequence.endtoend.utils;
 
 import com.asemicanalytics.core.SqlResultRow;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
 public record ResultRow(

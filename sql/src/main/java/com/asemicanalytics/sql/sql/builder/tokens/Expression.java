@@ -29,6 +29,11 @@ public interface Expression extends Token {
     return hashString(renderDefinition(contentHashDialect())).substring(0, 4);
   }
 
+  default BooleanExpression condition(String operator, Expression e) {
+    return new BooleanExpression(parse("{expression} " + operator + " {e}",
+        TemplateDict.noMissing(Map.of("expression", this, "e", e))));
+  }
+
   default BooleanExpression condition(String operator, List<String> values, DataType dataType) {
     var constants = new ArrayList<>(values.stream().map(x -> new Constant(x, dataType)).toList());
     var valueList = new ExpressionList(constants, ", ");

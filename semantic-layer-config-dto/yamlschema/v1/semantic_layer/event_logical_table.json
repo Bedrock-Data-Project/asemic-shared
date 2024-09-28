@@ -1,5 +1,5 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/action_logical_table.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/event_logical_table.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
@@ -25,7 +25,7 @@
     "columns": {
       "type": "object",
       "additionalProperties": {
-        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/action_column.json"
+        "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/event_column.json"
       }
     },
     "where": {

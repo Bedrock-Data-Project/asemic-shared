@@ -1,28 +1,26 @@
 package com.asemicanalytics.config.mapper.dtomapper.property;
 
 import com.asemicanalytics.core.DateInterval;
-import com.asemicanalytics.core.DatetimeInterval;
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.entity.FixedWindowColumn;
 import com.asemicanalytics.core.logicaltable.entity.WindowAggregationFunction;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyFixedWindowDto;
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.function.Function;
 
 public class FixedWindowPropertyDtoMapper implements
     Function<EntityPropertyFixedWindowDto, FixedWindowColumn> {
 
   private final Column column;
-  private final Map<String, ActionLogicalTable> actionLogicalTables;
+  private final EventLogicalTables eventLogicalTables;
 
 
   public FixedWindowPropertyDtoMapper(Column column,
-                                      Map<String, ActionLogicalTable> actionLogicalTables) {
+                                      EventLogicalTables eventLogicalTables) {
     this.column = column;
-    this.actionLogicalTables = actionLogicalTables;
+    this.eventLogicalTables = eventLogicalTables;
   }
 
   @Override
@@ -33,8 +31,8 @@ public class FixedWindowPropertyDtoMapper implements
         column,
         dto.getSourceProperty(),
         dto.getSourceComputedProperty(),
-        dto.getSourceActionProperty(),
-        actionLogicalTables
+        dto.getSourceEventProperty(),
+        eventLogicalTables
     );
 
     return new FixedWindowColumn(column,

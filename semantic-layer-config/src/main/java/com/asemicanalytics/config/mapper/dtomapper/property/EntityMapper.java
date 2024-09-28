@@ -7,14 +7,15 @@ import com.asemicanalytics.config.mapper.dtomapper.kpi.KpisUnfolder;
 import com.asemicanalytics.config.mapper.dtomapper.kpi.UnfoldingKpi;
 import com.asemicanalytics.config.parser.EntityDto;
 import com.asemicanalytics.core.DataType;
+import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
 import com.asemicanalytics.core.kpi.Kpi;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityLogicalTable;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
+import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
+import com.asemicanalytics.core.logicaltable.event.RegistrationsLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 import java.util.HashMap;
@@ -34,31 +35,43 @@ public class EntityMapper
     this.appId = appId;
   }
 
+  private RegistrationsLogicalTable buildRegistrationsTable(EntityDto dto) {
+    return new RegistrationsLogicalTable(
+        TableReference.parse(
+            dto.config().getBaseTablePrefix()
+                .replace("{app_id}", appId) + "_registrations"),
+        dto.eventLogicalTables().getByTag(RegistrationsLogicalTable.TAG)
+    );
+  }
+
+  private ActivityLogicalTable buildActivityTable(EntityDto dto) {
+    return new ActivityLogicalTable(
+        TableReference.parse(
+            dto.config().getBaseTablePrefix()
+                .replace("{app_id}", appId) + "_activity"),
+        dto.eventLogicalTables().getByTag(ActivityLogicalTable.TAG)
+    );
+  }
+
   @Override
   public EntityLogicalTable apply(EntityDto dto) {
-    var firstAppearanceActionLogicalTable =
-        (FirstAppearanceActionLogicalTable) dto.actionLogicalTables()
-            .values().stream()
-            .filter(d -> d instanceof FirstAppearanceActionLogicalTable)
-            .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("No logical table tagged with "
-                + FirstAppearanceActionLogicalTable.TAG + " found"));
-    var activityLogicalTable = (ActivityLogicalTable) dto.actionLogicalTables()
-        .values().stream()
-        .filter(d -> d instanceof ActivityLogicalTable)
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException("No action logical table tagged with "
-            + ActivityLogicalTable.TAG + " found"));
+    var registrationsLogicalTable = buildRegistrationsTable(dto);
+    var activityLogicalTable = buildActivityTable(dto);
+    dto.eventLogicalTables().getEventLogicalTables().put(
+        registrationsLogicalTable.getId(), registrationsLogicalTable);
+    dto.eventLogicalTables().getEventLogicalTables().put(
+        activityLogicalTable.getId(), activityLogicalTable);
 
     int activeDays = dto.config().getActiveDays();
     List<Integer> cohortDays = dto.config().getCohortedDailyKpisDays();
 
     EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
     SequencedMap<String, EntityProperty> columnMap =
-        buildColumnsMap(dto.actionLogicalTables(), mergedColumns.getProperties()
+        buildColumnsMap(dto.eventLogicalTables(), mergedColumns.getProperties()
             .getAdditionalProperties(), Map.of(), dto.config().getActiveDays());
+
     var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns<>(columnMap)),
-        firstAppearanceActionLogicalTable, activityLogicalTable);
+        registrationsLogicalTable, activityLogicalTable);
 
     var mergedKpis = new KpisDtoMergeMapper(cohortDays).apply(dto.kpis());
     var unfoldedKpis = new KpisUnfolder(mergedKpis, columns.getColumns().keySet()).unfold();
@@ -69,7 +82,7 @@ public class EntityMapper
     return new EntityLogicalTable(
         dto.config().getBaseTablePrefix().replace("{app_id}", appId),
         Optional.of(columns),
-        firstAppearanceActionLogicalTable,
+        registrationsLogicalTable,
         activityLogicalTable,
         activeDays,
         cohortDays,
@@ -77,14 +90,14 @@ public class EntityMapper
   }
 
   public static SequencedMap<String, EntityProperty> buildColumnsMap(
-      Map<String, ActionLogicalTable> actionLogicalTables,
+      EventLogicalTables eventLogicalTables,
       Map<String, EntityPropertyDto> newProperties,
       Map<String, EntityProperty> existingProperties,
       int activeDays) {
 
     SequencedMap<String, EntityProperty> columns = new LinkedHashMap<>(existingProperties);
 
-    SequencedMap<String, EntityPropertyDto> firstAppearanceProperties = new LinkedHashMap<>();
+    SequencedMap<String, EntityPropertyDto> registrationProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> actionProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> slidingWindowProperties = new LinkedHashMap<>();
     SequencedMap<String, EntityPropertyDto> fixedWindowProperties = new LinkedHashMap<>();
@@ -93,12 +106,12 @@ public class EntityMapper
 
     for (var entry : newProperties.entrySet()) {
       boolean foundPropertyConfig = false;
-      if (entry.getValue().getFirstAppearanceProperty().isPresent()) {
+      if (entry.getValue().getRegistrationProperty().isPresent()) {
         foundPropertyConfig = true;
-        firstAppearanceProperties.put(entry.getKey(), entry.getValue());
+        registrationProperties.put(entry.getKey(), entry.getValue());
       }
 
-      if (entry.getValue().getActionProperty().isPresent()) {
+      if (entry.getValue().getEventProperty().isPresent()) {
         if (foundPropertyConfig) {
           throw new IllegalArgumentException(
               "Duplicate property config for column: " + entry.getKey());
@@ -151,33 +164,33 @@ public class EntityMapper
       }
     }
 
-    for (var entry : firstAppearanceProperties.entrySet()) {
+    for (var entry : registrationProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new FirstAppearancePropertyDtoMapper(column).apply(
-          entry.getValue().getFirstAppearanceProperty().get()));
+      columns.put(entry.getKey(), new RegistrationPropertyDtoMapper(column).apply(
+          entry.getValue().getRegistrationProperty().get()));
     }
     for (var entry : actionProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new ActionPropertyDtoMapper(column, actionLogicalTables, false)
-          .apply(entry.getValue().getActionProperty().get()));
+      columns.put(entry.getKey(), new EventPropertyDtoMapper(column, eventLogicalTables, false)
+          .apply(entry.getValue().getEventProperty().get()));
     }
     for (var entry : lifetimeProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      var entity = new LifetimePropertyDtoMapper(column, actionLogicalTables)
+      var entity = new LifetimePropertyDtoMapper(column, eventLogicalTables)
           .apply(entry.getValue().getLifetimeProperty().get());
       columns.put(entry.getKey(), entity);
       columns.put(entity.getSourceColumn().getId(), entity.getSourceColumn());
     }
     for (var entry : slidingWindowProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      var entity = new SlidingWindowPropertyDtoMapper(column, activeDays, actionLogicalTables)
+      var entity = new SlidingWindowPropertyDtoMapper(column, activeDays, eventLogicalTables)
           .apply(entry.getValue().getSlidingWindowProperty().get());
       columns.put(entry.getKey(), entity);
       columns.put(entity.getSourceColumn().getId(), entity.getSourceColumn());
     }
     for (var entry : fixedWindowProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      var entity = new FixedWindowPropertyDtoMapper(column, actionLogicalTables)
+      var entity = new FixedWindowPropertyDtoMapper(column, eventLogicalTables)
           .apply(entry.getValue().getFixedWindowProperty().get());
       columns.put(entry.getKey(), entity);
       columns.put(entity.getSourceColumn().getId(), entity.getSourceColumn());

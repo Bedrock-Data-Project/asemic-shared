@@ -2,11 +2,11 @@ package com.asemicanalytics.core.logicaltable.entity;
 
 import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.column.Column;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import java.util.Optional;
 
-public class ActionColumn extends EntityProperty {
-  private final ActionLogicalTable actionLogicalTable;
+public class EventColumn extends EntityProperty {
+  private final EventLogicalTable eventLogicalTable;
   private final Optional<String> where;
   private final String select;
   private final AggregateFunction aggregationFunction;
@@ -15,7 +15,7 @@ public class ActionColumn extends EntityProperty {
 
   @Override
   public EntityPropertyType getType() {
-    return EntityPropertyType.ACTION;
+    return EntityPropertyType.EVENT;
   }
 
   public enum AggregateFunction {
@@ -29,26 +29,26 @@ public class ActionColumn extends EntityProperty {
     NONE
   }
 
-  public ActionColumn(
+  public EventColumn(
       Column column,
-      ActionLogicalTable actionLogicalTable,
+      EventLogicalTable eventLogicalTable,
       Optional<String> where,
       String select,
       AggregateFunction aggregationFunction,
       String defaultValue) {
-    this(column, actionLogicalTable, where, select, aggregationFunction, defaultValue, false);
+    this(column, eventLogicalTable, where, select, aggregationFunction, defaultValue, false);
   }
 
-  public ActionColumn(
+  public EventColumn(
       Column column,
-      ActionLogicalTable actionLogicalTable,
+      EventLogicalTable eventLogicalTable,
       Optional<String> where,
       String select,
       AggregateFunction aggregationFunction,
       String defaultValue,
       boolean generated) {
     super(column);
-    this.actionLogicalTable = actionLogicalTable;
+    this.eventLogicalTable = eventLogicalTable;
     this.where = where;
     this.select = select;
     this.aggregationFunction = aggregationFunction;
@@ -56,8 +56,8 @@ public class ActionColumn extends EntityProperty {
     this.generated = generated;
   }
 
-  public ActionLogicalTable getActionLogicalTable() {
-    return actionLogicalTable;
+  public EventLogicalTable getEventLogicalTable() {
+    return eventLogicalTable;
   }
 
   public Optional<String> getWhere() {

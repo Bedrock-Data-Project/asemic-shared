@@ -2,8 +2,8 @@ package com.asemicanalytics.config.parser.yaml;
 
 import com.asemicanalytics.config.parser.ConfigParser;
 import com.asemicanalytics.config.parser.EntityDto;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventLogicalTableDto;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class YamlConfigParser implements ConfigParser {
             String[] tokens = file.getName().split("\\.");
             if (tokens.length != 2) {
               throw new IllegalArgumentException(
-                  "Invalid logical table file name: " + file.getName());
+                  "Invalid table file name: " + file.getName());
             }
             String logicalTableId = tokens[0];
             logicalTables.put(
@@ -54,19 +54,19 @@ public class YamlConfigParser implements ConfigParser {
   }
 
   @Override
-  public Map<String, ActionLogicalTableDto> parseActionLogicalTables(String appId) {
-    return readTopLevelLogicalTables(appId, ActionLogicalTableDto.class, actionsDir(appId));
+  public Map<String, EventLogicalTableDto> parseEventLogicalTables(String appId) {
+    return readTopLevelLogicalTables(appId, EventLogicalTableDto.class, actionsDir(appId));
   }
 
   @Override
   public EntityDto parseEntityLogicalTable(
-      String appId, Map<String, ActionLogicalTable> userActionLogicalTables) {
+      String appId, EventLogicalTables usereventLogicalTables) {
     return new EntityLogicalTableParser(yamlFileLoader)
-        .parse(propertiesDir(appId), kpisDir(appId), userActionLogicalTables);
+        .parse(propertiesDir(appId), kpisDir(appId), usereventLogicalTables);
   }
 
   public Path actionsDir(String appId) {
-    return appsPath.resolve(appId).resolve("userentity").resolve("actions");
+    return appsPath.resolve(appId).resolve("userentity").resolve("events");
   }
 
   public Path staticDir(String appId) {

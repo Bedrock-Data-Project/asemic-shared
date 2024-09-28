@@ -1,8 +1,8 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
 public enum EntityPropertyType {
-  FIRST_APPEARANCE,
-  ACTION,
+  REGISTRATION,
+  EVENT,
   COMPUTED,
   LIFETIME,
   SLIDING_WINDOW,

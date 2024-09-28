@@ -3,6 +3,7 @@ package com.asemicanalytics.core.column;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.SequencedMap;
@@ -41,13 +42,16 @@ public class Columns<T extends Column> implements Iterable<T> {
         .findFirst();
   }
 
-  public Columns<T> getColumnsByTag(String tag) {
-    return filter(c -> c.hasTag(tag));
+  public List<T> getColumnsByTag(String tag) {
+    return columns.values().stream()
+        .filter(c -> c.hasTag(tag))
+        .toList();
   }
 
   public String getColumnIdByTag(String tag) {
     return getColumnIdByTagIfExists(tag)
-        .orElseThrow(() -> new IllegalArgumentException("No column with tag " + tag));
+        .orElseThrow(() ->
+            new IllegalArgumentException("No column with tag " + tag));
   }
 
   public Columns<T> filter(Predicate<T> predicate) {

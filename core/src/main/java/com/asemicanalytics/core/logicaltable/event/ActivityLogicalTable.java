@@ -15,7 +15,7 @@ public class ActivityLogicalTable extends EventLogicalTable {
 
   public ActivityLogicalTable(TableReference table,
                               List<EventLogicalTable> activityEvents) {
-    super("entity_activity", null, Optional.empty(), table,
+    super("entity_activity", "Activity", Optional.empty(), table,
         new Columns<Column>(new LinkedHashMap<>(Map.of(
             activityEvents.getFirst().getEntityIdColumnId(),
             activityEvents.getFirst().entityIdColumn(),

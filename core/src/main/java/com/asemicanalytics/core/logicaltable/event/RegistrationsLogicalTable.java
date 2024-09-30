@@ -38,7 +38,7 @@ public class RegistrationsLogicalTable extends EventLogicalTable {
 
   public RegistrationsLogicalTable(TableReference table,
                                    List<EventLogicalTable> registrationEvents) {
-    super("entity_registrations", null, Optional.empty(), table,
+    super("entity_registrations", "Registrations", Optional.empty(), table,
         buildColumns(registrationEvents),
         Map.of(),
         Optional.empty(), Set.of());

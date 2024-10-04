@@ -11,6 +11,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
+import com.google.cloud.bigquery.DatasetId;
 import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.FieldValue;
 import com.google.cloud.bigquery.FieldValueList;
@@ -182,6 +183,16 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public List<String> getTables(String schema) {
+    var datasetId = DatasetId.of(schema);
+    var tables = new ArrayList<String>();
+    for (var table : bigQuery.listTables(datasetId).iterateAll()) {
+      tables.add(table.getTableId().getTable());
+    }
+    return tables;
   }
 
   @Override

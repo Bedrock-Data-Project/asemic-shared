@@ -118,6 +118,25 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
   }
 
   @Override
+  protected List<String> getTables(String schema) throws InterruptedException {
+    try (Connection connection = getConnection()) {
+      try (Statement statement = connection.createStatement()) {
+        try (ResultSet resultSet = statement.executeQuery(
+            "SELECT table_name FROM information_schema.tables WHERE table_schema = '" + schema
+                + "'")) {
+          List<String> tables = new ArrayList<>();
+          while (resultSet.next()) {
+            tables.add(resultSet.getString(1));
+          }
+          return tables;
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public CompletableFuture<DatetimeInterval> submitTableFreshness(TableReference table, String id) {
     // TODO we need a better/standard way here when there are no partitions.
     // TODO Probably need to supply date column

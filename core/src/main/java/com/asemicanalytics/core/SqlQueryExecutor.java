@@ -14,5 +14,7 @@ public interface SqlQueryExecutor {
 
   CompletableFuture<List<Column>> submitGetColumns(TableReference table);
 
+  CompletableFuture<List<String>> submitGetTables(String schema);
+
   CompletableFuture<DatetimeInterval> submitTableFreshness(TableReference table, String id);
 }

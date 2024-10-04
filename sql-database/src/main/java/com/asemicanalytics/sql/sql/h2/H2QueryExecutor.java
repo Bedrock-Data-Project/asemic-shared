@@ -73,4 +73,9 @@ public class H2QueryExecutor extends JdbcQueryExecutor {
     System.out.println("Executing query: " + sql);
     return super.executeQuery(sql, dataTypes, dryRun);
   }
+
+  @Override
+  protected List<String> getTables(String schema) throws InterruptedException {
+    throw new UnsupportedOperationException("Not implemented");
+  }
 }

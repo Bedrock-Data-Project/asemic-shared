@@ -39,7 +39,7 @@ public class TestConfigParser implements ConfigParser {
   public EntityDto parseEntityLogicalTable(
       String appId, EventLogicalTables usereventLogicalTables) {
     return new EntityDto(
-        new EntityConfigDto("{app_id}.table", List.of(1, 2), 90),
+        new EntityConfigDto("{app_id}", "table", List.of(1, 2), 90),
         columnsDtos,
         kpisDtos,
         new EventLogicalTables(

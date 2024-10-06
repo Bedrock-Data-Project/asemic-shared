@@ -144,4 +144,9 @@ public class H2Dialect implements Dialect {
   public String unnestIdentifier(String identifier) {
     return "t(%s)".formatted(columnIdentifier(identifier));
   }
+
+  @Override
+  public String getDataType(DataType dataType) {
+    return getH2DataType(dataType);
+  }
 }

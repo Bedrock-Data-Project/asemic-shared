@@ -6,7 +6,7 @@
 
     <groupId>com.asemicanalytics</groupId>
     <artifactId>asemic-shared</artifactId>
-    <version>1.33</version>
+    <version>1.34</version>
     <packaging>pom</packaging>
     <name>Asemic Shared</name>
     <description>Collection for utilities that power up asemic query engine</description>

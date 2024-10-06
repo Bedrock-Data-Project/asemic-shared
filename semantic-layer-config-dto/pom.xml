@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.asemicanalytics</groupId>
         <artifactId>asemic-shared</artifactId>
-        <version>1.33</version>
+        <version>1.34</version>
     </parent>
 
     <artifactId>semantic-layer-config-dto</artifactId>

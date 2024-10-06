@@ -26,13 +26,13 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
 
   private final RegistrationsLogicalTable registrationLogicalTable;
   private final ActivityLogicalTable activityLogicalTable;
-  private final String baseTablePrefix;
+  private final String schema;
   private final TableReference baseTable;
 
   private final int activityTableDays;
   private final List<Integer> cohortTableDays;
 
-  public EntityLogicalTable(String baseTable,
+  public EntityLogicalTable(String schema,
                             Optional<Columns<EntityProperty>> columns,
                             RegistrationsLogicalTable registrationLogicalTable,
                             ActivityLogicalTable activityLogicalTable,
@@ -40,14 +40,14 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
                             List<Integer> cohortTableDays,
                             Map<String, Kpi> kpis) {
     super("user_wide", "Entity", Optional.empty(),
-        TableReference.parse(baseTable).withTableSuffix("_totals"),
+        TableReference.of(schema, "totals"),
         withBaseColumns(columns, registrationLogicalTable, activityLogicalTable), kpis,
         TimeGrains.day,
         Set.of(),
-        withMaterializedIndexTables(TableReference.parse(baseTable), activityTableDays,
+        withMaterializedIndexTables(schema, activityTableDays,
             cohortTableDays));
-    this.baseTablePrefix = baseTable;
-    this.baseTable = TableReference.parse(baseTable);
+    this.schema = schema;
+    this.baseTable = TableReference.of(schema, "totals");
     this.registrationLogicalTable = registrationLogicalTable;
     this.activityLogicalTable = activityLogicalTable;
     this.activityTableDays = activityTableDays;
@@ -70,25 +70,25 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
   }
 
   private static List<MaterializedIndexTable> withMaterializedIndexTables(
-      TableReference baseTable,
+      String schema,
       int activityTableDays,
       List<Integer> cohortTableDays) {
 
     return List.of(
         new MaterializedIndexTable(
-            baseTable.withTableSuffix("_daily"),
+            TableReference.of(schema, "daily"),
             dailyIndexFilter(),
             1
         ),
 
         new MaterializedIndexTable(
-            baseTable.withTableSuffix("_active"),
+            TableReference.of(schema, "active"),
             activeIndexFilter(activityTableDays),
             2
         ),
 
         new MaterializedIndexTable(
-            baseTable.withTableSuffix("_cohort"),
+            TableReference.of(schema, "cohort"),
             cohortIndexFilter(cohortTableDays),
             3
         )
@@ -203,13 +203,9 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
     return activityLogicalTable;
   }
 
-  public String getBaseTablePrefix() {
-    return baseTablePrefix;
-  }
-
   public EntityLogicalTable withColumns(Columns columns) {
     return new EntityLogicalTable(
-        baseTablePrefix,
+        schema,
         Optional.of(this.columns.add(columns)),
         registrationLogicalTable,
         activityLogicalTable,

@@ -115,4 +115,9 @@ public class SnowflakeDialect implements Dialect {
   public String generateNumberArray(String from, String to) {
     throw new UnsupportedOperationException("Not implemented");
   }
+
+  @Override
+  public String getDataType(DataType dataType) {
+    throw new UnsupportedOperationException("Not implemented");
+  }
 }

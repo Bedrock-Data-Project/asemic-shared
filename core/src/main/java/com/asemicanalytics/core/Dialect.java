@@ -79,5 +79,11 @@ public interface Dialect {
   default String unnestIdentifier(String identifier) {
     return columnIdentifier(identifier);
   }
+
+  String getDataType(DataType dataType);
+
+  default String cast(String expression, DataType dataType) {
+    return "CAST(" + expression + " AS " + getDataType(dataType) + ")";
+  }
 }
 

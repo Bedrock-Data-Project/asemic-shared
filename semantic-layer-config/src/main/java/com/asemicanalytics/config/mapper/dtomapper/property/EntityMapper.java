@@ -35,14 +35,14 @@ public class EntityMapper
     this.appId = appId;
   }
 
-  private String getBaseTablePrefix(EntityDto dto) {
-    return (dto.config().getDataModelSchema() + "." + dto.config().getDataModelVersion())
+  private String getSchema(EntityDto dto) {
+    return (dto.config().getDataModelSchema())
         .replace("{app_id}", appId);
   }
 
   private RegistrationsLogicalTable buildRegistrationsTable(EntityDto dto) {
     return new RegistrationsLogicalTable(
-        TableReference.parse(getBaseTablePrefix(dto) + "_registrations"),
+        TableReference.parse(getSchema(dto) + ".registrations"),
         dto.eventLogicalTables().getByTag(RegistrationsLogicalTable.TAG)
     );
   }
@@ -50,7 +50,7 @@ public class EntityMapper
   private ActivityLogicalTable buildActivityTable(EntityDto dto) {
     return new ActivityLogicalTable(
         TableReference.parse(
-            getBaseTablePrefix(dto) + "_activity"),
+            getSchema(dto) + ".activity"),
         dto.eventLogicalTables().getByTag(ActivityLogicalTable.TAG)
     );
   }
@@ -82,7 +82,7 @@ public class EntityMapper
     new EntityIndexFilterAppender(activeDays, cohortDays, columns.getColumns()).append(kpis);
 
     return new EntityLogicalTable(
-        getBaseTablePrefix(dto),
+        getSchema(dto),
         Optional.of(columns),
         registrationsLogicalTable,
         activityLogicalTable,

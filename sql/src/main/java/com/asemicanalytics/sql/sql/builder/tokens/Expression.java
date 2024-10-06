@@ -124,4 +124,8 @@ public interface Expression extends Token {
 
     throw new IllegalArgumentException("Unsupported expression type: " + getClass().getName());
   }
+
+  default Expression castAs(DataType dataType) {
+    return new CastExpression(this, dataType);
+  }
 }

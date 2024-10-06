@@ -90,7 +90,12 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
     return parsedRow;
   }
 
-  private TableResult executeQuery(String sql, boolean dryRun) throws InterruptedException {
+  private record ResultWithStatistics(TableResult result,
+                                      JobStatistics.QueryStatistics statistics) {
+  }
+
+  private ResultWithStatistics executeQuery(String sql, boolean dryRun)
+      throws InterruptedException {
     logger.info("Running BigQuery query: {}", sql);
     QueryJobConfiguration queryConfig = QueryJobConfiguration
         .newBuilder(sql)
@@ -102,7 +107,7 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
     Job queryJob = bigQuery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
 
     if (dryRun) {
-      JobStatistics.QueryStatistics statistics = queryJob.getStatistics();
+      queryJob.getStatistics();
       return null;
     }
 
@@ -112,24 +117,35 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
       throw new RuntimeException(queryJob.getStatus().getError().toString());
     }
 
-    return queryJob.getQueryResults();
+    return new ResultWithStatistics(queryJob.getQueryResults(), queryJob.getStatistics());
+
   }
 
   @Override
   protected SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
       throws InterruptedException {
     Instant start = Instant.now();
-    TableResult result = executeQuery(sql, dryRun);
+    ResultWithStatistics result = executeQuery(sql, dryRun);
     if (dryRun) {
-      return new SqlResult(List.of(), sql, Duration.between(start, Instant.now()));
+      return new SqlResult(List.of(), sql, Duration.between(start, Instant.now()),
+          null, null, null);
     }
-
 
     List<SqlResultRow> rows = new LinkedList<>();
-    for (FieldValueList row : result.iterateAll()) {
+    for (FieldValueList row : result.result().iterateAll()) {
       rows.add(new SqlResultRow(parseRow(row, dataTypes)));
     }
-    return new SqlResult(rows, sql, Duration.between(start, Instant.now()));
+
+    Long bytesBilled = null;
+    Long bytesProcessed = null;
+    Boolean cached = null;
+    if (result.statistics() instanceof JobStatistics.QueryStatistics statistics) {
+      bytesBilled = statistics.getTotalBytesBilled();
+      bytesProcessed = statistics.getTotalBytesProcessed();
+      cached = statistics.getCacheHit();
+    }
+    return new SqlResult(rows, sql, Duration.between(start, Instant.now()),
+        cached, bytesProcessed, bytesBilled);
   }
 
   private List<Column> getColumnsFromField(String prefix, Field field) {
@@ -207,7 +223,7 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
         "SqlQueryExecutor.submitTableFreshness");
 
     return future.thenApply(tableResult -> {
-      var row = tableResult.iterateAll().iterator().next();
+      var row = tableResult.result().iterateAll().iterator().next();
       var min = extractPartitionId(row.get("min"));
       var max = extractPartitionId(row.get("max"));
 

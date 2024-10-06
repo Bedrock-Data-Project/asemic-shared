@@ -107,6 +107,10 @@ public class QueryFactory {
     return new Constant(null, null);
   }
 
+  public static Expression cast(Expression expression, DataType dataType) {
+    return new CastExpression(expression, dataType);
+  }
+
   public static Expression constant(String value, DataType dataType) {
     return new Constant(value, dataType);
   }

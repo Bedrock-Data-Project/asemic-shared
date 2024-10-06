@@ -98,4 +98,9 @@ public class ContentHashDialect implements Dialect {
   public String generateNumberArray(String from, String to) {
     return "generateNumberArray_" + from + "_" + to;
   }
+
+  @Override
+  public String getDataType(DataType dataType) {
+    return dataType.toString();
+  }
 }

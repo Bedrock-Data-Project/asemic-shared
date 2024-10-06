@@ -116,18 +116,26 @@ public class BigQueryDialect implements Dialect {
   @Override
   public String insertOverwrite(TableReference table, String select, String partitionColumn,
                                 String partitionValue) {
-    return "MERGE " + tableIdentifier(table) + " USING (" + select + ") ON FALSE"
-        + " WHEN NOT MATCHED AND " + columnIdentifier(partitionColumn)
-        + " = " + constant(partitionValue, DataType.DATE) + " THEN"
-        + " INSERT ROW"
-        + " WHEN NOT MATCHED BY SOURCE AND "
-        + columnIdentifier(partitionColumn) + " = "
-        + constant(partitionValue, DataType.DATE) + " THEN DELETE";
+    return """
+        BEGIN
+          BEGIN TRANSACTION;
+          DELETE FROM %s WHERE %s = %s;
+          INSERT INTO %s
+          %s;
+          COMMIT TRANSACTION;
+        END;
+        """.formatted(tableIdentifier(table), columnIdentifier(partitionColumn),
+            constant(partitionValue, DataType.DATE), tableIdentifier(table), select);
   }
 
   @Override
   public String generateNumberArray(String from, String to) {
     return "GENERATE_ARRAY(" + from + ", " + to + ")";
+  }
+
+  @Override
+  public String getDataType(DataType dataType) {
+    return getBigQueryDataType(dataType);
   }
 
   private String getBigQueryDataType(DataType dataType) {

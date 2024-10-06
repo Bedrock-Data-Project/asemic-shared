@@ -79,7 +79,8 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
             rows.add(new SqlResultRow(columns));
           }
 
-          return new SqlResult(rows, sql, Duration.between(start, Instant.now()));
+          return new SqlResult(rows, sql, Duration.between(start, Instant.now()),
+              null, null, null);
         }
       }
     } catch (SQLException e) {

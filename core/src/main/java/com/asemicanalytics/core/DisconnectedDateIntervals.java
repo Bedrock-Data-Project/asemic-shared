@@ -33,12 +33,20 @@ public class DisconnectedDateIntervals {
     return disconnectedDateIntervals;
   }
 
+  public static DisconnectedDateIntervals ofIntervals(DateInterval... intervals) {
+    return ofIntervals(List.of(intervals));
+  }
+
   public static DisconnectedDateIntervals ofIntervals(List<DateInterval> intervals) {
     var disconnectedDateIntervals = new DisconnectedDateIntervals();
     for (var interval : intervals) {
-      disconnectedDateIntervals.intervals.add(Range.closed(interval.from(), interval.to()));
+      disconnectedDateIntervals.add(interval);
     }
     return disconnectedDateIntervals;
+  }
+
+  public static DisconnectedDateIntervals ofSingleDate(LocalDate date) {
+    return ofDates(new TreeSet<>(List.of(date)));
   }
 
   public DisconnectedDateIntervals intersection(DateInterval interval) {
@@ -135,6 +143,10 @@ public class DisconnectedDateIntervals {
     } else {
       intervals.add(Range.closed(date, date));
     }
+  }
+
+  public void add(DateInterval interval) {
+    intervals.add(Range.closed(interval.from(), interval.to()));
   }
 
   public DateInterval span() {

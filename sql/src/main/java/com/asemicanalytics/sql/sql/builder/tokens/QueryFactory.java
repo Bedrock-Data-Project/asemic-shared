@@ -75,6 +75,10 @@ public class QueryFactory {
     return new SelectStatement();
   }
 
+  public static InsertStatement insert() {
+    return new InsertStatement();
+  }
+
   public static WindowFunctionExpression window(Expression expression) {
     return new WindowFunctionExpression(expression);
   }

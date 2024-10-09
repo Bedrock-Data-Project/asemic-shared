@@ -1,6 +1,7 @@
 package com.asemicanalytics.sql.sql.builder;
 
 import com.asemicanalytics.core.DataType;
+import com.asemicanalytics.core.DateInterval;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrains;
@@ -89,8 +90,8 @@ public class ContentHashDialect implements Dialect {
   }
 
   @Override
-  public String insertOverwrite(TableReference table, String select, String partitionColumn,
-                                String partitionValue) {
+  public String insertOverwrite(TableReference table, String insert, String partitionColumn,
+                                DateInterval partitionValue) {
     throw new UnsupportedOperationException("Not implemented");
   }
 

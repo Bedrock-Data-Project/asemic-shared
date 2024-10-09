@@ -9,7 +9,7 @@ import java.util.Map;
 public class SimplifyCteNames implements OptimizationRule {
 
   @Override
-  public void optimize(LinkedHashMap<String, Cte> ctes, SelectStatement selectStatement) {
+  public void optimize(LinkedHashMap<String, Cte> ctes) {
     Map<String, Integer> counts = new HashMap<>();
     for (var cte : ctes.values()) {
       if (counts.containsKey(cte.tag())) {

@@ -1,6 +1,7 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
 
+import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.column.Column;
 
 public class LifetimeColumn extends EntityProperty {
@@ -33,5 +34,10 @@ public class LifetimeColumn extends EntityProperty {
 
   public MergeFunction getMergeFunction() {
     return mergeFunction;
+  }
+
+  public DisconnectedDateIntervals getMaterializedOn(
+      MaterializedColumnRepository materializedFrom) {
+    return materializedFrom.materializedOn(getId());
   }
 }

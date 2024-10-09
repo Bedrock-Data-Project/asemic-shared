@@ -12,10 +12,15 @@ import java.util.StringJoiner;
 public class QueryBuilder implements Token {
 
   final LinkedHashMap<String, Cte> ctes = new LinkedHashMap<>();
-  private SelectStatement mainStatement;
+  private StandaloneStatement mainStatement;
   private int cteIndex = 1;
 
   public QueryBuilder select(SelectStatement mainStatement) {
+    this.mainStatement = mainStatement;
+    return this;
+  }
+
+  public QueryBuilder insert(InsertStatement mainStatement) {
     this.mainStatement = mainStatement;
     return this;
   }
@@ -27,11 +32,13 @@ public class QueryBuilder implements Token {
 
   @Override
   public String render(Dialect dialect) {
-    new SortCtes().optimize(ctes, mainStatement);
-    new SimplifyCteNames().optimize(ctes, mainStatement);
+    new SortCtes().optimize(ctes);
+    new SimplifyCteNames().optimize(ctes);
 
 
     var sb = new StringBuilder();
+
+    sb.append(mainStatement.renderBeforeCte(dialect));
     if (!ctes.isEmpty()) {
       sb.append("WITH ");
       var joiner = new StringJoiner(",\n");
@@ -39,7 +46,7 @@ public class QueryBuilder implements Token {
       sb.append(joiner);
       sb.append("\n");
     }
-    sb.append(mainStatement.render(dialect));
+    sb.append(mainStatement.renderAfterCte(dialect));
 
     var cleanedtokens = Arrays.stream(sb.toString().split("\n"))
         .filter(l -> !l.isBlank()).toList();

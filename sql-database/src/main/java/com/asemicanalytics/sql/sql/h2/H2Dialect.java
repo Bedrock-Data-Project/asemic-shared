@@ -1,6 +1,7 @@
 package com.asemicanalytics.sql.sql.h2;
 
 import com.asemicanalytics.core.DataType;
+import com.asemicanalytics.core.DateInterval;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrains;
@@ -111,17 +112,17 @@ public class H2Dialect implements Dialect {
 
   @Override
   public Optional<String> prepareForInsertOverwrite(TableReference table, String partitionColumn,
-                                                    String partitionValue) {
+                                                    DateInterval partitionValue) {
     return Optional.of("DELETE FROM " + tableIdentifier(table)
         + " WHERE " + columnIdentifier(partitionColumn)
-        + " = " + constant(partitionValue, DataType.DATE));
+        + " BETWEEN " + constant(partitionValue.from().toString(), DataType.DATE) + " AND "
+        + constant(partitionValue.to().toString(), DataType.DATE));
   }
 
   @Override
-  public String insertOverwrite(TableReference table, String select, String partitionColumn,
-                                String partitionValue) {
-    return "INSERT INTO  " + tableIdentifier(table)
-        + "\n" + select;
+  public String insertOverwrite(TableReference table, String insert, String partitionColumn,
+                                DateInterval partitionValue) {
+    return insert;
   }
 
   @Override

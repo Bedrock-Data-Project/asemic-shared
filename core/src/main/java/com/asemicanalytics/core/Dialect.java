@@ -67,12 +67,12 @@ public interface Dialect {
    * to delete the partition before inserting the data with insertOverwrite.
    */
   default Optional<String> prepareForInsertOverwrite(
-      TableReference table, String partitionColumn, String partitionValue) {
+      TableReference table, String partitionColumn, DateInterval partitionValue) {
     return Optional.empty();
   }
 
   String insertOverwrite(
-      TableReference table, String select, String partitionColumn, String partitionValue);
+      TableReference table, String insert, String partitionColumn, DateInterval partitionValue);
 
   String generateNumberArray(String from, String to);
 

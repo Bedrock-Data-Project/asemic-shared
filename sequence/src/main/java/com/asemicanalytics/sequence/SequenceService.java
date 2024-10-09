@@ -12,6 +12,7 @@ import com.asemicanalytics.sequence.querybuilder.SqlQueryBuilder;
 import com.asemicanalytics.sequence.querylanguage.QueryLanguageEvaluator;
 import com.asemicanalytics.sequence.sequence.Sequence;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class SequenceService {
   private final SqlQueryExecutor sqlQueryExecutor;
@@ -53,11 +54,12 @@ public class SequenceService {
   public void dumpSequenceToTable(
       DatetimeInterval datetimeInterval, String sequenceQuery,
       EventLogicalTables stepTables,
-      TableReference tableReference, List<String> includeColumns) {
+      TableReference tableReference, List<String> includeColumns)
+      throws ExecutionException, InterruptedException {
     var select = getSequenceSql(datetimeInterval, sequenceQuery, stepTables, includeColumns);
     var createTable =
         sqlQueryExecutor.getDialect().createTableFromSelect(select, tableReference, true);
-    sqlQueryExecutor.executeDdl(createTable);
+    sqlQueryExecutor.submitExecuteDdl(createTable).get();
   }
 
 }

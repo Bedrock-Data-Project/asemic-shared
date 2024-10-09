@@ -75,10 +75,19 @@ public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
     return submit(() -> getTables(schema), "SqlQueryExecutor.submitGetTables");
   }
 
+  public CompletableFuture<Boolean> submitExecuteDdl(String sql) {
+    return submit(() -> {
+      executeDdl(sql);
+      return true;
+    }, "SqlQueryExecutor.submitExecuteDdl");
+  }
+
   protected abstract SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
       throws InterruptedException;
 
   protected abstract List<Column> getColumns(TableReference table) throws InterruptedException;
 
   protected abstract List<String> getTables(String schema) throws InterruptedException;
+
+  protected abstract void executeDdl(String sql) throws InterruptedException;
 }

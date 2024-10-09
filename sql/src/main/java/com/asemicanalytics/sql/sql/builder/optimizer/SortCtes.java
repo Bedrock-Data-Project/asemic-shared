@@ -11,7 +11,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 public class SortCtes implements OptimizationRule {
 
   @Override
-  public void optimize(LinkedHashMap<String, Cte> ctes, SelectStatement selectStatement) {
+  public void optimize(LinkedHashMap<String, Cte> ctes) {
     var ordered = topologicalSort(ctes);
     ctes.clear();
     ctes.putAll(ordered);

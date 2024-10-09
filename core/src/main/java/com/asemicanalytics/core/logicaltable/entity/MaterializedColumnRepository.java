@@ -1,5 +1,6 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
+import com.asemicanalytics.core.DateInterval;
 import com.asemicanalytics.core.DisconnectedDateIntervals;
 import java.time.LocalDate;
 import java.util.Map;
@@ -13,7 +14,7 @@ public interface MaterializedColumnRepository {
     return materializedOn().getOrDefault(columnId, new DisconnectedDateIntervals());
   }
 
-  default void materialize(LocalDate date) {
+  default void materialize(DateInterval dateInterval) {
 
   }
 }

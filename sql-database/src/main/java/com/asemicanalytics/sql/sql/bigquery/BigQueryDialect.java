@@ -1,11 +1,13 @@
 package com.asemicanalytics.sql.sql.bigquery;
 
 import com.asemicanalytics.core.DataType;
+import com.asemicanalytics.core.DateInterval;
 import com.asemicanalytics.core.Dialect;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrains;
 import com.asemicanalytics.core.column.Column;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
@@ -114,18 +116,19 @@ public class BigQueryDialect implements Dialect {
   }
 
   @Override
-  public String insertOverwrite(TableReference table, String select, String partitionColumn,
-                                String partitionValue) {
+  public String insertOverwrite(TableReference table, String insert, String partitionColumn,
+                                DateInterval partitionValue) {
     return """
         BEGIN
           BEGIN TRANSACTION;
-          DELETE FROM %s WHERE %s = %s;
-          INSERT INTO %s
+          DELETE FROM %s WHERE %s BETWEEN %s AND %s;
           %s;
           COMMIT TRANSACTION;
         END;
         """.formatted(tableIdentifier(table), columnIdentifier(partitionColumn),
-            constant(partitionValue, DataType.DATE), tableIdentifier(table), select);
+            constant(partitionValue.from().toString(), DataType.DATE),
+            constant(partitionValue.to().toString(), DataType.DATE),
+        insert);
   }
 
   @Override

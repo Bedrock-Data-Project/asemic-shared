@@ -10,7 +10,7 @@ public interface SqlQueryExecutor {
 
   CompletableFuture<SqlResult> submit(String sql, List<DataType> dataTypes, boolean dryRun);
 
-  void executeDdl(String sql);
+  CompletableFuture<Boolean> submitExecuteDdl(String sql);
 
   CompletableFuture<List<Column>> submitGetColumns(TableReference table);
 

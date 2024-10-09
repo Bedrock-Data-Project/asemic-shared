@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
-public class SelectStatement implements Token {
+public class SelectStatement implements StandaloneStatement {
   public static final Expression SELECT_STAR = parse("*", TemplateDict.empty());
   private final List<Join> joins = new ArrayList<>();
   private Select select = new Select(ExpressionList.empty());
@@ -193,7 +193,7 @@ public class SelectStatement implements Token {
   }
 
   @Override
-  public String render(Dialect dialect) {
+  public String renderAfterCte(Dialect dialect) {
     var sb = new StringBuilder();
     sb.append(select.render(dialect));
     if (from != null) {
@@ -222,6 +222,11 @@ public class SelectStatement implements Token {
       sb.append("\n").append("UNION ALL\n").append(unionAll.render(dialect));
     }
     return sb.toString();
+  }
+
+  @Override
+  public String renderBeforeCte(Dialect dialect) {
+    return "";
   }
 
   @Override

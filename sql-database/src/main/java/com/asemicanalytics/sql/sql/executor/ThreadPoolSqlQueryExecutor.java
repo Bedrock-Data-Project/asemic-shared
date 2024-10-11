@@ -1,5 +1,8 @@
 package com.asemicanalytics.sql.sql.executor;
 
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.identifier;
+import static com.asemicanalytics.sql.sql.builder.tokens.QueryFactory.select;
+
 import brave.Span;
 import brave.Tracer;
 import brave.Tracing;
@@ -9,6 +12,8 @@ import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.sql.sql.builder.tokens.QueryBuilder;
+import com.asemicanalytics.sql.sql.builder.tokens.QueryFactory;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -75,11 +80,8 @@ public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
     return submit(() -> getTables(schema), "SqlQueryExecutor.submitGetTables");
   }
 
-  public CompletableFuture<Boolean> submitExecuteDdl(String sql) {
-    return submit(() -> {
-      executeDdl(sql);
-      return true;
-    }, "SqlQueryExecutor.submitExecuteDdl");
+  public CompletableFuture<SqlResult> submitExecuteDdl(String sql) {
+    return submit(() -> executeDdl(sql), "SqlQueryExecutor.submitExecuteDdl");
   }
 
   protected abstract SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
@@ -89,5 +91,31 @@ public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
 
   protected abstract List<String> getTables(String schema) throws InterruptedException;
 
-  protected abstract void executeDdl(String sql) throws InterruptedException;
+  protected abstract SqlResult executeDdl(String sql) throws InterruptedException;
+
+  @Override
+  public CompletableFuture<SqlResult> submitGetCountByPartition(TableReference table,
+                                                                Column partitionColumn,
+                                                                String partitionFrom,
+                                                                String partitionTo) {
+    var tbl = QueryFactory.table(table);
+    var selectStatement =
+        select()
+            .select(
+                tbl.column(partitionColumn.getId()).withAlias("partition_value"),
+                identifier("COUNT(*)").withAlias("count")
+            )
+            .from(tbl)
+            .and(tbl.column(partitionColumn.getId()).condition(
+                "between", List.of(partitionFrom, partitionTo), partitionColumn.getDataType()
+            ))
+            .groupBy(
+                tbl.column(partitionColumn.getId())
+            );
+    QueryBuilder query = new QueryBuilder();
+    query.select(selectStatement);
+    return submit(() -> executeQuery(query.render(dialect),
+            List.of(DataType.STRING, DataType.INTEGER), false),
+        "SqlQueryExecutor.submitGetCountByPartition");
+  }
 }

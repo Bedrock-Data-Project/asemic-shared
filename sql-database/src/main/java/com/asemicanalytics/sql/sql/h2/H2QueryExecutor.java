@@ -62,15 +62,19 @@ public class H2QueryExecutor extends JdbcQueryExecutor {
   }
 
   @Override
-  public void executeDdl(String sql) {
+  public SqlResult executeDdl(String sql) {
     System.out.println("Executing DDL: " + sql);
-    super.executeDdl(sql);
+    return super.executeDdl(sql);
   }
 
   @Override
   protected SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
       throws InterruptedException {
-    System.out.println("Executing query: " + sql);
+    if (dryRun) {
+      System.out.println("Dry run: " + sql);
+    } else {
+      System.out.println("Executing query: " + sql);
+    }
     return super.executeQuery(sql, dataTypes, dryRun);
   }
 

@@ -10,11 +10,16 @@ public interface SqlQueryExecutor {
 
   CompletableFuture<SqlResult> submit(String sql, List<DataType> dataTypes, boolean dryRun);
 
-  CompletableFuture<Boolean> submitExecuteDdl(String sql);
+  CompletableFuture<SqlResult> submitExecuteDdl(String sql);
 
   CompletableFuture<List<Column>> submitGetColumns(TableReference table);
 
   CompletableFuture<List<String>> submitGetTables(String schema);
 
   CompletableFuture<DatetimeInterval> submitTableFreshness(TableReference table, String id);
+
+  CompletableFuture<SqlResult> submitGetCountByPartition(TableReference table,
+                                                         Column partitionColumn,
+                                                         String partitionFrom, String partitionTo)
+      throws InterruptedException;
 }

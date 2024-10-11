@@ -63,15 +63,16 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
   @Override
   protected SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
       throws InterruptedException {
+    if (dryRun) {
+      return new SqlResult(List.of(), sql, Duration.ZERO, null, 0L);
+    }
     var start = Instant.now();
     try (Connection connection = getConnection()) {
       try (Statement statement = connection.createStatement()) {
         try (ResultSet resultSet = statement.executeQuery(sql)) {
           int columnCount = resultSet.getMetaData().getColumnCount();
-          int rowCount = 0;
           List<SqlResultRow> rows = new ArrayList<>();
           while (resultSet.next()) {
-            rowCount++;
             List<Object> columns = new ArrayList<>();
             for (int i = 0; i < columnCount; i++) {
               columns.add(parseObject(resultSet, dataTypes.get(i), i + 1));
@@ -80,7 +81,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
           }
 
           return new SqlResult(rows, sql, Duration.between(start, Instant.now()),
-              null, null, null);
+              null, 0L);
         }
       }
     } catch (SQLException e) {
@@ -149,11 +150,14 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
   }
 
   @Override
-  public void executeDdl(String sql) {
+  public SqlResult executeDdl(String sql) {
+    var start = Instant.now();
     try (Connection connection = getConnection()) {
       try (Statement statement = connection.createStatement()) {
         statement.execute(sql);
       }
+      return new SqlResult(List.of(), sql, Duration.between(start, Instant.now()),
+          null, 0L);
     } catch (SQLException | InterruptedException e) {
       throw new RuntimeException(e);
     }

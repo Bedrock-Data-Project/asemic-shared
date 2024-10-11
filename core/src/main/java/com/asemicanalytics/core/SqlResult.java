@@ -8,6 +8,5 @@ public record SqlResult(
     String sql,
     Duration duration,
     Boolean cached,
-    Long bytesProcessed,
-    Long bytesBilled) {
+    long bytesProcessed) {
 }

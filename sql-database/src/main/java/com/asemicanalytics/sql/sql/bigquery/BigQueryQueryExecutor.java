@@ -107,8 +107,7 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
     Job queryJob = bigQuery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
 
     if (dryRun) {
-      queryJob.getStatistics();
-      return null;
+      return new ResultWithStatistics(null, queryJob.getStatistics());
     }
 
     if (queryJob == null) {
@@ -126,9 +125,14 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
       throws InterruptedException {
     Instant start = Instant.now();
     ResultWithStatistics result = executeQuery(sql, dryRun);
+    long bytesProcessed = 0;
+
     if (dryRun) {
+      if (result.statistics.getTotalBytesProcessed() != null) {
+        bytesProcessed = result.statistics.getTotalBytesProcessed();
+      }
       return new SqlResult(List.of(), sql, Duration.between(start, Instant.now()),
-          null, null, null);
+          null, bytesProcessed);
     }
 
     List<SqlResultRow> rows = new LinkedList<>();
@@ -136,16 +140,15 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
       rows.add(new SqlResultRow(parseRow(row, dataTypes)));
     }
 
-    Long bytesBilled = null;
-    Long bytesProcessed = null;
     Boolean cached = null;
     if (result.statistics() instanceof JobStatistics.QueryStatistics statistics) {
-      bytesBilled = statistics.getTotalBytesBilled();
-      bytesProcessed = statistics.getTotalBytesProcessed();
+      if (statistics.getTotalBytesProcessed() != null) {
+        bytesProcessed = statistics.getTotalBytesProcessed();
+      }
       cached = statistics.getCacheHit();
     }
     return new SqlResult(rows, sql, Duration.between(start, Instant.now()),
-        cached, bytesProcessed, bytesBilled);
+        cached, bytesProcessed);
   }
 
   private List<Column> getColumnsFromField(String prefix, Field field) {
@@ -193,12 +196,8 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
   }
 
   @Override
-  public void executeDdl(String sql) {
-    try {
-      executeQuery(sql, false);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
+  public SqlResult executeDdl(String sql) throws InterruptedException {
+    return executeQuery(sql, List.of(), false);
   }
 
   @Override

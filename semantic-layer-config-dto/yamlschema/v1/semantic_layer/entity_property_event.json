@@ -32,6 +32,9 @@
     },
     "default_value": {
       "type": "string"
+    },
+    "data_type": {
+      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/data_type.json"
     }
   },
   "additionalProperties": false

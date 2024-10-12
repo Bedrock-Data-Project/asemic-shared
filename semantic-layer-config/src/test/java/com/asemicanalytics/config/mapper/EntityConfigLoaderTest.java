@@ -82,6 +82,7 @@ class EntityConfigLoaderTest {
             "{l}",
             EntityPropertyEventDto.AggregateFunction.SUM,
             "{l}",
+            null,
             null
         ),
         null,
@@ -125,7 +126,7 @@ class EntityConfigLoaderTest {
         null,
         null,
         null,
-        new EntityPropertyComputedDto("source", List.of()));
+        new EntityPropertyComputedDto("source", List.of(), null));
   }
 
   private KpiDto kpi(String select, Optional<String> where, List<String> xaxis) {

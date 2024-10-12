@@ -1,5 +1,6 @@
 package com.asemicanalytics.config.mapper.dtomapper.property;
 
+import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.entity.EntityProperty;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
@@ -18,14 +19,20 @@ public class ComposableColumnHelper {
   ) {
     EntityProperty sourceColumn = null;
 
-    var innerColumn = Column.ofHidden(column.getId() + "__inner", column.getDataType());
     if (sourceProperty.isPresent()) {
+      var innerColumn = Column.ofHidden(column.getId() + "__inner", column.getDataType());
       sourceColumn = new ComputedPropertyDtoMapper(innerColumn)
           .apply(
-              new EntityPropertyComputedDto("{" + sourceProperty.get() + "}", List.of()));
+              new EntityPropertyComputedDto("{" + sourceProperty.get() + "}",
+                  List.of(), null));
     }
 
     if (computedSourceProperty.isPresent()) {
+      var innerColumn = Column.ofHidden(column.getId() + "__inner",
+          computedSourceProperty.get().getDataType()
+              .map(selectDataType -> DataType.valueOf(selectDataType.name()))
+              .orElse(column.getDataType()));
+
       if (sourceColumn != null) {
         throw new IllegalArgumentException(
             "Can have either source property, source action property or source computed property");
@@ -35,6 +42,10 @@ public class ComposableColumnHelper {
     }
 
     if (eventSourceProperty.isPresent()) {
+      var innerColumn = Column.ofHidden(column.getId() + "__inner",
+          eventSourceProperty.get().getDataType()
+              .map(selectDataType -> DataType.valueOf(selectDataType.name()))
+              .orElse(column.getDataType()));
       if (sourceColumn != null) {
         throw new IllegalArgumentException(
             "Can have either source property, source action property or source computed property");

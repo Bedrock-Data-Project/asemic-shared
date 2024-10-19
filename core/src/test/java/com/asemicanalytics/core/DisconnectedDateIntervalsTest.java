@@ -142,6 +142,50 @@ class DisconnectedDateIntervalsTest {
   }
 
   @Test
+  void givenAListOfPoints_shouldReturnInterval_whenRemoveARangeContainingAll() {
+    DisconnectedDateIntervals disconnectedDateIntervals = DisconnectedDateIntervals.ofDates(
+        new TreeSet<>(Set.of(
+            LocalDate.of(2021, 1, 1),
+            LocalDate.of(2021, 1, 2),
+            LocalDate.of(2021, 1, 3),
+            LocalDate.of(2021, 1, 6),
+            LocalDate.of(2021, 1, 7),
+            LocalDate.of(2021, 1, 14),
+            LocalDate.of(2021, 1, 18))));
+    disconnectedDateIntervals.remove(new DateInterval(
+        LocalDate.of(2021, 1, 1),
+        LocalDate.of(2021, 1, 18)
+    ));
+
+    assertEquals(List.of(), disconnectedDateIntervals.intervals());
+  }
+
+  @Test
+  void givenAListOfPoints_shouldReturnInterval_whenRemoveTwoRangesContainingAll() {
+    DisconnectedDateIntervals disconnectedDateIntervals = DisconnectedDateIntervals.ofDates(
+        new TreeSet<>(Set.of(
+            LocalDate.of(2021, 1, 1),
+            LocalDate.of(2021, 1, 2),
+            LocalDate.of(2021, 1, 3),
+            LocalDate.of(2021, 1, 6),
+            LocalDate.of(2021, 1, 7),
+            LocalDate.of(2021, 1, 14),
+            LocalDate.of(2021, 1, 18))));
+    disconnectedDateIntervals.remove(DisconnectedDateIntervals.ofIntervals(
+        new DateInterval(
+            LocalDate.of(2021, 1, 1),
+            LocalDate.of(2021, 1, 18)
+        ),
+        new DateInterval(
+            LocalDate.of(2021, 1, 20),
+            LocalDate.of(2021, 1, 25)
+        )
+    ));
+
+    assertEquals(List.of(), disconnectedDateIntervals.intervals());
+  }
+
+  @Test
   void givenAListOfPoints_shouldReturnInterval_whenExpandLeftAndShrinkRight() {
     DisconnectedDateIntervals disconnectedDateIntervals = DisconnectedDateIntervals.ofDates(
         new TreeSet<>(Set.of(
@@ -154,5 +198,87 @@ class DisconnectedDateIntervalsTest {
     assertEquals(List.of(
         new DateInterval(LocalDate.of(2021, 1, 8), LocalDate.of(2021, 1, 11))
     ), disconnectedDateIntervals.intervals());
+  }
+
+  @Test
+  void givenContinuousIntervals_shouldReturnSingleInterval() {
+    DisconnectedDateIntervals disconnectedDateIntervals = DisconnectedDateIntervals.ofIntervals(
+        new DateInterval(
+            LocalDate.of(2023, 1, 1),
+            LocalDate.of(2023, 1, 30)
+        ),
+        new DateInterval(
+            LocalDate.of(2023, 1, 31),
+            LocalDate.of(2023, 3, 1)
+        ));
+
+    assertEquals(List.of(
+        new DateInterval(LocalDate.of(
+            2023, 1, 1),
+            LocalDate.of(2023, 3, 1))
+    ), disconnectedDateIntervals.intervals());
+
+  }
+
+  @Test
+  void givenDiscontinuedIntervals_shouldReturnTwoIntervals() {
+    DisconnectedDateIntervals disconnectedDateIntervals = DisconnectedDateIntervals.ofIntervals(
+        new DateInterval(
+            LocalDate.of(2023, 1, 1),
+            LocalDate.of(2023, 1, 30)
+        ),
+        new DateInterval(
+            LocalDate.of(2023, 2, 1),
+            LocalDate.of(2023, 3, 1)
+        ));
+
+    assertEquals(List.of(
+        new DateInterval(
+            LocalDate.of(2023, 1, 1),
+            LocalDate.of(2023, 1, 30)),
+        new DateInterval(
+            LocalDate.of(2023, 2, 1),
+            LocalDate.of(2023, 3, 1))
+    ), disconnectedDateIntervals.intervals());
+
+  }
+
+  @Test
+  void givenOverlappingIntervals_shouldReturnSingleInterval() {
+    DisconnectedDateIntervals disconnectedDateIntervals = DisconnectedDateIntervals.ofIntervals(
+        new DateInterval(
+            LocalDate.of(2023, 1, 1),
+            LocalDate.of(2023, 1, 30)
+        ),
+        new DateInterval(
+            LocalDate.of(2023, 1, 15),
+            LocalDate.of(2023, 3, 1)
+        ));
+
+    assertEquals(List.of(
+        new DateInterval(LocalDate.of(
+            2023, 1, 1),
+            LocalDate.of(2023, 3, 1))
+    ), disconnectedDateIntervals.intervals());
+
+  }
+
+  @Test
+  void givenAInterval_shouldReturnSingleInterval_whenAddingIntervalToEnd() {
+    DisconnectedDateIntervals disconnectedDateIntervals = DisconnectedDateIntervals.ofIntervals(
+        new DateInterval(
+            LocalDate.of(2023, 1, 1),
+            LocalDate.of(2023, 1, 30)
+        ));
+    disconnectedDateIntervals.add(new DateInterval(LocalDate.of(
+        2023, 1, 31),
+        LocalDate.of(2023, 3, 1)));
+
+    assertEquals(List.of(
+        new DateInterval(LocalDate.of(
+            2023, 1, 1),
+            LocalDate.of(2023, 3, 1))
+    ), disconnectedDateIntervals.intervals());
+
   }
 }

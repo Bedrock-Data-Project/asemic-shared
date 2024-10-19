@@ -69,8 +69,9 @@ public class DisconnectedDateIntervals {
   }
 
   public void remove(DisconnectedDateIntervals intervals) {
-    this.intervals.removeAll(intervals.intervals);
-    normalize();
+    for (var interval : intervals.intervals()) {
+      remove(interval);
+    }
   }
 
   private void normalize() {
@@ -138,6 +139,10 @@ public class DisconnectedDateIntervals {
   }
 
   public void add(LocalDate date) {
+    if (contains(date)) {
+      return;
+    }
+
     if (contains(date.minusDays(1))) {
       intervals.add(Range.closed(date.minusDays(1), date));
     } else {
@@ -146,7 +151,8 @@ public class DisconnectedDateIntervals {
   }
 
   public void add(DateInterval interval) {
-    intervals.add(Range.closed(interval.from(), interval.to()));
+    // TODO optimize
+    interval.generateAll().forEach(this::add);
   }
 
   public DateInterval span() {

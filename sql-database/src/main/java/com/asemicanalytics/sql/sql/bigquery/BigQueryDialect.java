@@ -7,10 +7,10 @@ import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrains;
 import com.asemicanalytics.core.column.Column;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class BigQueryDialect implements Dialect {
   @Override
@@ -87,7 +87,6 @@ public class BigQueryDialect implements Dialect {
   @Override
   public String createTableIfNotExists(TableReference tableReference, List<Column> columns,
                                        Optional<Column> dateColumn) {
-
     String sql = "CREATE TABLE IF NOT EXISTS " + tableIdentifier(tableReference)
         + " (\n" + columns.stream()
         .map(c -> columnIdentifier(c.getId()) + " " + getBigQueryDataType(c.getDataType()))
@@ -100,9 +99,14 @@ public class BigQueryDialect implements Dialect {
   }
 
   @Override
-  public String addColumn(TableReference tableReference, Column column) {
-    return "ALTER TABLE " + tableIdentifier(tableReference) + " ADD COLUMN "
-        + columnIdentifier(column.getId()) + " " + getBigQueryDataType(column.getDataType());
+  public String addColumns(TableReference tableReference, List<Column> columns) {
+    var addColumnSql = columns.stream()
+        .map(c -> "ADD COLUMN "
+            + columnIdentifier(c.getId()) + " "
+            + getBigQueryDataType(c.getDataType()))
+        .collect(Collectors.joining(", "));
+
+    return "ALTER TABLE " + tableIdentifier(tableReference) + " " + addColumnSql;
   }
 
   @Override
@@ -126,8 +130,8 @@ public class BigQueryDialect implements Dialect {
           COMMIT TRANSACTION;
         END;
         """.formatted(tableIdentifier(table), columnIdentifier(partitionColumn),
-            constant(partitionValue.from().toString(), DataType.DATE),
-            constant(partitionValue.to().toString(), DataType.DATE),
+        constant(partitionValue.from().toString(), DataType.DATE),
+        constant(partitionValue.to().toString(), DataType.DATE),
         insert);
   }
 

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class H2Dialect implements Dialect {
   @Override
@@ -95,9 +96,13 @@ public class H2Dialect implements Dialect {
   }
 
   @Override
-  public String addColumn(TableReference tableReference, Column column) {
-    return "ALTER TABLE " + tableIdentifier(tableReference) + " ADD  "
-        + columnIdentifier(column.getId()) + " " + getH2DataType(column.getDataType());
+  public String addColumns(TableReference tableReference, List<Column> columns) {
+    return columns.stream()
+        .map(c -> "ALTER TABLE " + tableIdentifier(tableReference) + " "
+            + "ADD "
+            + columnIdentifier(c.getId()) + " "
+            + getH2DataType(c.getDataType()) + ";")
+        .collect(Collectors.joining("\n"));
   }
 
   @Override

@@ -96,7 +96,11 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
 
   private ResultWithStatistics executeQuery(String sql, boolean dryRun)
       throws InterruptedException {
-    logger.info("Running BigQuery query: {}", sql);
+    if (dryRun) {
+      logger.info("Running BigQuery dry run: {}", sql);
+    } else {
+      logger.info("Running BigQuery query: {}", sql);
+    }
     QueryJobConfiguration queryConfig = QueryJobConfiguration
         .newBuilder(sql)
         .setUseLegacySql(false)

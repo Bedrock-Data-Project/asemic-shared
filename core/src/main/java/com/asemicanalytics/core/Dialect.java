@@ -31,7 +31,7 @@ public interface Dialect {
   String createTableIfNotExists(
       TableReference tableReference, List<Column> columns, Optional<Column> dateColumn);
 
-  String addColumn(TableReference tableReference, Column column);
+  String addColumns(TableReference tableReference, List<Column> columns);
 
   default String caseExpression(String switchExpression, String whenThens, String ifFalse) {
     return "CASE " + switchExpression + " " + whenThens + " " + ifFalse + " END";

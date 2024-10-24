@@ -91,7 +91,7 @@ public class SnowflakeDialect implements Dialect {
   }
 
   @Override
-  public String addColumn(TableReference tableReference, Column column) {
+  public String addColumns(TableReference tableReference, List<Column> columns) {
     throw new UnsupportedOperationException("Not implemented");
   }
 

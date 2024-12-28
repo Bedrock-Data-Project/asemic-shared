@@ -5,5 +5,6 @@ public enum WindowAggregationFunction {
   AVG,
   MIN,
   MAX,
-  COUNT
+  COUNT,
+  COUNT_DISTINCT,
 }

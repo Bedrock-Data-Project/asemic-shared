@@ -1,6 +1,7 @@
 package com.asemicanalytics.sql.sql.builder.tokens;
 
 import com.asemicanalytics.core.Dialect;
+import com.asemicanalytics.core.logicaltable.entity.EventColumn;
 import java.util.List;
 
 class FunctionExpression implements Expression {
@@ -20,6 +21,9 @@ class FunctionExpression implements Expression {
 
   @Override
   public String render(Dialect dialect) {
+    if (this.functionName.equals(EventColumn.AggregateFunction.COUNT_DISTINCT.name())) {
+      return "COUNT(DISTINCT " + arguments.render(dialect) + ")";
+    }
     return functionName.toUpperCase() + "(" + arguments.render(dialect) + ")";
   }
 

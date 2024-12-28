@@ -20,6 +20,7 @@ public class EventColumn extends EntityProperty {
 
   public enum AggregateFunction {
     COUNT,
+    COUNT_DISTINCT,
     SUM,
     AVG,
     MIN,

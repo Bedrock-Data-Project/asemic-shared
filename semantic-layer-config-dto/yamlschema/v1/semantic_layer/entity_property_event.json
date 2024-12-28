@@ -18,6 +18,7 @@
       "type": "string",
       "enum": [
         "count",
+        "count_distinct",
         "sum",
         "avg",
         "min",

@@ -90,4 +90,34 @@ class DomainTest extends SequenceBaseTest {
         new ResultRow(5, Duration.ofSeconds(10), "transaction", 1, 1, 1, 1, 1L, true)
     ));
   }
+
+  @Test
+  void testDomainAliases()
+      throws SQLException, ExecutionException, InterruptedException {
+
+    DatabaseHelper.createUserActionTable(TableReference.of("transaction"), List.of(
+        new UserActionRow(1, Duration.ofSeconds(1)),
+        new UserActionRow(1, Duration.ofSeconds(2)),
+        new UserActionRow(2, Duration.ofSeconds(5)),
+        new UserActionRow(3, Duration.ofSeconds(6)),
+        new UserActionRow(4, Duration.ofSeconds(9)),
+        new UserActionRow(5, Duration.ofSeconds(10))
+    ));
+
+    String sequenceQuery = "domain transaction as t_alias; match t_alias;";
+    sequenceService.dumpSequenceToTable(new DatetimeInterval(
+            LocalDate.of(2021, 1, 1).atStartOfDay(ZoneId.of("UTC")),
+            LocalDate.of(2021, 1, 3).atStartOfDay(ZoneId.of("UTC"))),
+        sequenceQuery, STEP_COLUMN_SOURCES,
+        TableReference.of("sequence_output"), List.of());
+
+    assertResult(List.of(
+        new ResultRow(1, Duration.ofSeconds(1), "t_alias", 1, 1, 1, 1, 1L, true),
+        new ResultRow(1, Duration.ofSeconds(2), "t_alias", 2, 1, 1, 1, 1L, true),
+        new ResultRow(2, Duration.ofSeconds(5), "t_alias", 1, 1, 1, 1, 1L, true),
+        new ResultRow(3, Duration.ofSeconds(6), "t_alias", 1, 1, 1, 1, 1L, true),
+        new ResultRow(4, Duration.ofSeconds(9), "t_alias", 1, 1, 1, 1, 1L, true),
+        new ResultRow(5, Duration.ofSeconds(10), "t_alias", 1, 1, 1, 1, 1L, true)
+    ));
+  }
 }

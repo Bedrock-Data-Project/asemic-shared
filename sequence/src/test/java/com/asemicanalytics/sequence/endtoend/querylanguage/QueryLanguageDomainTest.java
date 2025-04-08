@@ -83,7 +83,7 @@ public class QueryLanguageDomainTest extends QueryLanguageTestBase {
     ), sequence.getSteps());
 
     assertEquals(
-        List.of("t", "transaction"),
+        List.of("transaction", "t"),
         sequence.getDomainActions().stream().map(DomainStep::name).toList());
   }
 

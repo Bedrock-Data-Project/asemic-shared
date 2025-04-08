@@ -4,10 +4,13 @@ import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.SequencedMap;
 import java.util.Set;
 import java.util.StringJoiner;
 
@@ -42,15 +45,13 @@ public class Sequence {
   }
 
   public List<DomainStep> getDomainActions() {
-    Set<String> visited = new HashSet<>();
-    List<DomainStep> actions = new ArrayList<>();
-    List<DomainStep> domainActions = new ArrayList<>();
+    Map<String, DomainStep> resolvedSteps = new HashMap<>();
+    SequencedMap<String, DomainStep> stepsOrdered = new LinkedHashMap<>();
 
     for (var domainStep : domain.values()) {
       String domainStepName = domainStep.name();
-      if (!visited.contains(domainStepName)) {
-        visited.add(domainStepName);
-        domainActions.add(domainStep);
+      if (!resolvedSteps.containsKey(domainStepName)) {
+        resolvedSteps.put(domainStepName, domainStep);
       } else {
         throw new IllegalArgumentException("Domain step " + domainStepName + " is repeated");
       }
@@ -58,15 +59,25 @@ public class Sequence {
 
     for (Step step : steps) {
       for (String action : step.getStepNames()) {
-        if (!visited.contains(action)) {
-          visited.add(action);
-          actions.add(new DomainStep(action, Optional.empty(), Optional.empty()));
+        if (!resolvedSteps.containsKey(action)) {
+          var domainStep = new DomainStep(action, Optional.empty(), Optional.empty());
+          resolvedSteps.put(action, domainStep);
+          stepsOrdered.put(action, domainStep);
+        } else {
+          stepsOrdered.put(action, resolvedSteps.get(action));
         }
       }
     }
 
-    actions.addAll(domainActions);
-    return actions;
+    // add remaining steps
+    for (var entry : resolvedSteps.entrySet()) {
+      String stepName = entry.getKey();
+      if (!stepsOrdered.containsKey(stepName)) {
+        stepsOrdered.put(stepName, entry.getValue());
+      }
+    }
+
+    return stepsOrdered.values().stream().toList();
   }
 
   public EventLogicalTable getTable(String stepName) {

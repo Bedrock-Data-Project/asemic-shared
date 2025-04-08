@@ -13,9 +13,12 @@ import com.asemicanalytics.sequence.sequence.Sequence;
 import com.asemicanalytics.sql.sql.builder.tokens.Cte;
 import com.asemicanalytics.sql.sql.builder.tokens.Expression;
 import com.asemicanalytics.sql.sql.builder.tokens.QueryBuilder;
+import com.asemicanalytics.sql.sql.builder.tokens.QueryFactory;
 import com.asemicanalytics.sql.sql.builder.tokens.SelectStatement;
+import com.asemicanalytics.sql.sql.builder.tokens.TemplateDict;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DomainCteBuilder {
@@ -74,6 +77,9 @@ public class DomainCteBuilder {
         .from(table)
         .and(table.column(stepLogicalTable.getDateColumn().getId()).between(datetimeInterval));
     domainStep.filter().ifPresent(statement::and);
+    stepLogicalTable.getWhere().ifPresent(w -> statement.and(
+        QueryFactory.parse(w, new TemplateDict(Map.of(), table::column)).asCondition()));
+
     return statement;
   }
 }

@@ -102,8 +102,10 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
 
     var baseColumns = List.of(
         new RegistrationColumn(registrationActionLogicalTable.getDateColumn(),
+            registrationActionLogicalTable,
             registrationActionLogicalTable.getDateColumn().getId()),
         new RegistrationColumn(registrationActionLogicalTable.entityIdColumn(),
+            registrationActionLogicalTable,
             registrationActionLogicalTable.entityIdColumn().getId()),
         new RegistrationColumn(new Column(
             REGISTRATION_DATE_COLUMN,
@@ -113,7 +115,7 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
             true,
             true,
             Set.of()
-        ), registrationActionLogicalTable.getDateColumn().getId()),
+        ), registrationActionLogicalTable,  registrationActionLogicalTable.getDateColumn().getId()),
         new ComputedColumn(
             new Column(
                 COHORT_DAY_COLUMN,

@@ -6,6 +6,7 @@ import com.asemicanalytics.core.column.Columns;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -77,6 +78,11 @@ public class LogicalTable<T extends Column> {
     }
     LogicalTable<?> casted = (LogicalTable<?>) o;
     return id.equals(casted.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
   }
 
   public void addEnrichment(Enrichment enrichment) {

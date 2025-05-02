@@ -3,6 +3,7 @@ package com.asemicanalytics.core.column;
 import com.asemicanalytics.core.DataType;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -73,5 +74,22 @@ public class Column {
 
   public boolean hasTag(String tag) {
     return tags.contains(tag);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Column column = (Column) o;
+    return Objects.equals(id, column.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
   }
 }

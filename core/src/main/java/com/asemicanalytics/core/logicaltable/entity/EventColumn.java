@@ -1,14 +1,19 @@
 package com.asemicanalytics.core.logicaltable.entity;
 
 import com.asemicanalytics.core.DisconnectedDateIntervals;
+import com.asemicanalytics.core.PlaceholderKeysExtractor;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class EventColumn extends EntityProperty {
   private final EventLogicalTable eventLogicalTable;
   private final Optional<String> where;
   private final String select;
+  private final Set<String> selectKeys;
   private final AggregateFunction aggregationFunction;
   private final String defaultValue;
   private final boolean generated;
@@ -16,6 +21,16 @@ public class EventColumn extends EntityProperty {
   @Override
   public EntityPropertyType getType() {
     return EntityPropertyType.EVENT;
+  }
+
+  @Override
+  public Set<String> referencedProperties() {
+    return Set.of();
+  }
+
+  @Override
+  public Map<EventLogicalTable, Set<String>> referencedEventParameters() {
+    return Map.of(eventLogicalTable, selectKeys);
   }
 
   public enum AggregateFunction {
@@ -52,6 +67,7 @@ public class EventColumn extends EntityProperty {
     this.eventLogicalTable = eventLogicalTable;
     this.where = where;
     this.select = select;
+    this.selectKeys = PlaceholderKeysExtractor.extractKeys(select);
     this.aggregationFunction = aggregationFunction;
     this.defaultValue = defaultValue;
     this.generated = generated;

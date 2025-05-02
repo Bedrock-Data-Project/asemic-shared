@@ -4,6 +4,10 @@ import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.RelativeDaysInterval;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class SlidingWindowColumn extends EntityProperty {
   private final EntityProperty sourceColumn;
@@ -13,6 +17,16 @@ public class SlidingWindowColumn extends EntityProperty {
   @Override
   public EntityPropertyType getType() {
     return EntityPropertyType.SLIDING_WINDOW;
+  }
+
+  @Override
+  public Set<String> referencedProperties() {
+    return Set.of(sourceColumn.getId());
+  }
+
+  @Override
+  public Map<EventLogicalTable, Set<String>> referencedEventParameters() {
+    return Map.of();
   }
 
   public SlidingWindowColumn(

@@ -3,6 +3,10 @@ package com.asemicanalytics.core.logicaltable.entity;
 
 import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class LifetimeColumn extends EntityProperty {
 
@@ -12,6 +16,16 @@ public class LifetimeColumn extends EntityProperty {
   @Override
   public EntityPropertyType getType() {
     return EntityPropertyType.LIFETIME;
+  }
+
+  @Override
+  public Set<String> referencedProperties() {
+    return Set.of(sourceColumn.getId());
+  }
+
+  @Override
+  public Map<EventLogicalTable, Set<String>> referencedEventParameters() {
+    return Map.of();
   }
 
   public enum MergeFunction {

@@ -70,7 +70,8 @@ public class EntityMapper
     EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
     SequencedMap<String, EntityProperty> columnMap =
         buildColumnsMap(dto.eventLogicalTables(), mergedColumns.getProperties()
-            .getAdditionalProperties(), Map.of(), dto.config().getActiveDays());
+                .getAdditionalProperties(), Map.of(), dto.config().getActiveDays(),
+            registrationsLogicalTable, activityLogicalTable);
 
     var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns<>(columnMap)),
         registrationsLogicalTable, activityLogicalTable);
@@ -95,7 +96,8 @@ public class EntityMapper
       EventLogicalTables eventLogicalTables,
       Map<String, EntityPropertyDto> newProperties,
       Map<String, EntityProperty> existingProperties,
-      int activeDays) {
+      int activeDays, RegistrationsLogicalTable registrationsLogicalTable,
+      ActivityLogicalTable activityLogicalTable) {
 
     SequencedMap<String, EntityProperty> columns = new LinkedHashMap<>(existingProperties);
 
@@ -168,8 +170,9 @@ public class EntityMapper
 
     for (var entry : registrationProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());
-      columns.put(entry.getKey(), new RegistrationPropertyDtoMapper(column).apply(
-          entry.getValue().getRegistrationProperty().get()));
+      columns.put(entry.getKey(),
+          new RegistrationPropertyDtoMapper(registrationsLogicalTable, column)
+              .apply(entry.getValue().getRegistrationProperty().get()));
     }
     for (var entry : actionProperties.entrySet()) {
       var column = buildColumn(entry.getKey(), entry.getValue());

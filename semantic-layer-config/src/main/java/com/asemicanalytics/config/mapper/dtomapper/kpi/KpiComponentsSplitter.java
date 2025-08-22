@@ -17,7 +17,7 @@ public class KpiComponentsSplitter {
 
   private static final List<String>
       aggregationFunctions = List.of(
-      "SUM", "AVG", "COUNT", "MIN", "MAX"
+      "SUM", "AVG", "COUNT", "MIN", "MAX", "COUNTD"
   );
 
   private record Range(String aggregation, int start, int end) {

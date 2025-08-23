@@ -52,7 +52,7 @@ public class H2Dialect implements Dialect {
     return switch (timeGrain) {
       case min15 -> throw new UnsupportedOperationException();
       case hour, day, week, month, quarter, year ->
-          "TRUNCATE(" + column + ", '" + timeGrain.name().toUpperCase() + "')";
+          "DATE_TRUNC('" + timeGrain.name().toUpperCase() + "', " + column + ")";
     };
   }
 

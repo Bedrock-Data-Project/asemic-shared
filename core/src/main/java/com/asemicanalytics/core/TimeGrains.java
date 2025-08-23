@@ -22,6 +22,11 @@ public enum TimeGrains implements TimeGrain {
       return dateTime.truncatedTo(ChronoUnit.HOURS)
           .withMinute((dateTime.getMinute() / 15) * 15);
     }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATETIME;
+    }
   },
   hour {
     @Override
@@ -37,6 +42,11 @@ public enum TimeGrains implements TimeGrain {
     @Override
     public ZonedDateTime truncate(ZonedDateTime dateTime) {
       return dateTime.truncatedTo(ChronoUnit.HOURS);
+    }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATETIME;
     }
   },
   day {
@@ -54,6 +64,11 @@ public enum TimeGrains implements TimeGrain {
     public ZonedDateTime truncate(ZonedDateTime dateTime) {
       return dateTime.truncatedTo(ChronoUnit.DAYS);
     }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATE;
+    }
   },
   week {
     @Override
@@ -70,6 +85,11 @@ public enum TimeGrains implements TimeGrain {
     public ZonedDateTime truncate(ZonedDateTime dateTime) {
       return day.truncate(dateTime.with(DayOfWeek.MONDAY));
     }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATE;
+    }
   },
   month {
     @Override
@@ -85,6 +105,11 @@ public enum TimeGrains implements TimeGrain {
     @Override
     public ZonedDateTime truncate(ZonedDateTime dateTime) {
       return day.truncate(dateTime.withDayOfMonth(1));
+    }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATE;
     }
   },
   quarter {
@@ -103,6 +128,11 @@ public enum TimeGrains implements TimeGrain {
       int quarter = (dateTime.getMonthValue() - 1) / 3 + 1;
       return month.truncate(dateTime.withMonth((quarter - 1) * 3 + 1));
     }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATE;
+    }
   },
   year {
     @Override
@@ -118,6 +148,11 @@ public enum TimeGrains implements TimeGrain {
     @Override
     public ZonedDateTime truncate(ZonedDateTime dateTime) {
       return month.truncate(dateTime.withMonth(1));
+    }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATE;
     }
   }
 }

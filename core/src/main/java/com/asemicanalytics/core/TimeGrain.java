@@ -8,4 +8,6 @@ public interface TimeGrain {
   ZonedDateTime next(ZonedDateTime datetime);
 
   ZonedDateTime truncate(ZonedDateTime dateTime);
+
+  DataType dataType();
 }

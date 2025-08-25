@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>asemic-sql</artifactId>
+    <name>asemic-sql</name>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

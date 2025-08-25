@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>sequence</artifactId>
-
+    <name>asemic-sequence</name>
 
     <dependencies>
         <dependency>

@@ -4,8 +4,10 @@ Github action will automatically publish the package to maven central when a new
 Maven central: https://central.sonatype.com
 
 ### GPG
+
 In order to publish to maven central, artifacts needs to be signed with PGP.
 Use gpg for that:
+
 ```bash
 gpg --gen-key
 gpg --keyserver keyserver.ubuntu.com --send-keys <fingerprint

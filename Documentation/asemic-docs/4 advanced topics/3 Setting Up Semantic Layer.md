@@ -3,6 +3,7 @@
 ## Overview
 
 The Asemic semantic layer is centered around User Entity, defined by:
+
 - **Properties**: Attributes describing users
 - **KPIs**: Aggregations of user properties
 - **Events**: User-triggered Events
@@ -81,6 +82,7 @@ Properties are powerful mechanisms for defining complex columns. Types include:
 Copied from the first appearance action.
 
 Example:
+
 ```yaml
 first_appearance_country:
   data_type: STRING
@@ -94,6 +96,7 @@ first_appearance_country:
 Aggregated from an action table.
 
 Example:
+
 ```yaml
 active_on_day:
   data_type: INTEGER
@@ -111,6 +114,7 @@ active_on_day:
 Computed over a sliding time window.
 
 Example:
+
 ```yaml
 days_active_last_7_days:
   data_type: INTEGER
@@ -128,6 +132,7 @@ days_active_last_7_days:
 Apply a function to current and previous day values.
 
 Example:
+
 ```yaml
 revenue_lifetime:
   data_type: NUMBER
@@ -143,6 +148,7 @@ revenue_lifetime:
 Defined as a formula of other properties.
 
 Example:
+
 ```yaml
 cohort_day:
   data_type: INTEGER
@@ -157,6 +163,7 @@ cohort_day:
 KPIs are aggregations of properties plotted over time.
 
 Example:
+
 ```yaml
 dau:
   label: DAU
@@ -191,6 +198,7 @@ Backfill the data model using one of these methods:
 ## Semantic Layer Data Model
 
 The entity data model consists of several tables:
+
 - **totals**: All users, with first appearance and lifetime properties
 - **active**: Users active in last 90 days
 - **daily**: Users active on a specific day

@@ -5,9 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PropertyIdRewritter {
-  private int currentId = 0;
   private final Map<KpiComponent, String> compenentIds = new HashMap<>();
-
+  private int currentId = 0;
 
   public String rewrite(ComponentId componentId, KpiComponent kpiComponent) {
     if (!compenentIds.containsKey(kpiComponent)) {

@@ -115,7 +115,7 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
             true,
             true,
             Set.of()
-        ), registrationActionLogicalTable,  registrationActionLogicalTable.getDateColumn().getId()),
+        ), registrationActionLogicalTable, registrationActionLogicalTable.getDateColumn().getId()),
         new ComputedColumn(
             new Column(
                 COHORT_DAY_COLUMN,

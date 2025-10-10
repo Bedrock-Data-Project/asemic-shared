@@ -6,10 +6,10 @@ import brave.Tracing;
 import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
-import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.column.Columns;
+import com.asemicanalytics.core.dataframe.Dataframe;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 
 public class SequenceBaseTest {
@@ -65,16 +64,35 @@ public class SequenceBaseTest {
     ), false).get();
   }
 
+
   protected void assertResult(List<ResultRow> rows)
       throws ExecutionException, InterruptedException {
     var sqlRows = rows.stream().map(ResultRow::toSqlResultRow).toList();
-    String expected = sqlRows.stream()
-        .map(SqlResultRow::toString)
-        .collect(Collectors.joining("\n"));
-    String actual = result().rows().stream()
-        .map(SqlResultRow::toString)
-        .collect(Collectors.joining("\n"));
+    var expected = Dataframe.fromSqlResult(sqlRows,
+        List.of(
+            "user_id",
+            "step_ts",
+            "step_date",
+            "step_name",
+            "sequence",
+            "subsequence",
+            "repetitions",
+            "repetition",
+            "step",
+            "is_valid"),
+        List.of(
+            DataType.INTEGER,
+            DataType.DATETIME,
+            DataType.DATE,
+            DataType.STRING,
+            DataType.INTEGER,
+            DataType.INTEGER,
+            DataType.INTEGER,
+            DataType.INTEGER,
+            DataType.INTEGER,
+            DataType.BOOLEAN));
+
+    var actual = result().dataframe();
     assertEquals(expected, actual);
   }
-
 }

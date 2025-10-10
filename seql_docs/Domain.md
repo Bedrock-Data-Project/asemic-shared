@@ -2,11 +2,10 @@
 
 ## Domain
 
-Noted by `domain` keyword. Optional. 
+Noted by `domain` keyword. Optional.
 
 __Default__ value is whatever is mentioned in `matched` section.
 It is a collection of `Actions` that will be used to construct sequences.
-
 
 ### Interface
 
@@ -29,7 +28,6 @@ Example sequence, let's denote Login, Search and Purchase with letters L, S and 
 Matched part of the above sequence:
 
 `[LSP]SP`
-
 
 Changing the domain will affect the match.
 
@@ -61,11 +59,8 @@ match Login >> SearchMain >> Purchase
 
 It could be implicitly defined as:
 
-
 `match Login >> Search where location = 'main screen' as SearchMain >> Purchase`
 
-
-
-#### TODO and Questions: 
+#### TODO and Questions:
 
 - Should it be `domain add` keyword? Meaning is perhaps more straightforward.

@@ -11,9 +11,9 @@ import java.util.TreeSet;
 
 public class Formula {
   private final FilterPath filterPath;
-  private String formula;
   private final Map<String, KpiComponent> kpiComponentMap = new TreeMap<>();
   private final Map<String, Token> resolvedComponents = new TreeMap<>();
+  private String formula;
   private boolean rendered;
 
   public Formula(FilterPath filterPath, String formula) {

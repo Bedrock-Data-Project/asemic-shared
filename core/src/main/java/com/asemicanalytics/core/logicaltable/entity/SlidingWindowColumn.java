@@ -5,7 +5,6 @@ import com.asemicanalytics.core.RelativeDaysInterval;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +12,18 @@ public class SlidingWindowColumn extends EntityProperty {
   private final EntityProperty sourceColumn;
   private final RelativeDaysInterval relativeDaysInterval;
   private final WindowAggregationFunction windowAggregationFunction;
+
+  public SlidingWindowColumn(
+      Column column,
+      EntityProperty sourceColumn,
+      RelativeDaysInterval relativeDaysInterval,
+      WindowAggregationFunction windowAggregationFunction) {
+    super(column);
+
+    this.sourceColumn = sourceColumn;
+    this.relativeDaysInterval = relativeDaysInterval;
+    this.windowAggregationFunction = windowAggregationFunction;
+  }
 
   @Override
   public EntityPropertyType getType() {
@@ -27,18 +38,6 @@ public class SlidingWindowColumn extends EntityProperty {
   @Override
   public Map<EventLogicalTable, Set<String>> referencedEventParameters() {
     return Map.of();
-  }
-
-  public SlidingWindowColumn(
-      Column column,
-      EntityProperty sourceColumn,
-      RelativeDaysInterval relativeDaysInterval,
-      WindowAggregationFunction windowAggregationFunction) {
-    super(column);
-
-    this.sourceColumn = sourceColumn;
-    this.relativeDaysInterval = relativeDaysInterval;
-    this.windowAggregationFunction = windowAggregationFunction;
   }
 
   public DisconnectedDateIntervals getMaterializedFrom(

@@ -3,8 +3,8 @@ package com.asemicanalytics.sql.sql.builder.tokens;
 import com.asemicanalytics.core.Dialect;
 
 class TableColumn implements Expression {
-  private TableLike table;
   private final String name;
+  private TableLike table;
 
   public TableColumn(TableLike table, String name) {
     super();

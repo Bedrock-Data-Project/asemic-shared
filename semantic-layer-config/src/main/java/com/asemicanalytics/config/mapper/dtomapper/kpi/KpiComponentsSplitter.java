@@ -20,7 +20,19 @@ public class KpiComponentsSplitter {
       "SUM", "AVG", "COUNT", "MIN", "MAX", "COUNTD"
   );
 
-  private record Range(String aggregation, int start, int end) {
+  private static TreeSet<String> buildFilters(KpixaxisConfig kpixaxisConfig,
+                                              ArrayList<String> properties) {
+    var filters = new TreeSet<String>();
+    if (!properties.isEmpty()) {
+      filters.addAll(kpixaxisConfig.components().get(properties.getFirst()).filters());
+      for (int i = 1; i < properties.size(); i++) {
+        if (!filters.equals(kpixaxisConfig.components().get(properties.get(i)).filters())) {
+          throw new IllegalArgumentException("Invalid formula, conflicting filters: "
+              + kpixaxisConfig.formula());
+        }
+      }
+    }
+    return filters;
   }
 
   private int indexOfClosingBracket(String formula, int fromIndex) {
@@ -165,18 +177,6 @@ public class KpiComponentsSplitter {
     );
   }
 
-  private static TreeSet<String> buildFilters(KpixaxisConfig kpixaxisConfig,
-                                              ArrayList<String> properties) {
-    var filters = new TreeSet<String>();
-    if (!properties.isEmpty()) {
-      filters.addAll(kpixaxisConfig.components().get(properties.getFirst()).filters());
-      for (int i = 1; i < properties.size(); i++) {
-        if (!filters.equals(kpixaxisConfig.components().get(properties.get(i)).filters())) {
-          throw new IllegalArgumentException("Invalid formula, conflicting filters: "
-              + kpixaxisConfig.formula());
-        }
-      }
-    }
-    return filters;
+  private record Range(String aggregation, int start, int end) {
   }
 }

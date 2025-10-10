@@ -5,7 +5,6 @@ import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +12,17 @@ public class FixedWindowColumn extends EntityProperty {
   private final EntityProperty sourceColumn;
   private final DateInterval dateInterval;
   private final WindowAggregationFunction windowAggregationFunction;
+
+  public FixedWindowColumn(
+      Column column,
+      EntityProperty sourceColumn,
+      DateInterval dateInterval,
+      WindowAggregationFunction windowAggregationFunction) {
+    super(column);
+    this.sourceColumn = sourceColumn;
+    this.dateInterval = dateInterval;
+    this.windowAggregationFunction = windowAggregationFunction;
+  }
 
   @Override
   public EntityPropertyType getType() {
@@ -27,17 +37,6 @@ public class FixedWindowColumn extends EntityProperty {
   @Override
   public Map<EventLogicalTable, Set<String>> referencedEventParameters() {
     return Map.of();
-  }
-
-  public FixedWindowColumn(
-      Column column,
-      EntityProperty sourceColumn,
-      DateInterval dateInterval,
-      WindowAggregationFunction windowAggregationFunction) {
-    super(column);
-    this.sourceColumn = sourceColumn;
-    this.dateInterval = dateInterval;
-    this.windowAggregationFunction = windowAggregationFunction;
   }
 
   public DisconnectedDateIntervals getMaterializedOn(

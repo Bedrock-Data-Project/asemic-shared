@@ -13,12 +13,6 @@ public class ComputedColumn extends EntityProperty {
   private final Set<String> formulaKeys;
   private final List<ValueMapping> valueMappingList;
 
-  public record ValueMapping(
-      Optional<String> from,
-      Optional<String> to,
-      String newValue) {
-  }
-
   public ComputedColumn(Column column, String formula, List<ValueMapping> valueMappingList) {
     super(column);
     this.formula = formula;
@@ -51,5 +45,11 @@ public class ComputedColumn extends EntityProperty {
   @Override
   public Map<EventLogicalTable, Set<String>> referencedEventParameters() {
     return Map.of();
+  }
+
+  public record ValueMapping(
+      Optional<String> from,
+      Optional<String> to,
+      String newValue) {
   }
 }

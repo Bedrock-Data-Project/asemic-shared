@@ -30,6 +30,14 @@ class ExpressionList implements Token {
     return new ExpressionList();
   }
 
+  public static ExpressionList inline(Expression... expressions) {
+    return new ExpressionList(Arrays.stream(expressions).toList(), ", ");
+  }
+
+  public static ExpressionList inline(List<Expression> expressions) {
+    return new ExpressionList(expressions, ", ");
+  }
+
   public void add(Expression expression) {
     expressions.add(expression);
   }
@@ -91,13 +99,5 @@ class ExpressionList implements Token {
 
   public String referenceInGroupByOrderBy(Dialect dialect) {
     return render(e -> e.referenceInGroupByOrderBy(dialect));
-  }
-
-  public static ExpressionList inline(Expression... expressions) {
-    return new ExpressionList(Arrays.stream(expressions).toList(), ", ");
-  }
-
-  public static ExpressionList inline(List<Expression> expressions) {
-    return new ExpressionList(expressions, ", ");
   }
 }

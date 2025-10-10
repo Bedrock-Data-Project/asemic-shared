@@ -6,9 +6,11 @@ Combine implements second part of what is basically map-reduce pattern.
 
 ### Interface
 
-Removes one deepest `sequence` tag, keeps tags in the sequence with the most tags, resets all other tags and destroys duplicate sequences created by previous split by. Also adds count of colapsed sequences.
+Removes one deepest `sequence` tag, keeps tags in the sequence with the most tags, resets all other tags and destroys
+duplicate sequences created by previous split by. Also adds count of colapsed sequences.
 
 Tag the sequence with the most valid steps:
+
 ```sql
 combine_aux1 AS (
 select
@@ -23,6 +25,7 @@ select
 from tagged_steps
 )
 ```
+
 Take the first (leftmost) valid sequence, if it exists.
 
 ```sql
@@ -34,7 +37,6 @@ qualify sequence_2 - if(valid_sequence, -1000, 0) = min(sequence_2 - if(valid_se
 ```
 
 The above algorithm can be simplified if we know the split can not create duplicates. TODO for performance pass.
-
 
 #### TODO and questions
 

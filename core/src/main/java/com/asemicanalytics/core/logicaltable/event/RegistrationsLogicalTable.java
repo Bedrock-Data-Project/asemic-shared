@@ -14,6 +14,15 @@ public class RegistrationsLogicalTable extends EventLogicalTable {
   public static final String REGISTRATIONS_PROPERTY_TAG = "registration_property";
   private List<EventLogicalTable> registrationEvents;
 
+  public RegistrationsLogicalTable(TableReference table,
+                                   List<EventLogicalTable> registrationEvents) {
+    super("entity_registrations", "Registrations", Optional.empty(), table,
+        buildColumns(registrationEvents),
+        Map.of(),
+        Optional.empty(), Set.of());
+    this.registrationEvents = registrationEvents;
+  }
+
   private static Columns<Column> buildColumns(List<EventLogicalTable> registrationEvents) {
     LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
 
@@ -34,15 +43,6 @@ public class RegistrationsLogicalTable extends EventLogicalTable {
     }
 
     return new Columns<>(columns);
-  }
-
-  public RegistrationsLogicalTable(TableReference table,
-                                   List<EventLogicalTable> registrationEvents) {
-    super("entity_registrations", "Registrations", Optional.empty(), table,
-        buildColumns(registrationEvents),
-        Map.of(),
-        Optional.empty(), Set.of());
-    this.registrationEvents = registrationEvents;
   }
 
   public List<EventLogicalTable> getRegistrationEvents() {

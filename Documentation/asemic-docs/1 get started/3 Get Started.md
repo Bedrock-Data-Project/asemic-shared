@@ -4,13 +4,15 @@ The Asemic comes with CLI app for setting up and maintaining your project. It is
 
 ## Connecting to Your Data
 
-This guide will walk you through the process of connecting your data sources to Asemic. We'll cover the steps for the main supported data warehouses.
+This guide will walk you through the process of connecting your data sources to Asemic. We'll cover the steps for the
+main supported data warehouses.
 
 ### Setting Up Workspace
 
 Once you have been registered with Asemic, you will have a workspace and a starting project set up.
 
-Workspace can contain multiple projects, and each project is an indepented entity, containing datasets of a single product. (At the moment, workspace and project will be set for you during onboarding)
+Workspace can contain multiple projects, and each project is an indepented entity, containing datasets of a single
+product. (At the moment, workspace and project will be set for you during onboarding)
 
 First go to `Settings -> Profile` in Asemic UI. We'll need API Token for the next step.
 
@@ -21,6 +23,7 @@ First go to `Settings -> Profile` in Asemic UI. We'll need API Token for the nex
 You'll need to install the Asemic CLI tool, which is used for managing the semantic layer. Installation instructions:
 
 #### macOS ARM
+
 ```bash
 curl -L -o asemic-cli https://github.com/Bedrock-Data-Project/asemic-cli/releases/latest/download/asemic-cli-macos-arm
 chmod +x asemic-cli
@@ -28,6 +31,7 @@ sudo mv asemic-cli /usr/local/bin
 ```
 
 #### macOS x64
+
 ```bash
 curl -L -o asemic-cli https://github.com/Bedrock-Data-Project/asemic-cli/releases/latest/download/asemic-cli-macos-x64
 chmod +x asemic-cli
@@ -35,6 +39,7 @@ sudo mv asemic-cli /usr/local/bin
 ```
 
 #### Ubuntu
+
 ```bash
 curl -L -o asemic-cli https://github.com/Bedrock-Data-Project/asemic-cli/releases/latest/download/asemic-cli-ubuntu
 chmod +x asemic-cli
@@ -58,7 +63,7 @@ You'll need to set up the Asemic CLI:
    ```bash
    export ASEMIC_API_TOKEN=<your_token_here>
    ```
-   
+
 ## Setting Up Connection
 
 ### Big Query
@@ -69,40 +74,54 @@ To connect Asemic to your BigQuery database, you need to create a service accoun
 - **BigQuery Job User**
 - **BigQuery Data Editor** (for the dedicated dataset where the data model will be created)
 
-> For detailed instructions on creating a service account, please refer to [Google's support documentation](https://support.google.com/a/answer/7378726).
+> For detailed instructions on creating a service account, please refer
+> to [Google's support documentation](https://support.google.com/a/answer/7378726).
 
-> TODO: ivan passing service key 
+> TODO: ivan passing service key
 
-Once you have your service account key, you need to base64 encode it (you can use an online utility like https://www.base64encode.org/ for that, or doing it in terminal). Then will gcp project id and base64 encoded service account key in create connection popup. Before submitting, make sure test connection button says it can connect succesfully.
+Once you have your service account key, you need to base64 encode it (you can use an online utility
+like https://www.base64encode.org/ for that, or doing it in terminal). Then will gcp project id and base64 encoded
+service account key in create connection popup. Before submitting, make sure test connection button says it can connect
+succesfully.
 
-After connecting to database, take note of API ID found in projects list. This will be your identifier when working with asemic-cli , the tool for managing your asemic semantic layer.
+After connecting to database, take note of API ID found in projects list. This will be your identifier when working with
+asemic-cli , the tool for managing your asemic semantic layer.
 
-> Note: it is recommended to store your semantic layer config on version control, to facilitate collaboration. If using github, you can check the asemic demo example: https://github.com/Bedrock-Data-Project/bedrock-demo
-This repo uses github actions for automatic validation of pull requests, automatic push on merge to main branch and workflow for backfilling the entity model.
+> Note: it is recommended to store your semantic layer config on version control, to facilitate collaboration. If using
+> github, you can check the asemic demo example: https://github.com/Bedrock-Data-Project/bedrock-demo
+> This repo uses github actions for automatic validation of pull requests, automatic push on merge to main branch and
+> workflow for backfilling the entity model.
 
 #### Not Using Big Query?
 
-Don't worry, we support almost all data warehouses with standard SQL interface. Check [Connecting Data Sources](../4%20advanced%20topics/1%20Connecting%20Data%20Sources.md) for more examples.
+Don't worry, we support almost all data warehouses with standard SQL interface.
+Check [Connecting Data Sources](../4%20advanced%20topics/1%20Connecting%20Data%20Sources.md) for more examples.
 
 ## Setting up Semantic Layer
 
-The Asemic semantic layer is primarily built to handle User Entity data model which consumes events generated by a User interacting with your online app. User Entity is defined by a set of **properties** (attributes describing the user) and **KPIs** are defined as aggregations of user properties.
+The Asemic semantic layer is primarily built to handle User Entity data model which consumes events generated by a User
+interacting with your online app. User Entity is defined by a set of **properties** (attributes describing the user) and
+**KPIs** are defined as aggregations of user properties.
 
+Before generating the semantic layer, Asemic makes the following assumptions:
 
- Before generating the semantic layer, Asemic makes the following assumptions:
-1. Data is tracked in one or more event tables, where each row represents an event performed by a user at a specific time.
-2. A "first appearance" event table exists, where each user has one row with the timestamp of their first interaction in the system.
-3. An activity table exists, where each user has a row for every date they were active (interacting with the system in a meaningful way, such as logging in).
-Given these assumptions, Asemic can generate dozens of industry-standard KPIs as a starting point.
+1. Data is tracked in one or more event tables, where each row represents an event performed by a user at a specific
+   time.
+2. A "first appearance" event table exists, where each user has one row with the timestamp of their first interaction in
+   the system.
+3. An activity table exists, where each user has a row for every date they were active (interacting with the system in a
+   meaningful way, such as logging in).
+   Given these assumptions, Asemic can generate dozens of industry-standard KPIs as a starting point.
 
 #### Generating the User Entity Model
 
-1. **Create a Directory**: Name the directory after your API ID (retrievable from the Asemic Settings page under the Team tab, API ID column).
+1. **Create a Directory**: Name the directory after your API ID (retrievable from the Asemic Settings page under the
+   Team tab, API ID column).
    ```bash
    mkdir {API_ID} && cd asemic-config
    ```
-2. **Run the Asemic CLI**: Use the `asemic-cli user-entity-model activity-action` command to start a wizard that will map the activity. The process will resemble the following example:
-
+2. **Run the Asemic CLI**: Use the `asemic-cli user-entity-model activity-action` command to start a wizard that will
+   map the activity. The process will resemble the following example:
 
    ```
    asemic-cli user-entity-model activity-action
@@ -144,7 +163,9 @@ Given these assumptions, Asemic can generate dozens of industry-standard KPIs as
    Adding last_login_property tag to os_version. It means entity property will be generated from it.
    Datasource saved to bedrock-demo/userentity/actions/login.yml
    ```
-   - Do the same for first appearance:
+
+- Do the same for first appearance:
+
    ```
    asemic-cli user-entity-model first-appearance-action
    Enter full table name: gendemo.ua_registration
@@ -189,10 +210,13 @@ Given these assumptions, Asemic can generate dozens of industry-standard KPIs as
    Datasource saved to /Users/ikorhner/projects/bedrock-demo/userentity/actions/registration.yml
    ```
 
-3. **Handle Payment Transaction Data**: If you have an action that contains payment transaction data, use `asemic-cli user-entity-model payment-transaction-action`.
-4. **Generate the Entity Model**: Run `asemic-cli user-entity-model entity` to generate an initial set of properties and KPIs.
+3. **Handle Payment Transaction Data**: If you have an action that contains payment transaction data, use
+   `asemic-cli user-entity-model payment-transaction-action`.
+4. **Generate the Entity Model**: Run `asemic-cli user-entity-model entity` to generate an initial set of properties and
+   KPIs.
 
 #### Directory Structure
+
 Once generated, the structure will contain three subfolders:
 
 ```bash
@@ -206,9 +230,12 @@ Project name (your {API_ID})
 
 ### Properties
 
-Properties are a powerful mechanism to define complex columns easily. There are several types of properties, each serving a specific purpose.
+Properties are a powerful mechanism to define complex columns easily. There are several types of properties, each
+serving a specific purpose.
 
-Here's a few examples. Check [Settings Up Semantic Layer](../4%20advanced%20topics/3%20Setting%20Up%20Semantic%20Layer.md) for more detailed instructions how to set up 
+Here's a few examples.
+Check [Settings Up Semantic Layer](../4%20advanced%20topics/3%20Setting%20Up%20Semantic%20Layer.md) for more detailed
+instructions how to set up
 
 ```yaml
 # sum of revenue field in payment_transaction_action
@@ -265,8 +292,10 @@ payment_segment:
 ```
 
 ### Kpis
+
 Kpis are aggregations of properties that can get plotted over time.
 Examples:
+
 ```yaml
 # number of daily active users
 dau:  
@@ -304,14 +333,20 @@ arpdau:
 
 ### Submitting semantic layer
 
-After generating the semantic layer, it needs to be submitted to asemic. Before submitting, it is recommend to run `asemic-cli config validate` to validate the configuration. asemic-cli will dry run several queries to test your properties and kpis.
+After generating the semantic layer, it needs to be submitted to asemic. Before submitting, it is recommend to run
+`asemic-cli config validate` to validate the configuration. asemic-cli will dry run several queries to test your
+properties and kpis.
 After validate is succesful, config should be submitted by using `asemic-cli config push`
 
 ### Backfilling the semantic layer data model
 
-As a final step, semantic layer needs to be backfilled. This can be done either by using asemic-cli (`asemic-cli user-entity-model backfill --date-from='2024-08-23' --date-to='2024-08-25'`) or, if using github, runnning a backfill workflow (see [Demo Project](https://github.com/Bedrock-Data-Project/bedrock-demo) for an example).
+As a final step, semantic layer needs to be backfilled. This can be done either by using asemic-cli (
+`asemic-cli user-entity-model backfill --date-from='2024-08-23' --date-to='2024-08-25'`) or, if using github, runnning a
+backfill workflow (see [Demo Project](https://github.com/Bedrock-Data-Project/bedrock-demo) for an example).
 
-Asemic materializes your physical data model for performance reasons and is expected to be integrated with your etl process to backfill the data as it becomes available.
+Asemic materializes your physical data model for performance reasons and is expected to be integrated with your etl
+process to backfill the data as it becomes available.
 
 ---
-This will generate the basic set of properties and metrics from your events. To get the most check Advanced Topics in the documentation.
+This will generate the basic set of properties and metrics from your events. To get the most check Advanced Topics in
+the documentation.

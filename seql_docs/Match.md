@@ -9,7 +9,9 @@ The representative is a pattern like:
 ```sql
 match Action1 >> Action2 >> Action3 >> Action4
 ```
+
 or
+
 ```sql
 match Action1{1} >> Action1 >> Action2 >> Action2
 ```
@@ -47,6 +49,7 @@ match Action1 >> Action2 >> [Action3] >> Action4
 ```
 
 SQL
+
 ```sql
 step1_2 AS (
   select
@@ -109,6 +112,7 @@ Action1 >> Action2 >> * >> Action3 >> Action4
 ```
 
 SQL
+
 ```sql
 // find where contition is satisfied
 step3_4_prep AS (
@@ -138,14 +142,17 @@ step3_4_prep2 AS (
 ```sql
 match Action1 >> * >> [Action2] >> Action3 >> * >> Action4
 ```
+
 TODO: needs to be more precise
 Transform this into following steps:
+
 1. match Action1
 2. `split by` [] >> Action3 so each split goes until the end of original sequence
 3. `match` the remaining part of the pattern ([Action2] >> Action3 >> * >> Action4). If needed, split again like this
 4. `merge` for every `split by`
 
 ### Leading optional steps
+
 ```sql
 match ? >> ? >> Action1 >> Action2
 ```
@@ -166,13 +173,12 @@ split by ? >> ? >> Action3
 match [Action1] >> [Action2] >> Action3 >> Action4
 ```
 
-
 ```sql
 match * >> Action1 >> Action2
 ```
 
-
 ------------
+
 ```sql
 match [Action1] << [Action2] << Action3 >> Action4
 ```
@@ -197,7 +203,7 @@ SEQ
 L >> B >> A >> C
 
 _L_ABC
- 1 234
+1 234
 _L_324
 _LB_AC
- 12 
+12 

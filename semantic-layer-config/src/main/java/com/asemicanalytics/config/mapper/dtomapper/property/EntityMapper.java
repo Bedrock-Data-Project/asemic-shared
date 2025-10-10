@@ -35,63 +35,6 @@ public class EntityMapper
     this.appId = appId;
   }
 
-  private String getSchema(EntityDto dto) {
-    return (dto.config().getDataModelSchema())
-        .replace("{app_id}", appId);
-  }
-
-  private RegistrationsLogicalTable buildRegistrationsTable(EntityDto dto) {
-    return new RegistrationsLogicalTable(
-        TableReference.parse(getSchema(dto) + ".registrations"),
-        dto.eventLogicalTables().getByTag(RegistrationsLogicalTable.TAG)
-    );
-  }
-
-  private ActivityLogicalTable buildActivityTable(EntityDto dto) {
-    return new ActivityLogicalTable(
-        TableReference.parse(
-            getSchema(dto) + ".activity"),
-        dto.eventLogicalTables().getByTag(ActivityLogicalTable.TAG)
-    );
-  }
-
-  @Override
-  public EntityLogicalTable apply(EntityDto dto) {
-    var registrationsLogicalTable = buildRegistrationsTable(dto);
-    var activityLogicalTable = buildActivityTable(dto);
-    dto.eventLogicalTables().getEventLogicalTables().put(
-        registrationsLogicalTable.getId(), registrationsLogicalTable);
-    dto.eventLogicalTables().getEventLogicalTables().put(
-        activityLogicalTable.getId(), activityLogicalTable);
-
-    int activeDays = dto.config().getActiveDays();
-    List<Integer> cohortDays = dto.config().getCohortedDailyKpisDays();
-
-    EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
-    SequencedMap<String, EntityProperty> columnMap =
-        buildColumnsMap(dto.eventLogicalTables(), mergedColumns.getProperties()
-                .getAdditionalProperties(), Map.of(), dto.config().getActiveDays(),
-            registrationsLogicalTable, activityLogicalTable);
-
-    var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns<>(columnMap)),
-        registrationsLogicalTable, activityLogicalTable);
-
-    var mergedKpis = new KpisDtoMergeMapper(cohortDays).apply(dto.kpis());
-    var unfoldedKpis = new KpisUnfolder(mergedKpis, columns.getColumns().keySet()).unfold();
-
-    var kpis = buildKpisMap(unfoldedKpis);
-    new EntityIndexFilterAppender(activeDays, cohortDays, columns.getColumns()).append(kpis);
-
-    return new EntityLogicalTable(
-        getSchema(dto),
-        Optional.of(columns),
-        registrationsLogicalTable,
-        activityLogicalTable,
-        activeDays,
-        cohortDays,
-        kpis);
-  }
-
   public static SequencedMap<String, EntityProperty> buildColumnsMap(
       EventLogicalTables eventLogicalTables,
       Map<String, EntityPropertyDto> newProperties,
@@ -219,6 +162,63 @@ public class EntityMapper
         propertyDto.getCanGroupBy().orElse(false),
         Set.of()
     );
+  }
+
+  private String getSchema(EntityDto dto) {
+    return (dto.config().getDataModelSchema())
+        .replace("{app_id}", appId);
+  }
+
+  private RegistrationsLogicalTable buildRegistrationsTable(EntityDto dto) {
+    return new RegistrationsLogicalTable(
+        TableReference.parse(getSchema(dto) + ".registrations"),
+        dto.eventLogicalTables().getByTag(RegistrationsLogicalTable.TAG)
+    );
+  }
+
+  private ActivityLogicalTable buildActivityTable(EntityDto dto) {
+    return new ActivityLogicalTable(
+        TableReference.parse(
+            getSchema(dto) + ".activity"),
+        dto.eventLogicalTables().getByTag(ActivityLogicalTable.TAG)
+    );
+  }
+
+  @Override
+  public EntityLogicalTable apply(EntityDto dto) {
+    var registrationsLogicalTable = buildRegistrationsTable(dto);
+    var activityLogicalTable = buildActivityTable(dto);
+    dto.eventLogicalTables().getEventLogicalTables().put(
+        registrationsLogicalTable.getId(), registrationsLogicalTable);
+    dto.eventLogicalTables().getEventLogicalTables().put(
+        activityLogicalTable.getId(), activityLogicalTable);
+
+    int activeDays = dto.config().getActiveDays();
+    List<Integer> cohortDays = dto.config().getCohortedDailyKpisDays();
+
+    EntityPropertiesDto mergedColumns = new EntityPropertiesDtoMergeMapper().apply(dto.columns());
+    SequencedMap<String, EntityProperty> columnMap =
+        buildColumnsMap(dto.eventLogicalTables(), mergedColumns.getProperties()
+                .getAdditionalProperties(), Map.of(), dto.config().getActiveDays(),
+            registrationsLogicalTable, activityLogicalTable);
+
+    var columns = EntityLogicalTable.withBaseColumns(Optional.of(new Columns<>(columnMap)),
+        registrationsLogicalTable, activityLogicalTable);
+
+    var mergedKpis = new KpisDtoMergeMapper(cohortDays).apply(dto.kpis());
+    var unfoldedKpis = new KpisUnfolder(mergedKpis, columns.getColumns().keySet()).unfold();
+
+    var kpis = buildKpisMap(unfoldedKpis);
+    new EntityIndexFilterAppender(activeDays, cohortDays, columns.getColumns()).append(kpis);
+
+    return new EntityLogicalTable(
+        getSchema(dto),
+        Optional.of(columns),
+        registrationsLogicalTable,
+        activityLogicalTable,
+        activeDays,
+        cohortDays,
+        kpis);
   }
 
   private Map<String, Kpi> buildKpisMap(List<UnfoldingKpi> kpiList) {

@@ -3,15 +3,12 @@ package com.asemicanalytics.sequence.sequence;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.SequencedMap;
-import java.util.Set;
 import java.util.StringJoiner;
 
 public class Sequence {

@@ -1,14 +1,18 @@
 # Annotations: Providing Interpretation Context
 
-Annotations in Asemic are a powerful feature that allows you to add contextual information to your data visualizations. By marking specific dates or periods with relevant events or notes, you can provide crucial context for interpreting trends and patterns in your data.
+Annotations in Asemic are a powerful feature that allows you to add contextual information to your data visualizations.
+By marking specific dates or periods with relevant events or notes, you can provide crucial context for interpreting
+trends and patterns in your data.
 
 ## Overview
 
 Annotations can be added for:
+
 - A single day
 - A specific time period
 
 Each annotation can include:
+
 - A title
 - A description
 - One or more tags
@@ -25,6 +29,7 @@ To add an annotation:
 6. Save the annotation.
 
 Example:
+
 ```
 Date: July 15, 2023
 Title: Major App Update
@@ -51,6 +56,7 @@ Annotations appear as markers on your charts and dashboards. You can:
 - Click on an Annotation in the panel to highlight it on all the charts in the dashboard
 
 Example filter:
+
 ```
 Annotations: release, ua_campaign
 ```
@@ -60,7 +66,8 @@ This would display only annotations related to product releases and user acquisi
 ## Use Cases
 
 1. **Product Development Context**
-   Use annotations to mark release dates and major bug fixes. This helps in correlating user behavior changes with product updates.
+   Use annotations to mark release dates and major bug fixes. This helps in correlating user behavior changes with
+   product updates.
 
    Example:
    ```
@@ -120,20 +127,24 @@ This would display only annotations related to product releases and user acquisi
 
 4. **Use Clear Descriptions**: Write clear, concise descriptions that provide value at a glance.
 
-5. **Leverage Tag Hierarchies**: Consider using tag hierarchies (e.g., `release:major`, `release:minor`) for more granular filtering.
+5. **Leverage Tag Hierarchies**: Consider using tag hierarchies (e.g., `release:major`, `release:minor`) for more
+   granular filtering.
 
 6. **Collaborate**: Encourage team members from different departments to add annotations relevant to their areas.
 
-7. **Review Periodically**: Regularly review and clean up annotations to maintain their usefulness. 
+7. **Review Periodically**: Regularly review and clean up annotations to maintain their usefulness.
 
 > Note: Once a tag is removed from all the annotations, it will be auto-deleted.
 
 ---
-Annotations in Asemic provide a powerful way to add context to your data visualizations. By effectively using annotations, you can:
+Annotations in Asemic provide a powerful way to add context to your data visualizations. By effectively using
+annotations, you can:
 
 - Quickly identify the causes of data anomalies
 - Understand the impact of product changes and marketing efforts
 - Provide valuable context for stakeholders viewing your dashboards
 - Facilitate more informed decision-making based on a comprehensive view of your data and business events
 
-Leveraging the tagging system allows for efficient organization and filtering of annotations, making it easy to focus on relevant context for any analysis. By integrating annotations into your analytics workflow, you enhance the interpretability and value of your data insights.
+Leveraging the tagging system allows for efficient organization and filtering of annotations, making it easy to focus on
+relevant context for any analysis. By integrating annotations into your analytics workflow, you enhance the
+interpretability and value of your data insights.

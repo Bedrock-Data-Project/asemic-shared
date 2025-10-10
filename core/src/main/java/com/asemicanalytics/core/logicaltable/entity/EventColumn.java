@@ -4,7 +4,6 @@ import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.PlaceholderKeysExtractor;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -17,33 +16,6 @@ public class EventColumn extends EntityProperty {
   private final AggregateFunction aggregationFunction;
   private final String defaultValue;
   private final boolean generated;
-
-  @Override
-  public EntityPropertyType getType() {
-    return EntityPropertyType.EVENT;
-  }
-
-  @Override
-  public Set<String> referencedProperties() {
-    return Set.of();
-  }
-
-  @Override
-  public Map<EventLogicalTable, Set<String>> referencedEventParameters() {
-    return Map.of(eventLogicalTable, selectKeys);
-  }
-
-  public enum AggregateFunction {
-    COUNT,
-    COUNT_DISTINCT,
-    SUM,
-    AVG,
-    MIN,
-    MAX,
-    FIRST_VALUE,
-    LAST_VALUE,
-    NONE
-  }
 
   public EventColumn(
       Column column,
@@ -73,6 +45,21 @@ public class EventColumn extends EntityProperty {
     this.generated = generated;
   }
 
+  @Override
+  public EntityPropertyType getType() {
+    return EntityPropertyType.EVENT;
+  }
+
+  @Override
+  public Set<String> referencedProperties() {
+    return Set.of();
+  }
+
+  @Override
+  public Map<EventLogicalTable, Set<String>> referencedEventParameters() {
+    return Map.of(eventLogicalTable, selectKeys);
+  }
+
   public EventLogicalTable getEventLogicalTable() {
     return eventLogicalTable;
   }
@@ -100,5 +87,17 @@ public class EventColumn extends EntityProperty {
 
   public boolean isGenerated() {
     return generated;
+  }
+
+  public enum AggregateFunction {
+    COUNT,
+    COUNT_DISTINCT,
+    SUM,
+    AVG,
+    MIN,
+    MAX,
+    FIRST_VALUE,
+    LAST_VALUE,
+    NONE
   }
 }

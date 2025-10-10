@@ -6,6 +6,7 @@ import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.dataframe.Dataframe;
 import com.asemicanalytics.sql.sql.executor.ThreadPoolSqlQueryExecutor;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
@@ -90,10 +91,6 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
     return parsedRow;
   }
 
-  private record ResultWithStatistics(TableResult result,
-                                      JobStatistics.QueryStatistics statistics) {
-  }
-
   private ResultWithStatistics executeQuery(String sql, boolean dryRun)
       throws InterruptedException {
     if (dryRun) {
@@ -135,7 +132,7 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
       if (result.statistics.getTotalBytesProcessed() != null) {
         bytesProcessed = result.statistics.getTotalBytesProcessed();
       }
-      return new SqlResult(List.of(), sql, Duration.between(start, Instant.now()),
+      return new SqlResult(new Dataframe(), sql, Duration.between(start, Instant.now()),
           null, bytesProcessed);
     }
 
@@ -144,6 +141,12 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
       rows.add(new SqlResultRow(parseRow(row, dataTypes)));
     }
 
+    Schema schema = result.result().getSchema();
+    List<String> columnNames = schema.getFields().stream()
+        .map(Field::getName)
+        .collect(Collectors.toList());
+    Dataframe dataframe = Dataframe.fromSqlResult(rows, columnNames, dataTypes);
+
     Boolean cached = null;
     if (result.statistics() instanceof JobStatistics.QueryStatistics statistics) {
       if (statistics.getTotalBytesProcessed() != null) {
@@ -151,7 +154,7 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
       }
       cached = statistics.getCacheHit();
     }
-    return new SqlResult(rows, sql, Duration.between(start, Instant.now()),
+    return new SqlResult(dataframe, sql, Duration.between(start, Instant.now()),
         cached, bytesProcessed);
   }
 
@@ -237,5 +240,9 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
           LocalDate.MIN.atStartOfDay(ZoneId.of("UTC")),
           LocalDate.MIN.atStartOfDay(ZoneId.of("UTC")));
     });
+  }
+
+  private record ResultWithStatistics(TableResult result,
+                                      JobStatistics.QueryStatistics statistics) {
   }
 }

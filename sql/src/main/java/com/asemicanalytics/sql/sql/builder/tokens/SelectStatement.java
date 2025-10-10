@@ -25,16 +25,16 @@ public class SelectStatement implements StandaloneStatement {
   private SelectStatement unionAll;
   private boolean ignoreJoinsInContentHash = false;
 
+  SelectStatement() {
+
+  }
+
   public TableLike table() {
     return from.table();
   }
 
   public BooleanExpression where() {
     return where.booleanExpression();
-  }
-
-  SelectStatement() {
-
   }
 
   public boolean hasJoin(Join join) {

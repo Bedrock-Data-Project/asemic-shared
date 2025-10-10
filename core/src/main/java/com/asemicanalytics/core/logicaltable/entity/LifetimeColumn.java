@@ -4,7 +4,6 @@ package com.asemicanalytics.core.logicaltable.entity;
 import com.asemicanalytics.core.DisconnectedDateIntervals;
 import com.asemicanalytics.core.column.Column;
 import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +11,12 @@ public class LifetimeColumn extends EntityProperty {
 
   private final EntityProperty sourceColumn;
   private final MergeFunction mergeFunction;
+
+  public LifetimeColumn(Column column, EntityProperty sourceColumn, MergeFunction mergeFunction) {
+    super(column);
+    this.sourceColumn = sourceColumn;
+    this.mergeFunction = mergeFunction;
+  }
 
   @Override
   public EntityPropertyType getType() {
@@ -28,20 +33,6 @@ public class LifetimeColumn extends EntityProperty {
     return Map.of();
   }
 
-  public enum MergeFunction {
-    SUM,
-    MIN,
-    MAX,
-    FIRST_VALUE,
-    LAST_VALUE,
-  }
-
-  public LifetimeColumn(Column column, EntityProperty sourceColumn, MergeFunction mergeFunction) {
-    super(column);
-    this.sourceColumn = sourceColumn;
-    this.mergeFunction = mergeFunction;
-  }
-
   public EntityProperty getSourceColumn() {
     return sourceColumn;
   }
@@ -53,5 +44,13 @@ public class LifetimeColumn extends EntityProperty {
   public DisconnectedDateIntervals getMaterializedOn(
       MaterializedColumnRepository materializedFrom) {
     return materializedFrom.materializedOn(getId());
+  }
+
+  public enum MergeFunction {
+    SUM,
+    MIN,
+    MAX,
+    FIRST_VALUE,
+    LAST_VALUE,
   }
 }

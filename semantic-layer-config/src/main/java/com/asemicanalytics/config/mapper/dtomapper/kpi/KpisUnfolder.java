@@ -11,12 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class KpisUnfolder {
-  private record KpiIdAndXaxis(String kpiId, String xaxis) {
-  }
-
   private final Map<KpiIdAndXaxis, UnfoldingKpi> kpis = new HashMap<>();
   private final PropertyIdRewritter propertyIdRewritter = new PropertyIdRewritter();
-
 
   public KpisUnfolder(Map<String, KpiDto> kpis, Set<String> propertyIds) {
     for (var kpiEntry : kpis.entrySet()) {
@@ -87,5 +83,8 @@ public class KpisUnfolder {
       }
     }
     formula.render();
+  }
+
+  private record KpiIdAndXaxis(String kpiId, String xaxis) {
   }
 }

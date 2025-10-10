@@ -7,6 +7,7 @@ import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.dataframe.Dataframe;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -64,13 +65,18 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
   protected SqlResult executeQuery(String sql, List<DataType> dataTypes, boolean dryRun)
       throws InterruptedException {
     if (dryRun) {
-      return new SqlResult(List.of(), sql, Duration.ZERO, null, 0L);
+      return new SqlResult(new Dataframe(), sql, Duration.ZERO, null, 0L);
     }
     var start = Instant.now();
     try (Connection connection = getConnection()) {
       try (Statement statement = connection.createStatement()) {
         try (ResultSet resultSet = statement.executeQuery(sql)) {
           int columnCount = resultSet.getMetaData().getColumnCount();
+          ResultSetMetaData metaData = resultSet.getMetaData();
+          List<String> columnNames = new ArrayList<>();
+          for (int i = 1; i <= columnCount; i++) {
+            columnNames.add(metaData.getColumnLabel(i));
+          }
           List<SqlResultRow> rows = new ArrayList<>();
           while (resultSet.next()) {
             List<Object> columns = new ArrayList<>();
@@ -80,7 +86,8 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
             rows.add(new SqlResultRow(columns));
           }
 
-          return new SqlResult(rows, sql, Duration.between(start, Instant.now()),
+          return new SqlResult(Dataframe.fromSqlResult(rows, columnNames, dataTypes), sql,
+              Duration.between(start, Instant.now()),
               null, 0L);
         }
       }
@@ -102,7 +109,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
 
           // Iterate through columns to retrieve column names and types
           for (int i = 1; i <= columnCount; i++) {
-            String columnName = metaData.getColumnName(i);
+            String columnName = metaData.getColumnLabel(i);
             String columnType = metaData.getColumnTypeName(i);
 
             columns.add(
@@ -156,7 +163,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
       try (Statement statement = connection.createStatement()) {
         statement.execute(sql);
       }
-      return new SqlResult(List.of(), sql, Duration.between(start, Instant.now()),
+      return new SqlResult(new Dataframe(), sql, Duration.between(start, Instant.now()),
           null, 0L);
     } catch (SQLException | InterruptedException e) {
       throw new RuntimeException(e);

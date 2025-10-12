@@ -28,6 +28,75 @@ public enum TimeGrains implements TimeGrain {
       return DataType.DATETIME;
     }
   },
+  min105 {
+    @Override
+    public long toMinutes() {
+      return 105;
+    }
+
+    @Override
+    public ZonedDateTime next(ZonedDateTime datetime) {
+      return datetime.plusMinutes(105);
+    }
+
+    @Override
+    public ZonedDateTime truncate(ZonedDateTime dateTime) {
+      int minute = dateTime.getMinute();
+      int truncatedMinute = (minute / 105) * 105;
+      return dateTime.truncatedTo(ChronoUnit.HOURS).withMinute(truncatedMinute % 60);
+    }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATETIME;
+    }
+  },
+  min450 {
+    @Override
+    public long toMinutes() {
+      return 450;
+    }
+
+    @Override
+    public ZonedDateTime next(ZonedDateTime datetime) {
+      return datetime.plusMinutes(450);
+    }
+
+    @Override
+    public ZonedDateTime truncate(ZonedDateTime dateTime) {
+      int minute = dateTime.getMinute();
+      int truncatedMinute = (minute / 450) * 450;
+      return dateTime.truncatedTo(ChronoUnit.HOURS).withMinute(truncatedMinute % 60);
+    }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATETIME;
+    }
+  },
+  min900 {
+    @Override
+    public long toMinutes() {
+      return 900;
+    }
+
+    @Override
+    public ZonedDateTime next(ZonedDateTime datetime) {
+      return datetime.plusMinutes(900);
+    }
+
+    @Override
+    public ZonedDateTime truncate(ZonedDateTime dateTime) {
+      int minute = dateTime.getMinute();
+      int truncatedMinute = (minute / 900) * 900;
+      return dateTime.truncatedTo(ChronoUnit.HOURS).withMinute(truncatedMinute % 60);
+    }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATETIME;
+    }
+  },
   hour {
     @Override
     public long toMinutes() {

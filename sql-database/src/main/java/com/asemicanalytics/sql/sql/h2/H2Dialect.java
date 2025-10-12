@@ -106,6 +106,11 @@ public class H2Dialect implements Dialect {
   }
 
   @Override
+  public String arrayOffset(String arrayExpression, int offset) {
+    return arrayExpression + "[" + (offset + 1) + "]";
+  }
+
+  @Override
   public String epochSeconds(String timestamp) {
     return "DATEDIFF('SECOND', '1970-01-01 00:00:00', " + timestamp + ")";
   }

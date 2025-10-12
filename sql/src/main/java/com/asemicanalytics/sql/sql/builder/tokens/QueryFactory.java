@@ -171,5 +171,11 @@ public class QueryFactory {
     return ExpressionList.inline(expressions.toArray(new Expression[0]));
   }
 
+  public static ArrayAggExpression arrayAgg(Expression expression) {
+    return new ArrayAggExpression(expression);
+  }
 
+  public static Expression arrayOffset(Expression array, int offset) {
+    return new ArrayOffsetExpression(array, offset);
+  }
 }

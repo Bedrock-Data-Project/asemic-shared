@@ -110,6 +110,11 @@ public class BigQueryDialect implements Dialect {
   }
 
   @Override
+  public String arrayOffset(String arrayExpression, int offset) {
+    return arrayExpression + "[OFFSET(" + offset + ")]";
+  }
+
+  @Override
   public String epochSeconds(String timestamp) {
     return "UNIX_SECONDS(" + timestamp + ")";
   }

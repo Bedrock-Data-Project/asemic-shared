@@ -151,6 +151,10 @@ public class SelectStatement implements StandaloneStatement {
     return this;
   }
 
+  public void addGroupBy(Expression expression) {
+    groupBy.expressions().add(expression);
+  }
+
   public SelectStatement having(BooleanExpression expression) {
     having = new Having(expression);
     return this;

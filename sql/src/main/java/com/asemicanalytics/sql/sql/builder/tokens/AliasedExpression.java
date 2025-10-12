@@ -46,4 +46,8 @@ class AliasedExpression implements Expression {
   public String alias() {
     return alias;
   }
+
+  protected Expression expression() {
+    return expression;
+  }
 }

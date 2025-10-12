@@ -96,6 +96,11 @@ public class SnowflakeDialect implements Dialect {
   }
 
   @Override
+  public String arrayOffset(String arrayExpression, int offset) {
+    return arrayExpression + "[" + offset + "]";
+  }
+
+  @Override
   public String epochSeconds(String timestamp) {
     return "DATE_PART('second', " + timestamp + ")";
   }

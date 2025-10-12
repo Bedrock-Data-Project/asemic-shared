@@ -33,6 +33,8 @@ public interface Dialect {
 
   String addColumns(TableReference tableReference, List<Column> columns);
 
+  String arrayOffset(String arrayExpression, int offset);
+
   default String caseExpression(String switchExpression, String whenThens, String ifFalse) {
     return "CASE " + switchExpression + " " + whenThens + " " + ifFalse + " END";
   }

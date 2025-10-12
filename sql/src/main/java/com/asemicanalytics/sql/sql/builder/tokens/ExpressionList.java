@@ -31,7 +31,7 @@ class ExpressionList implements Token {
   }
 
   public void add(Expression expression) {
-    expressions.add(expression);
+    merge(new ExpressionList(expression));
   }
 
   private String render(Function<Expression, String> renderStrategy) {

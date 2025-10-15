@@ -50,8 +50,9 @@ public class BigQueryDialect implements Dialect {
   @Override
   public String truncateDate(String column, TimeGrains timeGrain) {
     return switch (timeGrain) {
-      case min15, min105, min450, min900, hour -> "TIMESTAMP_BUCKET(" + column + ", INTERVAL "
-          + timeGrain.toMinutes() + " MINUTE)";
+      case min15, min105, min450, min900, hour, hour3 ->
+          "TIMESTAMP_BUCKET(" + column + ", INTERVAL "
+              + timeGrain.toMinutes() + " MINUTE)";
       case day, week, month, quarter, year ->
           "DATE_TRUNC(" + column + ", " + timeGrain.name().toUpperCase() + ")";
     };

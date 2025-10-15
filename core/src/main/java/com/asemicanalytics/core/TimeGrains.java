@@ -118,6 +118,29 @@ public enum TimeGrains implements TimeGrain {
       return DataType.DATETIME;
     }
   },
+  hour3 {
+    @Override
+    public long toMinutes() {
+      return TimeUnit.HOURS.toMinutes(3);
+    }
+
+    @Override
+    public ZonedDateTime next(ZonedDateTime datetime) {
+      return datetime.plusHours(3);
+    }
+
+    @Override
+    public ZonedDateTime truncate(ZonedDateTime dateTime) {
+      int hour = dateTime.getHour();
+      int truncatedHour = (hour / 3) * 3;
+      return dateTime.truncatedTo(ChronoUnit.DAYS).withHour(truncatedHour);
+    }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATETIME;
+    }
+  },
   day {
     @Override
     public long toMinutes() {

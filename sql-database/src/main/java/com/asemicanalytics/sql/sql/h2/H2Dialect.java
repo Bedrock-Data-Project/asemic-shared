@@ -50,7 +50,7 @@ public class H2Dialect implements Dialect {
   @Override
   public String truncateDate(String column, TimeGrains timeGrain) {
     return switch (timeGrain) {
-      case min15, min105, min450, min900 -> throw new UnsupportedOperationException();
+      case min15, min105, min450, min900, hour3 -> throw new UnsupportedOperationException();
       case hour, day, week, month, quarter, year ->
           "DATE_TRUNC('" + timeGrain.name().toUpperCase() + "', " + column + ")";
     };

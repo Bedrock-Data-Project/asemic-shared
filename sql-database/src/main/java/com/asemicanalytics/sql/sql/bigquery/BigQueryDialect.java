@@ -52,7 +52,7 @@ public class BigQueryDialect implements Dialect {
     return switch (timeGrain) {
       case min15, min105, min450, min900, hour, hour3 ->
           "TIMESTAMP_BUCKET(" + column + ", INTERVAL "
-              + timeGrain.toMinutes() + " MINUTE)";
+              + timeGrain.toMinutes() + " MINUTE, TIMESTAMP '2000-01-03 00:00:00')";
       case day, week, month, quarter, year ->
           "DATE_TRUNC(" + column + ", " + timeGrain.name().toUpperCase() + ")";
     };

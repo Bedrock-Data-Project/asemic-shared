@@ -6,6 +6,28 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 public enum TimeGrains implements TimeGrain {
+  min5 {
+    @Override
+    public long toMinutes() {
+      return 5;
+    }
+
+    @Override
+    public ZonedDateTime next(ZonedDateTime datetime) {
+      return datetime.plusMinutes(5);
+    }
+
+    @Override
+    public ZonedDateTime truncate(ZonedDateTime dateTime) {
+      return dateTime.truncatedTo(ChronoUnit.HOURS)
+          .withMinute((dateTime.getMinute() / 5) * 5);
+    }
+
+    @Override
+    public DataType dataType() {
+      return DataType.DATETIME;
+    }
+  },
   min15 {
     @Override
     public long toMinutes() {

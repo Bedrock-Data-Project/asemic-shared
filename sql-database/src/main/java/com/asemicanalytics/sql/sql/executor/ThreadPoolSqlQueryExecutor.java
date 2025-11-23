@@ -30,10 +30,10 @@ public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
 
   protected ThreadPoolSqlQueryExecutor(int maxWorkers, Dialect dialect) {
     executor = new ThreadPoolExecutor(
-        maxWorkers,
-        maxWorkers,
         0,
-        TimeUnit.MILLISECONDS,
+        maxWorkers,
+        1,
+        TimeUnit.MINUTES,
         new SynchronousQueue<>(),
         Executors.defaultThreadFactory(),
         new ThreadPoolExecutor.AbortPolicy()

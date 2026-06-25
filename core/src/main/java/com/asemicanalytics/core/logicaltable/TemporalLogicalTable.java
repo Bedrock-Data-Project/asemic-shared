@@ -1,5 +1,6 @@
 package com.asemicanalytics.core.logicaltable;
 
+import com.asemicanalytics.core.DataType;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.TimeGrain;
 import com.asemicanalytics.core.column.Column;
@@ -14,8 +15,12 @@ import java.util.TreeMap;
 public class TemporalLogicalTable<T extends Column> extends LogicalTable<T> {
 
   public static final String DATE_COLUMN_TAG = "date_column";
+  // When an event has no column tagged as the date, the date is derived from the timestamp
+  // (DATE(timestamp)) and exposed under this canonical id. See bedrock-query-engine's event-source
+  // SQL seam, which renders this id as DATE(<timestamp>) instead of a physical reference.
+  public static final String DERIVED_DATE_COLUMN_ID = "asemic_date";
   protected final TimeGrain minTimeGrain;
-  protected final String dateColumn;
+  protected final Optional<String> dateColumn;
   protected final Map<String, Kpi> kpis;
 
   public TemporalLogicalTable(String id, String label, Optional<String> description,
@@ -26,7 +31,7 @@ public class TemporalLogicalTable<T extends Column> extends LogicalTable<T> {
     super(id, label, description, table, columns, tags, materializedIndexTables);
     this.kpis = new TreeMap<>(kpis);
     this.minTimeGrain = minTimeGrain;
-    this.dateColumn = columns.getColumnIdByTag(DATE_COLUMN_TAG);
+    this.dateColumn = columns.getColumnIdByTagIfExists(DATE_COLUMN_TAG);
   }
 
   public TemporalLogicalTable(String id, String label, Optional<String> description,
@@ -41,10 +46,19 @@ public class TemporalLogicalTable<T extends Column> extends LogicalTable<T> {
   }
 
   public Column getDateColumn() {
-    return columns.column(dateColumn);
+    if (dateColumn.isPresent()) {
+      return columns.column(dateColumn.get());
+    }
+    return Column.ofHidden(DERIVED_DATE_COLUMN_ID, DataType.DATE).withTag(DATE_COLUMN_TAG);
   }
 
   public String getDateColumnId() {
+    return dateColumn.orElse(DERIVED_DATE_COLUMN_ID);
+  }
+
+  /** The id of the column tagged as the date, if one exists. Empty means the date is derived from
+   *  the timestamp (DATE(timestamp)) and exposed as {@link #DERIVED_DATE_COLUMN_ID}. */
+  public Optional<String> getDateColumnIdIfExists() {
     return dateColumn;
   }
 

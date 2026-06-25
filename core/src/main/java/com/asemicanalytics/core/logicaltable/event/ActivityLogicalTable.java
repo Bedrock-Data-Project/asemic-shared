@@ -17,12 +17,12 @@ public class ActivityLogicalTable extends EventLogicalTable {
                               List<EventLogicalTable> activityEvents) {
     super("entity_activity", "Activity", Optional.empty(), table,
         new Columns<Column>(new LinkedHashMap<>(Map.of(
-            activityEvents.getFirst().getEntityIdColumnId(),
-            activityEvents.getFirst().entityIdColumn(),
-            activityEvents.getFirst().getTimestampColumnId(),
-            activityEvents.getFirst().getTimestampColumn(),
-            activityEvents.getFirst().getDateColumnId(),
-            activityEvents.getFirst().getDateColumn()
+            ASEMIC_ENTITY_ID,
+            activityEvents.getFirst().entityIdColumn().withId(ASEMIC_ENTITY_ID),
+            ASEMIC_EVENT_TIMESTAMP,
+            activityEvents.getFirst().getTimestampColumn().withId(ASEMIC_EVENT_TIMESTAMP),
+            DERIVED_DATE_COLUMN_ID,
+            activityEvents.getFirst().getDateColumn().withId(DERIVED_DATE_COLUMN_ID)
         ))),
         Map.of(),
         Optional.empty(), Set.of());

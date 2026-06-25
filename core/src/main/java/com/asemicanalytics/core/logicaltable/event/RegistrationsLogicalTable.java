@@ -18,12 +18,12 @@ public class RegistrationsLogicalTable extends EventLogicalTable {
     LinkedHashMap<String, Column> columns = new LinkedHashMap<>();
 
 
-    columns.put(registrationEvents.getFirst().getEntityIdColumnId(),
-        registrationEvents.getFirst().entityIdColumn());
-    columns.put(registrationEvents.getFirst().getTimestampColumnId(),
-        registrationEvents.getFirst().getTimestampColumn());
-    columns.put(registrationEvents.getFirst().getDateColumnId(),
-        registrationEvents.getFirst().getDateColumn());
+    columns.put(ASEMIC_ENTITY_ID,
+        registrationEvents.getFirst().entityIdColumn().withId(ASEMIC_ENTITY_ID));
+    columns.put(ASEMIC_EVENT_TIMESTAMP,
+        registrationEvents.getFirst().getTimestampColumn().withId(ASEMIC_EVENT_TIMESTAMP));
+    columns.put(DERIVED_DATE_COLUMN_ID,
+        registrationEvents.getFirst().getDateColumn().withId(DERIVED_DATE_COLUMN_ID));
 
     for (var eventTable : registrationEvents) {
       for (var column : eventTable.getColumns()) {

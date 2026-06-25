@@ -44,6 +44,12 @@ public class Column {
         tags);
   }
 
+  /** A copy of this column under a different id (used to expose entity columns under canonical
+   *  ids regardless of how the source event named them). */
+  public Column withId(String id) {
+    return new Column(id, dataType, label, description, canFilter, canGroupBy, tags);
+  }
+
   public String getId() {
     return id;
   }

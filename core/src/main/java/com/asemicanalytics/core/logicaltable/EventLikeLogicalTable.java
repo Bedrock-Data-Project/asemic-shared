@@ -11,6 +11,9 @@ import java.util.Set;
 
 public class EventLikeLogicalTable extends TemporalLogicalTable<Column> {
   public static final String TIMESTAMP_COLUMN_TAG = "event_timestamp_column";
+  // Canonical id under which entity (activity/registration/...) tables expose the event timestamp,
+  // regardless of how the source event named its column.
+  public static final String ASEMIC_EVENT_TIMESTAMP = "asemic_event_timestamp";
   protected final String timestampColumn;
 
   public EventLikeLogicalTable(String id, String label, Optional<String> description,

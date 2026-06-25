@@ -11,6 +11,9 @@ import java.util.Set;
 
 public class EventLogicalTable extends EventLikeLogicalTable {
   public static final String ENTITY_ID_COLUMN_TAG = "entity_id_column";
+  // Canonical id under which entity (activity/registration/...) tables expose the entity id,
+  // regardless of how the source event named its column.
+  public static final String ASEMIC_ENTITY_ID = "asemic_entity_id";
 
   private final String entityIdColumn;
   private final Optional<String> where;

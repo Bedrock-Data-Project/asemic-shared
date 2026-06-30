@@ -27,6 +27,13 @@ public class EntityIndexFilterAppender {
     var allFilters = new TreeSet<String>();
     for (var propertyId : properties) {
       var column = columns.get(propertyId);
+      if (column == null) {
+        // The formula references a key that isn't an entity column (e.g. a raw
+        // event column such as a report/event date used inside a computed
+        // property). It contributes no entity index filter — skip it rather than
+        // NPE on column.getType().
+        continue;
+      }
       Set<String> filters = switch (column.getType()) {
         case COMPUTED -> getFilters(((ComputedColumn) column).getFormula());
         case REGISTRATION, LIFETIME, FIXED_WINDOW -> Set.of();

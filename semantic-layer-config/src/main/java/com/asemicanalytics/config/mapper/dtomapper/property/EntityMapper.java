@@ -18,6 +18,7 @@ import com.asemicanalytics.core.logicaltable.event.EventLogicalTables;
 import com.asemicanalytics.core.logicaltable.event.RegistrationsLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,8 +32,18 @@ public class EntityMapper
     implements Function<EntityDto, EntityLogicalTable> {
   private final String appId;
 
+  // The merged (post cohort-day expansion), pre-unfold published KPI DTOs produced
+  // by the last apply(). Retained so request-time overlays (ad-hoc KPI live preview)
+  // can re-compile published + draft metrics together against a merged column set —
+  // the same way ad-hoc properties merge into the semantic layer.
+  private Map<String, KpiDto> mergedKpiDtos = Map.of();
+
   public EntityMapper(String appId) {
     this.appId = appId;
+  }
+
+  public Map<String, KpiDto> getMergedKpiDtos() {
+    return mergedKpiDtos;
   }
 
   private String getSchema(EntityDto dto) {
@@ -77,10 +88,8 @@ public class EntityMapper
         registrationsLogicalTable, activityLogicalTable);
 
     var mergedKpis = new KpisDtoMergeMapper(cohortDays).apply(dto.kpis());
-    var unfoldedKpis = new KpisUnfolder(mergedKpis, columns.getColumns().keySet()).unfold();
-
-    var kpis = buildKpisMap(unfoldedKpis);
-    new EntityIndexFilterAppender(activeDays, cohortDays, columns.getColumns()).append(kpis);
+    this.mergedKpiDtos = mergedKpis;
+    var kpis = compileKpis(mergedKpis, columns, activeDays, cohortDays);
 
     return new EntityLogicalTable(
         getSchema(dto),
@@ -90,6 +99,22 @@ public class EntityMapper
         activeDays,
         cohortDays,
         kpis);
+  }
+
+  // The canonical KPI compile pipeline, shared by app-load and request-time overlays:
+  // unfold the merged DTOs against the (published + ad-hoc) column set, build them, then
+  // append the entity index filters so a metric over a window/event property queries the
+  // right declaration. Callers pass a merged DTO map (published unioned with draft/ad-hoc).
+  public static Map<String, Kpi> compileKpis(
+      Map<String, KpiDto> mergedKpiDtos,
+      Columns<EntityProperty> columns,
+      int activeDays,
+      List<Integer> cohortDays) {
+    var unfoldedKpis =
+        new KpisUnfolder(mergedKpiDtos, columns.getColumns().keySet()).unfold();
+    var kpis = buildKpisMap(unfoldedKpis);
+    new EntityIndexFilterAppender(activeDays, cohortDays, columns.getColumns()).append(kpis);
+    return kpis;
   }
 
   public static SequencedMap<String, EntityProperty> buildColumnsMap(
@@ -221,7 +246,7 @@ public class EntityMapper
     );
   }
 
-  private Map<String, Kpi> buildKpisMap(List<UnfoldingKpi> kpiList) {
+  private static Map<String, Kpi> buildKpisMap(List<UnfoldingKpi> kpiList) {
     Map<String, Kpi> kpis = new HashMap<>();
     for (var unfoldingKpi : kpiList) {
       var kpi = unfoldingKpi.buildKpi();

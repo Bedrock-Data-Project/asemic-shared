@@ -217,6 +217,18 @@ public class EntityLogicalTable extends TemporalLogicalTable<EntityProperty> {
     );
   }
 
+  public EntityLogicalTable withKpis(Map<String, Kpi> kpis) {
+    return new EntityLogicalTable(
+        schema,
+        Optional.of(this.columns),
+        registrationLogicalTable,
+        activityLogicalTable,
+        activityTableDays,
+        cohortTableDays,
+        kpis
+    );
+  }
+
   public int getActivityTableDays() {
     return activityTableDays;
   }

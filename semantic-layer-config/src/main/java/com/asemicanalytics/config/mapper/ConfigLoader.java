@@ -29,14 +29,15 @@ public class ConfigLoader {
   public EntityModelConfig parse(String appId) throws IOException {
     List<EnrichmentDefinition> enrichmentCollector = new ArrayList<>();
     var eventLogicalTables = parseEvents(appId, enrichmentCollector);
+    var entityMapper = new EntityMapper(appId);
     var entity =
-        new EntityMapper(appId)
-            .apply(this.configParser.parseEntityLogicalTable(appId, eventLogicalTables));
+        entityMapper.apply(this.configParser.parseEntityLogicalTable(appId, eventLogicalTables));
 
     return new EntityModelConfig(eventLogicalTables, entity,
         entity.getRegistrationLogicalTable(),
         entity.getActivityLogicalTable(),
-        enrichmentCollector);
+        enrichmentCollector,
+        entityMapper.getMergedKpiDtos());
   }
 
   private EventLogicalTables loadTopLevelLogicalTables(

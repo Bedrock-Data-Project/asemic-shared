@@ -1,6 +1,7 @@
 package com.asemicanalytics.sql.sql.snowflake;
 
 import com.asemicanalytics.core.DataType;
+import com.asemicanalytics.core.error.WarehouseException;
 import com.asemicanalytics.sql.sql.executor.JdbcQueryExecutor;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,7 +29,7 @@ public class SnowflakeQueryExecutor extends JdbcQueryExecutor {
     try {
       return DriverManager.getConnection(jdbcUrl, user, password);
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new WarehouseException("Could not connect to the warehouse", e);
     }
   }
 

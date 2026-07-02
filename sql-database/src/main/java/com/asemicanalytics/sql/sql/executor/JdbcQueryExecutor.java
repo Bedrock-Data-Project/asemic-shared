@@ -7,6 +7,7 @@ import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.error.WarehouseException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -85,7 +86,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new WarehouseException("Failed to run query against the warehouse", e);
     }
   }
 
@@ -115,7 +116,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new WarehouseException("Failed to read table columns from the warehouse", e);
     }
   }
 
@@ -134,7 +135,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new WarehouseException("Failed to list tables from the warehouse", e);
     }
   }
 
@@ -159,7 +160,7 @@ public abstract class JdbcQueryExecutor extends ThreadPoolSqlQueryExecutor {
       return new SqlResult(List.of(), sql, Duration.between(start, Instant.now()),
           null, 0L);
     } catch (SQLException | InterruptedException e) {
-      throw new RuntimeException(e);
+      throw new WarehouseException("Failed to run DDL against the warehouse", e);
     }
   }
 }

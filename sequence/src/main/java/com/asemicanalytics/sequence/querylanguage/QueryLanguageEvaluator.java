@@ -16,7 +16,11 @@ public class QueryLanguageEvaluator {
 
   public Sequence parse(String query) {
     QueryLanguageLexer lexer = new QueryLanguageLexer(CharStreams.fromString(query));
+    lexer.removeErrorListeners();
+    lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
     QueryLanguageParser parser = new QueryLanguageParser(new CommonTokenStream(lexer));
+    parser.removeErrorListeners();
+    parser.addErrorListener(ThrowingErrorListener.INSTANCE);
     ParseTree tree = parser.statement();
     VisitorResult result = new SequenceVisitor(stepLogicalTables).visit(tree);
     return new Sequence(result.getSteps(), result.getDomain(),

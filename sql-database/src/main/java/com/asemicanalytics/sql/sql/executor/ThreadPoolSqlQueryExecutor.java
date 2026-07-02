@@ -12,6 +12,8 @@ import com.asemicanalytics.core.SqlQueryExecutor;
 import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.error.AsemicException;
+import com.asemicanalytics.core.error.WarehouseException;
 import com.asemicanalytics.sql.sql.builder.tokens.QueryBuilder;
 import com.asemicanalytics.sql.sql.builder.tokens.QueryFactory;
 import java.util.List;
@@ -60,8 +62,10 @@ public abstract class ThreadPoolSqlQueryExecutor implements SqlQueryExecutor {
       try (Tracer.SpanInScope ws = tracer.withSpanInScope(newSpan.start())) {
         newSpan.tag("executorType", getClass().getSimpleName());
         return callable.call();
+      } catch (AsemicException e) {
+        throw e;
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new WarehouseException("Warehouse operation failed", e);
       } finally {
         newSpan.finish();
       }

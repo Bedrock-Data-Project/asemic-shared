@@ -6,6 +6,7 @@ import com.asemicanalytics.core.SqlResult;
 import com.asemicanalytics.core.SqlResultRow;
 import com.asemicanalytics.core.TableReference;
 import com.asemicanalytics.core.column.Column;
+import com.asemicanalytics.core.error.WarehouseException;
 import com.asemicanalytics.sql.sql.executor.ThreadPoolSqlQueryExecutor;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
@@ -115,9 +116,10 @@ public class BigQueryQueryExecutor extends ThreadPoolSqlQueryExecutor {
     }
 
     if (queryJob == null) {
-      throw new RuntimeException("Job no longer exists");
+      throw new WarehouseException("BigQuery job no longer exists");
     } else if (queryJob.getStatus().getError() != null) {
-      throw new RuntimeException(queryJob.getStatus().getError().toString());
+      throw new WarehouseException("BigQuery rejected the query", null,
+          queryJob.getStatus().getError().toString());
     }
 
     return new ResultWithStatistics(queryJob.getQueryResults(), queryJob.getStatistics());

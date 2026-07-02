@@ -34,9 +34,11 @@ public class EventPropertyDtoMapper implements
 
     return new EventColumn(column,
         logicalTable,
-        dto.getWhere(), dto.getSelect(),
+        // select is a YAML scalar (select: 1 is valid) -> Object in the DTO
+        dto.getWhere(), String.valueOf(dto.getSelect()),
         EventColumn.AggregateFunction.valueOf(dto.getAggregateFunction().name()),
-        dto.getDefaultValue().orElse(null),
+        // default_value is a YAML scalar (default 0 is common) -> Object in the DTO
+        dto.getDefaultValue().map(String::valueOf).orElse(null),
         generated);
   }
 }

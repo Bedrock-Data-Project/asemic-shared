@@ -22,9 +22,10 @@ public class ComputedPropertyDtoMapper implements
     List<ComputedColumn.ValueMapping> valueMappings = new ArrayList<>();
     for (var valueMapping : dto.getValueMappings().orElse(List.of())) {
       if (valueMapping.getConstant().isPresent()) {
+        // constant is a YAML scalar (string/number/boolean) -> Object in the DTO
         valueMappings.add(new ComputedColumn.ValueMapping(
-            valueMapping.getConstant(),
-            valueMapping.getConstant(),
+            valueMapping.getConstant().map(String::valueOf),
+            valueMapping.getConstant().map(String::valueOf),
             valueMapping.getNewValue().get().toString()
         ));
         continue;
@@ -42,6 +43,7 @@ public class ComputedPropertyDtoMapper implements
       throw new IllegalArgumentException("Value mapping must have either constant or range");
     }
 
-    return new ComputedColumn(column, dto.getSelect(), valueMappings);
+    // select is a YAML scalar (select: 1 is valid) -> Object in the DTO
+    return new ComputedColumn(column, String.valueOf(dto.getSelect()), valueMappings);
   }
 }

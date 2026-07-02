@@ -10,24 +10,45 @@
       "type": "object",
       "properties": {
         "constant": {
-          "type": "string"
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
         },
         "range": {
           "type": "object",
           "properties": {
-            "from": "string",
-            "to": "string"
+            "from": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "to": {
+              "type": [
+                "string",
+                "number"
+              ]
+            }
           }
         },
         "new_value": {
-          "type": "string"
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
         }
       }
     }
   },
   "properties": {
     "select": {
-      "type": "string"
+      "type": [
+        "string",
+        "number"
+      ]
     },
     "value_mappings": {
       "type": "array",

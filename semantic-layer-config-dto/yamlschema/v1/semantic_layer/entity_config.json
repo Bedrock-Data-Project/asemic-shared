@@ -4,7 +4,6 @@
   "type": "object",
   "required": [
     "data_model_schema",
-    "data_model_version",
     "cohorted_daily_kpis_days",
     "active_days"
   ],

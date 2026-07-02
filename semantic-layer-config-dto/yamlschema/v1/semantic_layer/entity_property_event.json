@@ -12,7 +12,10 @@
       "type": "string"
     },
     "select": {
-      "type": "string"
+      "type": [
+        "string",
+        "number"
+      ]
     },
     "aggregate_function": {
       "type": "string",
@@ -32,7 +35,11 @@
       "type": "string"
     },
     "default_value": {
-      "type": "string"
+      "type": [
+        "string",
+        "number",
+        "boolean"
+      ]
     },
     "data_type": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/data_type.json"
